@@ -1,0 +1,26 @@
+1️⃣ Config folder
+Contiene clases de configuración que configuran parámetros de la aplicación en general
+✅NOMBRE DE LA CLASE: [nombre de la entidad]Config.java
+2️⃣ Controller folder
+Contiene los contoladores rest (expone endpoints) estas clases manejan peticiones HTTP entrantes 
+✅NOMBRE DE LA CLASE: [nombre de la entidad]Controller.java
+3️⃣ dto folder
+contiene clases de definición de entidades para encapsular los datos enviados entre las capas de 
+la aplicación o entre front y back
+✅NOMBRE DE LA CLASE: [nombre de la entidad]DTO.java
+4️⃣ enum folder
+Contiene clases con enumeradores definidos para la aplicación y para restricciones del modelo de datos
+✅NOMBRE DE LA CLASE: [nombre de la entidad]Enum.java
+5️⃣ Model folder 
+contiene las clases que representan el modelo de datos que son mapeados en la base de datos
+✅NOMBRE DE LA CLASE: [nombre de la entidad].java
+6️⃣ Repository
+Contiene clases que manejan la comunicación entre la app y la base de datos (mediante ORM)
+✅NOMBRE DE LA CLASE: [nombre de la entidad]Repository.java
+7️⃣ Service
+Las clases aquí contienen la lógica del negocio 
+✅NOMBRE DE LA CLASE: [nombre de la entidad]Service.java
+8️⃣ Util
+Contiene clases que no son directamente el negocio pero sirven como utildiades
+ej: validar datos, convertir datos, etc.
+✅NOMBRE DE LA CLASE: [Conjunto de utilidades que va a tener].java
