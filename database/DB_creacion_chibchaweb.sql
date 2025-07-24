@@ -17,12 +17,19 @@ CREATE TABLE plan_cliente (
   nombre_plan VARCHAR(100) NOT NULL
 );
 
--- Tabla de dominios
+CREATE TABLE tld (
+  TLD VARCHAR(63) PRIMARY KEY
+);
+
+-- tabla dominios 3FN
 CREATE TABLE dominio (
   nombre_dominio VARCHAR(253),
   TLD VARCHAR(63),
-  PRIMARY KEY (nombre_dominio, TLD)
+  PRIMARY KEY (nombre_dominio, TLD),
+  FOREIGN KEY (TLD) REFERENCES tld(TLD)
 );
+
+
 
 -- Tabla de clientes directos
 CREATE TABLE cliente_directo (
@@ -35,15 +42,24 @@ CREATE TABLE cliente_directo (
   fecha_nacimiento_cliente DATE
 );
 
--- Tabla de distribuidores
+
+
+-- Tabla de tipos de documento de empresa
+CREATE TABLE tipo_documento_emp (
+  id_tipo_documento SERIAL PRIMARY KEY,
+  nombre_tipo VARCHAR(20) UNIQUE NOT NULL  -- Ej: 'NIT', 'CC', 'CE'
+);
+
+-- Tabla de distribuidores - en 3FN
 CREATE TABLE distribuidor (
-  tipo_doc_id_empresa VARCHAR(10),
-  id_empresa VARCHAR(20),
+  id_distribuidor SERIAL PRIMARY KEY, 
+  numero_documento VARCHAR(20) NOT NULL,
   nombre_empresa VARCHAR(255) NOT NULL,
   correo_empresa VARCHAR(255) UNIQUE NOT NULL,
   contrasena_empresa VARCHAR(150) NOT NULL,
-  direccion_empresa VARCHAR(255),
-  PRIMARY KEY (tipo_doc_id_empresa, id_empresa)
+  direccion_empresa VARCHAR(255) NOT NULL,
+  id_tipo_documento INT NOT NULL,
+  FOREIGN KEY (id_tipo_documento) REFERENCES tipo_documento_emp(id_tipo_documento)
 );
 
 -- Tabla de empleados
