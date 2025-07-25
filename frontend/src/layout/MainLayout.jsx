@@ -6,10 +6,10 @@ import Box from '@mui/material/Box';
 
 export default function MainLayout({ children }) {
   return (
-    <Box display="flex" flexDirection="column" minHeight="120vh">
+    <Box display="flex" flexDirection="column" minHeight="120vh" width={'100%'}>
       <Navbar />
 
-      <Container component="main" sx={{ flex: 1, py: 2 }}>
+      <Container component="main" sx={{ flex: 1, py: 2, width: '100%' }}>
         {children}
       </Container>
 
