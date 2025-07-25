@@ -12,6 +12,7 @@ import ListItemButton from '@mui/joy/ListItemButton';
 import ListItemDecorator from '@mui/joy/ListItemDecorator';
 import HomeRounded from '@mui/icons-material/HomeRounded';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
+import AddToDriveIcon from '@mui/icons-material/AddToDrive';
 import Person from '@mui/icons-material/Person';
 import Apps from '@mui/icons-material/Apps';
 import FactCheck from '@mui/icons-material/FactCheck';
@@ -131,7 +132,7 @@ const AboutMenu = React.forwardRef(({ focusNext, focusPrevious, ...props }, ref)
           }}
           sx={[open && ((theme) => theme.variants.plainHover.neutral)]}
         >
-          About <KeyboardArrowDown />
+          About <AddToDriveIcon />
         </ListItemButton>
         <Popper id={id} open={open} anchorEl={anchorEl} disablePortal keepMounted>
           <List
@@ -306,7 +307,7 @@ export default function ExampleNavigationMenu() {
             role="menuitem"
             {...getTargetProps(0)}
             component="a"
-            href="#navigation-menu"
+            href="/"
           >
             <ListItemDecorator>
               <HomeRounded />
