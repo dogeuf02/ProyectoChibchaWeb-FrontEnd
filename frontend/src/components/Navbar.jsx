@@ -1,3 +1,4 @@
+// src/components/NavbarMUI.jsx
 import React from 'react';
 import { AppBar, Toolbar, Button, Box } from '@mui/material';
 
