@@ -11,6 +11,8 @@ import ManageProfile from './pages/ManageProfile.jsx'
 import Home from './pages/Home.jsx'
 import { AlertProvider } from './context/AlertContext.jsx'
 import GlobalAlert from './components/GlobalAlert.jsx'
+import Domains from './pages/Domains.jsx'
+import Plans from './pages/Plans.jsx'
 
 
 function App() {
@@ -28,6 +30,7 @@ function App() {
             </MainLayout>
 
           } />
+          
           <Route path="/registerDistributor" element={<MainLayout>
             <RegisterDistributor />
           </MainLayout>} />
@@ -40,7 +43,12 @@ function App() {
           <Route path="/Home" element={<MainLayout>
             <Home />
           </MainLayout>} />
-
+          <Route path="/Domains" element={<MainLayout>
+            <Domains />
+          </MainLayout>} />
+          <Route path="/Plans" element={<MainLayout>
+            <Plans />
+          </MainLayout>} />
         </Routes>
 
 

@@ -26,7 +26,7 @@ export default function NavbarMUI() {
   const navItems = [
     { label: 'Chibchaweb', to: '/Home' },
     { label: 'Domains', to: '/Domains' },
-    { label: 'Hosting plan', to: '/Hosting' },
+    { label: 'Hosting plan', to: '/Plans' },
     { label: 'Distributor', to: '/RegisterDistributor' },
   ];
 

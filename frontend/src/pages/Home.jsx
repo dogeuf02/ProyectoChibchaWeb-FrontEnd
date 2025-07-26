@@ -58,7 +58,9 @@ export default function Home() {
           sx={{
             flex: 1,
             width: '100%',
-            maxWidth: 400,
+            display: { xs: 'none', md: 'block' },
+            width: '100%',
+            maxWidth: 500,
             objectFit: 'contain',
           }}
         />
