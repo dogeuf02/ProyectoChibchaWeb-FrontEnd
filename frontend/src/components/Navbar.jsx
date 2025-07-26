@@ -26,7 +26,7 @@ export default function NavbarMUI() {
 
         {rol === 'usuario' && (
           <Button component={Link}
-            to="/RegisterAccount" sx={{ backgroundColor: '#FF6300' }} variant="contained">Login</Button>
+            to="/Login" sx={{ backgroundColor: '#FF6300' }} variant="contained">Login</Button>
         )}
 
       </Toolbar>

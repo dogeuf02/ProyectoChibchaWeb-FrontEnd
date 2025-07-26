@@ -3,9 +3,12 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import MainLayout from './layout/MainLayout.jsx'
-import Register from './pages/RegisterAccount.jsx'
+import RegisterAccount from './pages/RegisterAccount.jsx'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import RegisterDistributor from './pages/RegisterDistributor.jsx'
+import Login from './pages/Login.jsx'
+import ManageProfile from './pages/ManageProfile.jsx'
+import Home from './pages/Home.jsx'
 
 
 function App() {
@@ -16,17 +19,26 @@ function App() {
       <Routes>
         <Route path="/" element={<MainLayout />} />
         <Route path="/registerAccount" element={<MainLayout>
-          <Register />
+          <RegisterAccount />
         </MainLayout>} />
-          <Route path="/registerDistributor" element={<MainLayout>
+        <Route path="/registerDistributor" element={<MainLayout>
           <RegisterDistributor />
         </MainLayout>} />
+        <Route path="/Login" element={<MainLayout>
+          <Login />
+        </MainLayout>} />
+        <Route path="/ManageProfile" element={<MainLayout>
+          <ManageProfile />
+        </MainLayout>} />
+        <Route path="/Home" element={<MainLayout>
+          <Home />
+        </MainLayout>} />
 
-              </Routes>
-   
-        
+      </Routes>
 
- </BrowserRouter>
+
+
+    </BrowserRouter>
   )
 }
 

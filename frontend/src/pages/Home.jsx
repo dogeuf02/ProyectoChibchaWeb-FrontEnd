@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, Button, Grid, Container, Link } from '@mui/material';
 
-export default function Home() {
+export default function PagPrincipal() {
   return (
     <>
       {/* Banner superior */}

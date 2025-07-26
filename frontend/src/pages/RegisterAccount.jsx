@@ -6,16 +6,18 @@ import {
   Typography,
   Box,
   Paper,
+  Link
 } from '@mui/material';
+
 
 export default function Register() {
   const [form, setForm] = useState({
-    nombre: '',
-    LastName: '',
-    fechaNacimiento: '',
+    firstName: '',
+    lastName: '',
+    birthDate: '',
     email: '',
     password: '',
-    confirmar: '',
+    confirmPassword: '',
     phone: '',
   });
 
@@ -25,10 +27,37 @@ export default function Register() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('handleSubmit llamado');
-    if (form.password !== form.confirmar) {
-      alert('Las contraseñas no coinciden');
+
+    if (form.password !== form.confirmPassword) {
+      alert('Passwords do not match');
       return;
+    }
+
+    const requiredFields = [
+      'firstName',
+      'lastName',
+      'birthDate',
+      'email',
+      'password',
+      'confirmPassword',
+      'phone',
+    ];
+
+    const friendlyNames = {
+      firstName: 'First Name',
+      lastName: 'Last Name',
+      birthDate: 'Birth Date',
+      email: 'Email',
+      password: 'Password',
+      confirmPassword: 'Confirm Password',
+      phone: 'Phone',
+    };
+
+    for (const field of requiredFields) {
+      if (!form[field]) {
+        alert(`The field "${friendlyNames[field]}" is required.`);
+        return;
+      }
     }
 
     console.log('Registrando usuario:', form);
@@ -47,9 +76,9 @@ export default function Register() {
 
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <TextField
-            label="Name"
-            name="nombre"
-            value={form.nombre}
+            label="First Name"
+            name="firstName"
+            value={form.firstName}
             onChange={handleChange}
             fullWidth
             margin="normal"
@@ -65,9 +94,9 @@ export default function Register() {
           />
 
           <TextField
-            label="Last name"
-            name="LastName"
-            value={form.LastName}
+            label="Last Name"
+            name="lastName"
+            value={form.lastName}
             onChange={handleChange}
             fullWidth
             margin="normal"
@@ -84,6 +113,7 @@ export default function Register() {
           <TextField
             label="Email"
             name="email"
+            type="email"
             value={form.email}
             onChange={handleChange}
             fullWidth
@@ -117,10 +147,10 @@ export default function Register() {
             }}
           />
           <TextField
-            label="Fecha de nacimiento"
-            name="fechaNacimiento"
+            label="Birth Date"
+            name="birthDate"
             type="date"
-            value={form.fechaNacimiento}
+            value={form.birthDate}
             onChange={handleChange}
             fullWidth
             margin="normal"
@@ -155,9 +185,9 @@ export default function Register() {
             }}
           />
           <TextField
-            label="Confirm password"
-            name="confirmar"
-            value={form.confirmar}
+            label="Confirm Password"
+            name="confirmPassword"
+            value={form.confirmPassword}
             onChange={handleChange}
             type="password"
             fullWidth
@@ -177,7 +207,7 @@ export default function Register() {
             variant="contained"
             fullWidth
             sx={{
-              mt: 2,
+              mt: 4,
               bgcolor: '#ff6f00',
               borderRadius: 30,
               '&:hover': { bgcolor: '#ffc107', color: '#212121' }
@@ -185,6 +215,32 @@ export default function Register() {
           >
             Register
           </Button>
+          <Typography variant="body2" sx={{ mt: 2 }}>
+            Have an account?{' '}
+            <Link
+              href="/login"
+              underline="hover"
+              sx={{
+                color: '#ff6f00',
+                '&:hover': { color: '#ffc107' }
+              }}
+            >
+              Sign in
+            </Link>
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 2 }}>
+            Do you want to work with us as a distribuitor?{' '}
+            <Link
+              href="/RegisterDistributor"
+              underline="hover"
+              sx={{
+                color: '#ff6f00',
+                '&:hover': { color: '#ffc107' }
+              }}
+            >
+              Click here
+            </Link>
+          </Typography>
         </Box>
       </Paper>
     </Container>
