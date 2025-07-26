@@ -9,7 +9,7 @@ export default function MainLayout({ children }) {
     <Box display="flex" flexDirection="column" minHeight="120vh" width={'100%'}>
       <Navbar />
 
-      <Container component="main" sx={{ flex: 1, py: 2, width: '100%' }}>
+      <Container component="main" sx={{ flex: 1, py: 10, width: '100%' }}>
         {children}
       </Container>
 

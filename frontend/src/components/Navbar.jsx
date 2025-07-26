@@ -3,6 +3,8 @@ import React from 'react';
 import { AppBar, Toolbar, Button, Box } from '@mui/material';
 
 export default function NavbarMUI() {
+
+  const rol = 'usuario'; // Simulación de rol, reemplazar con lógica real
   return (
     <AppBar position="fixed" sx={{ backgroundColor: '#212121'}}>
       <Toolbar>
@@ -11,8 +13,17 @@ export default function NavbarMUI() {
           <Button color="inherit">Domains</Button>
           <Button color="inherit">Hosting plan</Button>
           <Button color="inherit">Distributor</Button>
+           {/* Visible solo para distribuidores */}
+
+          {rol === 'admin'&& (
+            <Button color="inherit">asdfasdfasdf</Button>
+          )}
         </Box>
-        <Button sx={{ backgroundColor: '#FF6300'}} variant="contained">Login</Button>
+
+        {rol === 'usuario'&& (
+            <Button sx={{ backgroundColor: '#FF6300'}} variant="contained">Login</Button>
+          )}
+        
       </Toolbar>
     </AppBar>
   );

@@ -77,11 +77,11 @@ export default function Register() {
             }}
           />
           <TextField
-            label="Telefono"
-            name="telefono"
-            value={form.confirmar}
+            label="Phone number"
+            name="phone"
+            value={form.phone}
             onChange={handleChange}
-            type="phone"
+            type="tel"
             fullWidth
             margin="normal"
             required
