@@ -22,7 +22,14 @@ function App() {
     <AlertProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<MainLayout />} />
+          <Route path="/" 
+          element={<MainLayout>
+            <Home />
+            <Domains />
+            <Plans />
+            </MainLayout>
+
+          } />
           <Route path="/registerAccount" element={
 
             <MainLayout>
@@ -40,9 +47,7 @@ function App() {
           <Route path="/ManageProfile" element={<MainLayout>
             <ManageProfile />
           </MainLayout>} />
-          <Route path="/Home" element={<MainLayout>
-            <Home />
-          </MainLayout>} />
+          
           <Route path="/Domains" element={<MainLayout>
             <Domains />
           </MainLayout>} />

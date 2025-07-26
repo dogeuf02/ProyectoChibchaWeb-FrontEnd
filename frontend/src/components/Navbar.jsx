@@ -24,7 +24,7 @@ export default function NavbarMUI() {
   const rol = 'usuario'; // lógica de rol simulada
 
   const navItems = [
-    { label: 'Chibchaweb', to: '/Home' },
+    { label: 'Chibchaweb', to: '/' },
     { label: 'Domains', to: '/Domains' },
     { label: 'Hosting plan', to: '/Plans' },
     { label: 'Distributor', to: '/RegisterDistributor' },

@@ -47,7 +47,7 @@ const cardData = [
 
 export default function Domains() {
   return (
-    <Box sx={{ bgcolor: '#f5f5f5', py: 8 }}>
+    <Box sx={{ bgcolor: '#f5f5f5', py: 8 }} >
       <Container>
         <Typography variant="h4" align="center" gutterBottom>
           Domains
