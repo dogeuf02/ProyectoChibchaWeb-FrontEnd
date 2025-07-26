@@ -1,11 +1,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import SettingsSuggestRoundedIcon from '@mui/icons-material/SettingsSuggestRounded';
 
 
 export default function Home() {
@@ -35,9 +31,16 @@ export default function Home() {
             textAlign: 'left',
           }}
         >
-          <Typography component="h2" variant="h4" gutterBottom>
-            Chibchaweb
-          </Typography>
+          <Box
+            component="img"
+            src="/logo.png"
+            alt="Chibchaweb Logo"
+            sx={{
+              height: { xs: 150, sm: 200, md: 200 },
+              mb: 2, // margen inferior opcional
+            }}
+          />
+
           <Typography
             variant="body1"
             sx={{ color: 'grey.400', lineHeight: 2 }}

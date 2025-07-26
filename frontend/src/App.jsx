@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import MainLayout from './layout/MainLayout.jsx'
 import RegisterAccount from './pages/RegisterAccount.jsx'
@@ -13,6 +11,7 @@ import { AlertProvider } from './context/AlertContext.jsx'
 import GlobalAlert from './components/GlobalAlert.jsx'
 import Domains from './pages/Domains.jsx'
 import Plans from './pages/Plans.jsx'
+import Distributor from './pages/Distributor.jsx'
 
 
 function App() {
@@ -27,15 +26,14 @@ function App() {
             <Home />
             <Domains />
             <Plans />
+            <Distributor />
             </MainLayout>
 
           } />
           <Route path="/registerAccount" element={
-
             <MainLayout>
               <RegisterAccount />
             </MainLayout>
-
           } />
           
           <Route path="/registerDistributor" element={<MainLayout>
@@ -46,13 +44,6 @@ function App() {
           </MainLayout>} />
           <Route path="/ManageProfile" element={<MainLayout>
             <ManageProfile />
-          </MainLayout>} />
-          
-          <Route path="/Domains" element={<MainLayout>
-            <Domains />
-          </MainLayout>} />
-          <Route path="/Plans" element={<MainLayout>
-            <Plans />
           </MainLayout>} />
         </Routes>
 

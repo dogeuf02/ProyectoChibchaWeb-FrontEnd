@@ -28,23 +28,17 @@ const cardData = [
 
 export default function Plans() {
   return (
-    <Box sx={{ bgcolor: '#f5f5f5', py: 8 }}>
+    <Box id='Plans' sx={{ bgcolor: '#f5f5f5', py: 8 }}>
       <Container>
-        <Typography variant="h4" align="center" gutterBottom>
+        <Typography variant="h2" align="center" gutterBottom>
           Hosting Plans
         </Typography>
         <Grid container spacing={4} justifyContent="center">
           {cardData.map((card, index) => (
             <Grid item key={index} xs={12} sm={6} md={4}>
               <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                <CardMedia
-                  component="img"
-                  height="180"
-                  image={card.image}
-                  alt={card.title}
-                />
                 <CardContent>
-                  <Typography gutterBottom variant="h6" component="div">
+                  <Typography gutterBottom variant="h5" component="div">
                     {card.title}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
