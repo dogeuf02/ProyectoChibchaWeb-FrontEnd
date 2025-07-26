@@ -21,7 +21,7 @@ export default function NavbarMUI() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const rol = 'usuario'; // lógica de rol simulada
+  const rol = 'admin'; // lógica de rol simulada
 
   const navItems = [
     { label: 'Chibchaweb', to: '/' },

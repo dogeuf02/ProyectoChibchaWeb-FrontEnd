@@ -13,6 +13,7 @@ import { AlertProvider } from './context/AlertContext.jsx'
 import GlobalAlert from './components/GlobalAlert.jsx'
 import Domains from './pages/Domains.jsx'
 import Plans from './pages/Plans.jsx'
+import AdminManageEmployees from './pages/AdminManageEmployees.jsx'
 
 
 function App() {
@@ -54,6 +55,11 @@ function App() {
           <Route path="/Plans" element={<MainLayout>
             <Plans />
           </MainLayout>} />
+          <Route path="/admin/ManageEmployees" element={<MainLayout>
+            <AdminManageEmployees />
+          </MainLayout>} />
+
+
         </Routes>
 
 

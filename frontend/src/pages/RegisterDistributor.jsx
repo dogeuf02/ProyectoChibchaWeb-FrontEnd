@@ -7,7 +7,8 @@ import {
     Typography,
     Box,
     Paper,
-    Link
+    Link,
+    MenuItem,
 } from '@mui/material';
 import useScrollToTop from '../hooks/useScrollToTop';
 import { useGlobalAlert } from "../context/AlertContext";
@@ -18,16 +19,27 @@ export default function RegisterDistributor() {
 
     const { showAlert } = useGlobalAlert();
     const [form, setForm] = useState({
-        firstName: '',
-        lastName: '',
-        birthDate: '',
+
         email: '',
         password: '',
         confirmPassword: '',
-        phone: '',
         companyNumber: '',
         companyAddress: '',
+        documentType: 'NIT',
+        companyName: '',
     });
+
+    const documentTypes = [
+        'NIT',         // Colombia
+        'RUC',         // Perú, Ecuador
+        'CUIT',        // Argentina
+        'RIF',         // Venezuela
+        'CPF_CNPJ',    // Brasil
+        'TIN',         // África
+        'PASSPORT',    // Internacional
+        'BUSINESS_ID', // Genérico
+        'OTHER',       // Fallback
+    ];
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -42,26 +54,22 @@ export default function RegisterDistributor() {
         }
 
         const requiredFields = [
-            'firstName',
-            'lastName',
-            'birthDate',
             'email',
             'password',
             'confirmPassword',
-            'phone',
+            'documentType',
             'companyNumber',
+            'companyName',
             'companyAddress',
         ];
 
         const friendlyNames = {
-            firstName: 'First Name',
-            lastName: 'Last Name',
-            birthDate: 'Birth Date',
             email: 'Email',
             password: 'Password',
             confirmPassword: 'Confirm Password',
-            phone: 'Phone',
+            documentType: 'Document Type',
             companyNumber: 'Company Number',
+            companyName: 'Company Name',
             companyAddress: 'Company Address',
         };
 
@@ -93,41 +101,7 @@ export default function RegisterDistributor() {
                             Create request for Distributor
                         </Typography>
                         <Box component="form">
-                            <TextField
-                                label="First Name"
-                                name="firstName"
-                                value={form.firstName}
-                                onChange={handleChange}
-                                fullWidth
-                                margin="normal"
-                                required
-                                sx={{
-                                    '& label': { color: '#a5a5a5ff' },
-                                    '& .MuiOutlinedInput-root': {
-                                        '& fieldset': { borderColor: '#bdbdbd' },
-                                        '&:hover fieldset': { borderColor: '#ff6f00' },
-                                        '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-                                    }
-                                }}
-                            />
 
-                            <TextField
-                                label="Last Name"
-                                name="lastName"
-                                value={form.lastName}
-                                onChange={handleChange}
-                                fullWidth
-                                margin="normal"
-                                required
-                                sx={{
-                                    '& label': { color: '#a5a5a5ff' },
-                                    '& .MuiOutlinedInput-root': {
-                                        '& fieldset': { borderColor: '#bdbdbd' },
-                                        '&:hover fieldset': { borderColor: '#ff6f00' },
-                                        '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-                                    }
-                                }}
-                            />
                             <TextField
                                 label="Email"
                                 name="email"
@@ -146,43 +120,7 @@ export default function RegisterDistributor() {
                                     }
                                 }}
                             />
-                            <TextField
-                                label="Phone number"
-                                name="phone"
-                                value={form.phone}
-                                onChange={handleChange}
-                                type="tel"
-                                fullWidth
-                                margin="normal"
-                                required
-                                sx={{
-                                    '& label': { color: '#a5a5a5ff' },
-                                    '& .MuiOutlinedInput-root': {
-                                        '& fieldset': { borderColor: '#bdbdbd' },
-                                        '&:hover fieldset': { borderColor: '#ff6f00' },
-                                        '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-                                    }
-                                }}
-                            />
-                            <TextField
-                                label="Birth Date"
-                                name="birthDate"
-                                type="date"
-                                value={form.birthDate}
-                                onChange={handleChange}
-                                fullWidth
-                                margin="normal"
-                                required
-                                InputLabelProps={{ shrink: true }}
-                                sx={{
-                                    '& label': { color: '#a5a5a5ff' },
-                                    '& .MuiOutlinedInput-root': {
-                                        '& fieldset': { borderColor: '#bdbdbd' },
-                                        '&:hover fieldset': { borderColor: '#ff6f00' },
-                                        '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-                                    }
-                                }}
-                            />
+
 
                             <TextField
                                 label="Password"
@@ -232,8 +170,36 @@ export default function RegisterDistributor() {
                         </Typography>
 
                         <Box component="form" onSubmit={handleSubmit} noValidate>
+
+                            <TextField
+                                select
+                                label="Document type"
+                                name="documentType"
+                                value={form.documentType || ''}
+                                onChange={handleChange}
+                                fullWidth
+                                margin="normal"
+                                sx={{
+                                    '& label': { color: '#a5a5a5ff' },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': { borderColor: '#bdbdbd' },
+                                        '&:hover fieldset': { borderColor: '#ff6f00' },
+                                        '&.Mui-focused fieldset': { borderColor: '#ffc107' },
+                                    }
+                                }}
+                            >
+                                {documentTypes.map((type) => (
+                                    <MenuItem key={type} value={type}>
+                                        {type}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+
                             <TextField
                                 label="Company number"
+                                name="companyNumber"
+                                value={form.companyNumber}
+                                onChange={handleChange}
                                 fullWidth
                                 margin="normal"
                                 sx={{
@@ -245,8 +211,27 @@ export default function RegisterDistributor() {
                                     }
                                 }} />
                             <TextField
-                                label="company address"
-                                fullWidth margin="normal"
+                                label="Company name"
+                                name="companyName"
+                                value={form.companyName}
+                                onChange={handleChange}
+                                fullWidth
+                                margin="normal"
+                                sx={{
+                                    '& label': { color: '#a5a5a5ff' },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': { borderColor: '#bdbdbd' },
+                                        '&:hover fieldset': { borderColor: '#ff6f00' },
+                                        '&.Mui-focused fieldset': { borderColor: '#ffc107' },
+                                    }
+                                }} />
+                            <TextField
+                                label="Company address"
+                                name="companyAddress"
+                                value={form.companyAddress}
+                                onChange={handleChange}
+                                fullWidth
+                                margin="normal"
                                 sx={{
                                     '& label': { color: '#a5a5a5ff' },
                                     '& .MuiOutlinedInput-root': {
