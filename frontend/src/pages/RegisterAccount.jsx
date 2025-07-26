@@ -11,9 +11,12 @@ import {
 export default function Register() {
   const [form, setForm] = useState({
     nombre: '',
+    LastName: '',
+    fechaNacimiento: '',
     email: '',
     password: '',
     confirmar: '',
+    phone: '',
   });
 
   const handleChange = (e) => {
@@ -22,6 +25,7 @@ export default function Register() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log('handleSubmit llamado');
     if (form.password !== form.confirmar) {
       alert('Las contraseñas no coinciden');
       return;
@@ -34,16 +38,16 @@ export default function Register() {
   return (
     <Container maxWidth="sm" sx={{ mt: 6 }}>
       <Paper elevation={3} sx={{ p: 4, bgcolor: '#fafafa' }}>
-        <Typography variant="h5" gutterBottom sx={{ color: '#212121',
-          fontFamily:  'Poppins, sans-serif',
-         }}>
-          Crear cuenta
+        <Typography variant="h5" gutterBottom sx={{
+          color: '#212121',
+          fontFamily: 'Poppins, sans-serif',
+        }}>
+          Create Account
         </Typography>
-
 
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <TextField
-            label="Nombre"
+            label="Name"
             name="nombre"
             value={form.nombre}
             onChange={handleChange}
@@ -59,8 +63,26 @@ export default function Register() {
               }
             }}
           />
+
           <TextField
-            label="Correo"
+            label="Last name"
+            name="LastName"
+            value={form.LastName}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            required
+            sx={{
+              '& label': { color: '#a5a5a5ff' },
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': { borderColor: '#bdbdbd' },
+                '&:hover fieldset': { borderColor: '#ff6f00' },
+                '&.Mui-focused fieldset': { borderColor: '#ffc107' },
+              }
+            }}
+          />
+          <TextField
+            label="Email"
             name="email"
             value={form.email}
             onChange={handleChange}
@@ -91,12 +113,31 @@ export default function Register() {
                 '& fieldset': { borderColor: '#bdbdbd' },
                 '&:hover fieldset': { borderColor: '#ff6f00' },
                 '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-                
               }
             }}
           />
           <TextField
-            label="Contraseña"
+            label="Fecha de nacimiento"
+            name="fechaNacimiento"
+            type="date"
+            value={form.fechaNacimiento}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            required
+            InputLabelProps={{ shrink: true }}
+            sx={{
+              '& label': { color: '#a5a5a5ff' },
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': { borderColor: '#bdbdbd' },
+                '&:hover fieldset': { borderColor: '#ff6f00' },
+                '&.Mui-focused fieldset': { borderColor: '#ffc107' },
+              }
+            }}
+          />
+
+          <TextField
+            label="Password"
             name="password"
             value={form.password}
             onChange={handleChange}
@@ -114,7 +155,7 @@ export default function Register() {
             }}
           />
           <TextField
-            label="Confirmar contraseña"
+            label="Confirm password"
             name="confirmar"
             value={form.confirmar}
             onChange={handleChange}
@@ -132,6 +173,7 @@ export default function Register() {
             }}
           />
           <Button
+            type="submit"
             variant="contained"
             fullWidth
             sx={{
@@ -141,9 +183,8 @@ export default function Register() {
               '&:hover': { bgcolor: '#ffc107', color: '#212121' }
             }}
           >
-            Registrarse
+            Register
           </Button>
-
         </Box>
       </Paper>
     </Container>
