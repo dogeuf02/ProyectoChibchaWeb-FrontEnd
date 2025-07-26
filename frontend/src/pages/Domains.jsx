@@ -16,7 +16,7 @@ const cardData = [
   {
     title: 'Dominio .com',
     description: 'Descripción breve del servicio número 1.',
-    image: 'https://imagedelivery.net/LqiWLm-3MGbYHtFuUbcBtA/5d99afc1-79b3-4c0b-b894-2dc672deb600/public',
+    image: '/com.png',
   },
   {
     title: 'Dominio .net',
@@ -26,7 +26,7 @@ const cardData = [
   {
     title: 'Dominio .org',
     description: 'Descripción breve del servicio número 3.',
-    image: 'https://imagedelivery.net/LqiWLm-3MGbYHtFuUbcBtA/886c0c7b-d76f-4e51-a74b-3332f7b6e000/public',
+    image: '/org.png',
   },
   {
     title: 'Dominio .info',
@@ -36,20 +36,20 @@ const cardData = [
   {
     title: 'Dominio .es',
     description: 'Descripción breve del servicio número 5.',
-    image: 'https://imagedelivery.net/LqiWLm-3MGbYHtFuUbcBtA/d8339e25-bceb-42c3-2785-fc4adf2a1f00/public',
+    image: 'es.png',
   },
   {
-    title: 'Dominio .biz',
+    title: 'Dominio .shop',
     description: 'Descripción breve del servicio número 5.',
-    image: 'https://source.unsplash.com/random/300x200?network',
+    image: 'https://imagedelivery.net/LqiWLm-3MGbYHtFuUbcBtA/b7f32082-3539-4c9b-fc40-168308e1c200/public',
   },
 ];
 
 export default function Domains() {
   return (
-    <Box sx={{ bgcolor: '#f5f5f5', py: 8 }} >
+    <Box id="Domains" sx={{ bgcolor: '#f5f5f5', py: 8 }} >
       <Container>
-        <Typography variant="h4" align="center" gutterBottom>
+        <Typography variant="h2" align="center" gutterBottom>
           Domains
         </Typography>
         <Grid container spacing={4} justifyContent="center">
