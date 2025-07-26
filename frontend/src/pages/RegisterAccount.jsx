@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Container,
   TextField,
@@ -8,9 +8,15 @@ import {
   Paper,
   Link
 } from '@mui/material';
+import useScrollToTop from '../hooks/useScrollToTop';
+import Zoom from '@mui/material/Zoom';
+import { useGlobalAlert } from "../context/AlertContext";
 
 
-export default function Register() {
+export default function RegisterAccount() {
+
+  useScrollToTop();
+  const { showAlert } = useGlobalAlert();
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -29,7 +35,7 @@ export default function Register() {
     e.preventDefault();
 
     if (form.password !== form.confirmPassword) {
-      alert('Passwords do not match');
+      showAlert('Passwords do not match', 'warning');
       return;
     }
 
@@ -55,194 +61,196 @@ export default function Register() {
 
     for (const field of requiredFields) {
       if (!form[field]) {
-        alert(`The field "${friendlyNames[field]}" is required.`);
+        showAlert(`The field "${friendlyNames[field]}" is required.`, 'warning');
         return;
       }
     }
 
     console.log('Registrando usuario:', form);
-    alert('Registro exitoso');
+    showAlert('Registro exitoso', 'success');
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 6 }}>
-      <Paper elevation={3} sx={{ p: 4, bgcolor: '#fafafa' }}>
-        <Typography variant="h5" gutterBottom sx={{
-          color: '#212121',
-          fontFamily: 'Poppins, sans-serif',
-        }}>
-          Create Account
-        </Typography>
+    <Zoom in={true} timeout={800}>
+      <Container maxWidth="sm" sx={{ mt: 6 }}>
+        <Paper elevation={3} sx={{ p: 4, bgcolor: '#fafafa' }}>
+          <Typography variant="h5" gutterBottom sx={{
+            color: '#212121',
+            fontFamily: 'Poppins, sans-serif',
+          }}>
+            Create Account
+          </Typography>
 
-        <Box component="form" onSubmit={handleSubmit} noValidate>
-          <TextField
-            label="First Name"
-            name="firstName"
-            value={form.firstName}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            required
-            sx={{
-              '& label': { color: '#a5a5a5ff' },
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': { borderColor: '#bdbdbd' },
-                '&:hover fieldset': { borderColor: '#ff6f00' },
-                '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-              }
-            }}
-          />
-
-          <TextField
-            label="Last Name"
-            name="lastName"
-            value={form.lastName}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            required
-            sx={{
-              '& label': { color: '#a5a5a5ff' },
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': { borderColor: '#bdbdbd' },
-                '&:hover fieldset': { borderColor: '#ff6f00' },
-                '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-              }
-            }}
-          />
-          <TextField
-            label="Email"
-            name="email"
-            type="email"
-            value={form.email}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            required
-            sx={{
-              '& label': { color: '#a5a5a5ff' },
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': { borderColor: '#bdbdbd' },
-                '&:hover fieldset': { borderColor: '#ff6f00' },
-                '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-              }
-            }}
-          />
-          <TextField
-            label="Phone number"
-            name="phone"
-            value={form.phone}
-            onChange={handleChange}
-            type="tel"
-            fullWidth
-            margin="normal"
-            required
-            sx={{
-              '& label': { color: '#a5a5a5ff' },
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': { borderColor: '#bdbdbd' },
-                '&:hover fieldset': { borderColor: '#ff6f00' },
-                '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-              }
-            }}
-          />
-          <TextField
-            label="Birth Date"
-            name="birthDate"
-            type="date"
-            value={form.birthDate}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            required
-            InputLabelProps={{ shrink: true }}
-            sx={{
-              '& label': { color: '#a5a5a5ff' },
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': { borderColor: '#bdbdbd' },
-                '&:hover fieldset': { borderColor: '#ff6f00' },
-                '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-              }
-            }}
-          />
-
-          <TextField
-            label="Password"
-            name="password"
-            value={form.password}
-            onChange={handleChange}
-            type="password"
-            fullWidth
-            margin="normal"
-            required
-            sx={{
-              '& label': { color: '#a5a5a5ff' },
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': { borderColor: '#bdbdbd' },
-                '&:hover fieldset': { borderColor: '#ff6f00' },
-                '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-              }
-            }}
-          />
-          <TextField
-            label="Confirm Password"
-            name="confirmPassword"
-            value={form.confirmPassword}
-            onChange={handleChange}
-            type="password"
-            fullWidth
-            margin="normal"
-            required
-            sx={{
-              '& label': { color: '#a5a5a5ff' },
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': { borderColor: '#bdbdbd' },
-                '&:hover fieldset': { borderColor: '#ff6f00' },
-                '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-              }
-            }}
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            sx={{
-              mt: 4,
-              bgcolor: '#ff6f00',
-              borderRadius: 30,
-              '&:hover': { bgcolor: '#ffc107', color: '#212121' }
-            }}
-          >
-            Register
-          </Button>
-          <Typography variant="body2" sx={{ mt: 2 }}>
-            Have an account?{' '}
-            <Link
-              href="/login"
-              underline="hover"
+          <Box component="form" onSubmit={handleSubmit} noValidate>
+            <TextField
+              label="First Name"
+              name="firstName"
+              value={form.firstName}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
               sx={{
-                color: '#ff6f00',
-                '&:hover': { color: '#ffc107' }
+                '& label': { color: '#a5a5a5ff' },
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': { borderColor: '#bdbdbd' },
+                  '&:hover fieldset': { borderColor: '#ff6f00' },
+                  '&.Mui-focused fieldset': { borderColor: '#ffc107' },
+                }
+              }}
+            />
+
+            <TextField
+              label="Last Name"
+              name="lastName"
+              value={form.lastName}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+              sx={{
+                '& label': { color: '#a5a5a5ff' },
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': { borderColor: '#bdbdbd' },
+                  '&:hover fieldset': { borderColor: '#ff6f00' },
+                  '&.Mui-focused fieldset': { borderColor: '#ffc107' },
+                }
+              }}
+            />
+            <TextField
+              label="Email"
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+              sx={{
+                '& label': { color: '#a5a5a5ff' },
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': { borderColor: '#bdbdbd' },
+                  '&:hover fieldset': { borderColor: '#ff6f00' },
+                  '&.Mui-focused fieldset': { borderColor: '#ffc107' },
+                }
+              }}
+            />
+            <TextField
+              label="Phone number"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+              type="tel"
+              fullWidth
+              margin="normal"
+              required
+              sx={{
+                '& label': { color: '#a5a5a5ff' },
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': { borderColor: '#bdbdbd' },
+                  '&:hover fieldset': { borderColor: '#ff6f00' },
+                  '&.Mui-focused fieldset': { borderColor: '#ffc107' },
+                }
+              }}
+            />
+            <TextField
+              label="Birth Date"
+              name="birthDate"
+              type="date"
+              value={form.birthDate}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+              InputLabelProps={{ shrink: true }}
+              sx={{
+                '& label': { color: '#a5a5a5ff' },
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': { borderColor: '#bdbdbd' },
+                  '&:hover fieldset': { borderColor: '#ff6f00' },
+                  '&.Mui-focused fieldset': { borderColor: '#ffc107' },
+                }
+              }}
+            />
+
+            <TextField
+              label="Password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              type="password"
+              fullWidth
+              margin="normal"
+              required
+              sx={{
+                '& label': { color: '#a5a5a5ff' },
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': { borderColor: '#bdbdbd' },
+                  '&:hover fieldset': { borderColor: '#ff6f00' },
+                  '&.Mui-focused fieldset': { borderColor: '#ffc107' },
+                }
+              }}
+            />
+            <TextField
+              label="Confirm Password"
+              name="confirmPassword"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              type="password"
+              fullWidth
+              margin="normal"
+              required
+              sx={{
+                '& label': { color: '#a5a5a5ff' },
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': { borderColor: '#bdbdbd' },
+                  '&:hover fieldset': { borderColor: '#ff6f00' },
+                  '&.Mui-focused fieldset': { borderColor: '#ffc107' },
+                }
+              }}
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{
+                mt: 4,
+                bgcolor: '#ff6f00',
+                borderRadius: 30,
+                '&:hover': { bgcolor: '#ffc107', color: '#212121' }
               }}
             >
-              Sign in
-            </Link>
-          </Typography>
-          <Typography variant="body2" sx={{ mt: 2 }}>
-            Do you want to work with us as a distribuitor?{' '}
-            <Link
-              href="/RegisterDistributor"
-              underline="hover"
-              sx={{
-                color: '#ff6f00',
-                '&:hover': { color: '#ffc107' }
-              }}
-            >
-              Click here
-            </Link>
-          </Typography>
-        </Box>
-      </Paper>
-    </Container>
+              Register
+            </Button>
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              Have an account?{' '}
+              <Link
+                href="/login"
+                underline="hover"
+                sx={{
+                  color: '#ff6f00',
+                  '&:hover': { color: '#ffc107' }
+                }}
+              >
+                Sign in
+              </Link>
+            </Typography>
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              Do you want to work with us as a distribuitor?{' '}
+              <Link
+                href="/RegisterDistributor"
+                underline="hover"
+                sx={{
+                  color: '#ff6f00',
+                  '&:hover': { color: '#ffc107' }
+                }}
+              >
+                Click here
+              </Link>
+            </Typography>
+          </Box>
+        </Paper>
+      </Container>
+    </Zoom>
   );
 }

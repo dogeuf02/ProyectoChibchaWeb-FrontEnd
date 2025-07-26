@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Zoom from '@mui/material/Zoom';
 import {
     Container,
     TextField,
@@ -6,9 +7,23 @@ import {
     Box,
     Paper,
     Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Snackbar,
+    Alert,
 } from '@mui/material';
 
+import useScrollToTop from '../hooks/useScrollToTop';
+import { useGlobalAlert } from "../context/AlertContext";
+
 export default function ManageProfile() {
+
+
+    useScrollToTop();
+
+    const { showAlert } = useGlobalAlert();
     const [profile, setProfile] = useState({
         email: '',
         firstName: '',
@@ -54,15 +69,37 @@ export default function ManageProfile() {
 
         for (const field of requiredFields) {
             if (!profile[field]) {
-                alert(`The field "${friendlyNames[field]}" is required.`);
+                showAlert(`The field "${friendlyNames[field]}" is required.`, 'warning');
                 return;
             }
         }
 
-        // Validaciones adicionales aquí si es necesario
-        console.log('Profile updated:', profile);
-        alert('Profile updated successfully');
+        setSnackbarOpen(true); 
         setEditMode(false);
+        showAlert("Profile updated successfully", "success"); // placeholder
+
+    };
+
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        setSnackbarOpen(false);
+    };
+    const [openDialog, setOpenDialog] = useState(false);
+
+    const handleOpenDialog = () => setOpenDialog(true);
+    const handleCloseDialog = () => setOpenDialog(false);
+
+    const handleConfirmDelete = () => {
+        // Aquí va la lógica de borrado (API, logout, redirección)
+        showAlert("Account deleted", "success"); // placeholder
+        setOpenDialog(false);
+
+
+
+
+
     };
 
     useEffect(() => {
@@ -80,126 +117,224 @@ export default function ManageProfile() {
     }, []);
 
     return (
-        <Container maxWidth="sm" sx={{ mt: 6 }}>
-            <Paper elevation={3} sx={{ p: 4, bgcolor: '#fafafa' }}>
-                <Typography variant="h5" gutterBottom sx={{ color: '#212121' }}>
-                    Manage Profile
-                </Typography>
+<>
+        <Zoom in={true} timeout={800}>
+            <Container maxWidth="sm" sx={{ mt: 6 }}>
+                <Paper elevation={3} sx={{ p: 4, bgcolor: '#fafafa' }}>
+                    <Typography variant="h5" gutterBottom sx={{ color: '#212121' }}>
+                        Manage Profile
+                    </Typography>
 
-                <Box component="form" onSubmit={handleSubmit} noValidate>
-                    <TextField
-                        label="Email"
-                        name="email"
-                        value={profile.email}
-                        fullWidth
-                        margin="normal"
-                        disabled
-                    />
-                    
-                    <TextField
-                        label="First Name"
-                        name="firstName"
-                        value={profile.firstName}
-                        onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                        disabled={!editMode}
-                    />
-                    <TextField
-                        label="Last Name"
-                        name="lastName"
-                        value={profile.lastName}
-                        onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                        disabled={!editMode}
-                    />
-                    <TextField
-                        label="Phone Number"
-                        name="phone"
-                        value={profile.phone}
-                        onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                        disabled={!editMode}
-                    />
-                    <TextField
-                        label="Birth Date"
-                        name="birthDate"
-                        type="date"
-                        value={profile.birthDate}
-                        onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                        InputLabelProps={{ shrink: true }}
-                        disabled={!editMode}
-                    />
-                    <TextField
-                        label="Role"
-                        name="roleName"
-                        value={profile.roleName}
-                        fullWidth
-                        margin="normal"
-                        disabled
-                    />
-
-                    {profile.roleName === 'employee' && (
+                    <Box component="form" onSubmit={handleSubmit} noValidate >
                         <TextField
-                            label="Position"
-                            name="position"
-                            value={profile.position}
+                            label="Email"
+                            name="email"
+                            value={profile.email}
+                            fullWidth
+                            margin="normal"
+                            disabled
+                        />
+
+                        <TextField
+                            label="First Name"
+                            name="firstName"
+                            value={profile.firstName}
                             onChange={handleChange}
                             fullWidth
                             margin="normal"
+                            disabled={!editMode}
                         />
-                    )}
-
-                    {!editMode ? (
-                        <Button
-                            type="button"
-                            onClick={activateEdit}
-                            variant="contained"
+                        <TextField
+                            label="Last Name"
+                            name="lastName"
+                            value={profile.lastName}
+                            onChange={handleChange}
                             fullWidth
-                            sx={{
-                                mt: 3,
-                                mb: 2,
-                                bgcolor: '#ff6f00',
-                                borderRadius: 30,
-                                '&:hover': { bgcolor: '#ffc107', color: '#212121' }
-                            }}
-                        >
-                            Edit Profile
-                        </Button>
-                    ) : (
-                        <Box display="flex" gap={2} mb={2}>
+                            margin="normal"
+                            disabled={!editMode}
+                        />
+                        <TextField
+                            label="Phone Number"
+                            name="phone"
+                            value={profile.phone}
+                            onChange={handleChange}
+                            fullWidth
+                            margin="normal"
+                            disabled={!editMode}
+                        />
+                        <TextField
+                            label="Birth Date"
+                            name="birthDate"
+                            type="date"
+                            value={profile.birthDate}
+                            onChange={handleChange}
+                            fullWidth
+                            margin="normal"
+                            InputLabelProps={{ shrink: true }}
+                            disabled={!editMode}
+                        />
+                        <TextField
+                            label="Role"
+                            name="roleName"
+                            value={profile.roleName}
+                            fullWidth
+                            margin="normal"
+                            disabled
+                        />
+
+                        {profile.roleName === 'employee' && (
+                            <TextField
+                                label="Position"
+                                name="position"
+                                value={profile.position}
+                                onChange={handleChange}
+                                fullWidth
+                                margin="normal"
+                            />
+                        )}
+
+                        {!editMode ? (
                             <Button
-                                onClick={cancelEdit}
-                                variant="outlined"
-                                color="inherit"
+                                type="button"
+                                onClick={activateEdit}
+                                variant="contained"
+                                fullWidth
                                 sx={{
                                     mt: 3,
                                     mb: 2,
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                sx={{
                                     bgcolor: '#ff6f00',
                                     borderRadius: 30,
-                                    mt: 3,
-                                    mb: 2,
                                     '&:hover': { bgcolor: '#ffc107', color: '#212121' }
                                 }}
                             >
-                                Save Changes
+                                Edit Profile
+                            </Button>
+                        )
+                            : (
+
+                                <Box display="flex" gap={2} mb={2}>
+
+                                    <Button
+                                        onClick={cancelEdit}
+                                        variant="outlined"
+                                        color="inherit"
+                                        sx={{
+                                            mt: 3,
+                                            mb: 2,
+                                        }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        sx={{
+                                            bgcolor: '#ff6f00',
+                                            borderRadius: 30,
+                                            mt: 3,
+                                            mb: 2,
+                                            '&:hover': { bgcolor: '#ffc107', color: '#212121' }
+                                        }}
+                                    >
+                                        Save Changes
+                                    </Button>
+                                </Box>
+                            )}
+                        <Box display="flex" justifyContent="center" mt={2} mb={1}>
+                            <Button
+                                variant="contained"
+                                color="error"
+                                sx={{
+                                    backgroundColor: "#f04507ff",
+                                    ":hover": {
+                                        backgroundColor: "#FFBE02",
+                                    },
+                                }}
+                                onClick={handleOpenDialog}
+                            >
+                                DELETE ACCOUNT
                             </Button>
                         </Box>
-                    )}
-                </Box>
-            </Paper>
-        </Container>
+                        <Typography variant="caption" color="textSecondary" align="center" sx={{ mt: 1 }}>
+                            Deleting your account is irreversible.
+                        </Typography>
+                    </Box>
+
+                </Paper>
+                <Dialog open={openDialog} onClose={handleCloseDialog}
+                    PaperProps={{
+                        sx: {
+                            backgroundColor: "#FAFAFA", // fondo blanco
+                            borderRadius: 3,
+                            boxShadow: 8,
+                            p: 2,
+                        },
+                    }}>
+                    <DialogTitle
+                        sx={{
+                            color: "#212121",        // texto negro
+                            fontWeight: "bold",
+                            fontSize: "1.25rem",
+                            textAlign: "center",
+                        }}>
+                        Delete Account</DialogTitle>
+                    <DialogContent>
+                        <Typography sx={{ color: "#212121", textAlign: "center" }}>
+                            Are you sure you want to delete your account? <br />
+                            This action <strong>cannot be undone</strong>.
+                        </Typography>
+                    </DialogContent>
+                    <DialogActions sx={{ justifyContent: "center", gap: 1 }}>
+                        <Button
+                            onClick={handleCloseDialog}
+                            variant="outlined"
+                            sx={{
+                                borderColor: "#BDBDBD",
+                                color: "#212121",
+                                ":hover": {
+                                    borderColor: "#FFBE02",
+                                    backgroundColor: "#FFBE02",
+                                    color: "#212121",
+                                },
+                            }}
+                        >
+                            Cancel</Button>
+                        <Button onClick={handleConfirmDelete} color="error"
+                            variant="contained"
+                            sx={{
+                                backgroundColor: "#f04507ff",
+                                ":hover": {
+                                    backgroundColor: "#FFBE02",
+                                },
+                            }}>
+                            Confirm Delete
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+
+            </Container>
+            
+        </Zoom>
+        
+<Snackbar
+    open={snackbarOpen}
+    autoHideDuration={4000}
+    onClose={handleSnackbarClose}
+    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+  >
+    <Alert
+      onClose={handleSnackbarClose}
+      severity="success"
+      variant="filled"
+      sx={{ width: '100%' }}
+    >
+      Profile updated successfully!
+    </Alert>
+  </Snackbar>
+        </>
+
+
     );
+
+
 }

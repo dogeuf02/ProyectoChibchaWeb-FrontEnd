@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Zoom from '@mui/material/Zoom';
 import {
     Container,
     TextField,
@@ -8,9 +9,13 @@ import {
     Paper,
     Link
 } from '@mui/material';
-
+import useScrollToTop from '../hooks/useScrollToTop';
+import { useGlobalAlert } from "../context/AlertContext";
 
 export default function Login() {
+
+    const { showAlert } = useGlobalAlert();
+    useScrollToTop();
     const [form, setForm] = useState({
 
         email: '',
@@ -25,17 +30,13 @@ export default function Login() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('handleSubmit llamado');
-        if (form.password !== form.confirmar) {
-            alert('Las contraseñas no coinciden');
-            return;
-        }
-
-        console.log('Registrando usuario:', form);
-        alert('Registro exitoso');
+        showAlert("Login successful!", "success");
+        
     };
 
     return (
+
+        <Zoom in={true} timeout={800}>
         <Container maxWidth="sm" sx={{ mt: 10 }}>
             <Paper elevation={3} sx={{ p: 4, bgcolor: '#fafafa' }}>
                 <Typography variant="h5" gutterBottom sx={{
@@ -126,5 +127,6 @@ export default function Login() {
                 </Box>
             </Paper>
         </Container>
+        </Zoom>
     );
 }

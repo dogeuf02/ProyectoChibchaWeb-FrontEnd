@@ -9,36 +9,45 @@ import RegisterDistributor from './pages/RegisterDistributor.jsx'
 import Login from './pages/Login.jsx'
 import ManageProfile from './pages/ManageProfile.jsx'
 import Home from './pages/Home.jsx'
+import { AlertProvider } from './context/AlertContext.jsx'
+import GlobalAlert from './components/GlobalAlert.jsx'
 
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainLayout />} />
-        <Route path="/registerAccount" element={<MainLayout>
-          <RegisterAccount />
-        </MainLayout>} />
-        <Route path="/registerDistributor" element={<MainLayout>
-          <RegisterDistributor />
-        </MainLayout>} />
-        <Route path="/Login" element={<MainLayout>
-          <Login />
-        </MainLayout>} />
-        <Route path="/ManageProfile" element={<MainLayout>
-          <ManageProfile />
-        </MainLayout>} />
-        <Route path="/Home" element={<MainLayout>
-          <Home />
-        </MainLayout>} />
+    <AlertProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<MainLayout />} />
+          <Route path="/registerAccount" element={
 
-      </Routes>
+            <MainLayout>
+              <RegisterAccount />
+            </MainLayout>
+
+          } />
+          <Route path="/registerDistributor" element={<MainLayout>
+            <RegisterDistributor />
+          </MainLayout>} />
+          <Route path="/Login" element={<MainLayout>
+            <Login />
+          </MainLayout>} />
+          <Route path="/ManageProfile" element={<MainLayout>
+            <ManageProfile />
+          </MainLayout>} />
+          <Route path="/Home" element={<MainLayout>
+            <Home />
+          </MainLayout>} />
+
+        </Routes>
 
 
+        <GlobalAlert />
+      </BrowserRouter>
 
-    </BrowserRouter>
+    </AlertProvider>
   )
 }
 
