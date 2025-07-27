@@ -12,6 +12,7 @@ import useScrollToTop from '../hooks/useScrollToTop';
 import Zoom from '@mui/material/Zoom';
 import { useGlobalAlert } from "../context/AlertContext";
 
+import { createUser } from '../api/clienteApi';
 
 export default function RegisterAccount() {
 
@@ -66,8 +67,24 @@ export default function RegisterAccount() {
       }
     }
 
-    console.log('Registrando usuario:', form);
-    showAlert('Registro exitoso', 'success');
+
+    const usuario = {
+      "correoCliente": form.email,
+      "contrasenaCliente": form.password,
+      "nombreCliente": form.firstName,
+      "apellidoCliente": form.lastName,
+      "telefono": form.phone,
+      "fechaNacimientoCliente": form.birthDate
+    }
+    console.log(usuario)
+    if (createUser(usuario)) {
+      console.log('Registrando usuario:', form);
+      showAlert('Registro fallido', 'failed');
+    } else {
+      console.log('Registrando usuario:', form);
+      showAlert('Registro exitoso', 'success');
+    }
+
   };
 
   return (

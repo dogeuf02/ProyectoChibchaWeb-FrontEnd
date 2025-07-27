@@ -80,6 +80,18 @@ export default function RegisterDistributor() {
             }
         }
 
+
+        const distributor = {
+            "numeroDocEmpresa": form.companyNumber,
+            "nombreEmpresa": form.companyName,
+            "direccionEmpresa": form.companyAddress,
+            "nombreTipoDoc": form.documentType,
+            "correoDistribuidor": form.email,
+            "contrasenaDistribuidor": form.password
+        }
+
+        
+
         console.log('Registrando usuario:', form);
         showAlert('Registro exitoso', 'success');
     };

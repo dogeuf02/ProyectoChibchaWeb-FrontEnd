@@ -11,9 +11,14 @@ import {
 } from '@mui/material';
 import useScrollToTop from '../hooks/useScrollToTop';
 import { useGlobalAlert } from "../context/AlertContext";
+import { useNavigate } from 'react-router-dom';
+
+import { login } from '../api/authApi';
 
 export default function Login() {
     const { showAlert } = useGlobalAlert();
+    const navigate = useNavigate();
+
     useScrollToTop();
 
     const [form, setForm] = useState({
@@ -25,10 +30,40 @@ export default function Login() {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        showAlert("Login successful!", "success");
-    };
+    const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const credentials = {
+    correo: form.email,
+    contrasena: form.password
+  };
+
+  try {
+    const res = await login(credentials); // espera la respuesta
+
+    showAlert("Login successful!", "success");
+
+    // Guardar datos en localStorage o Context
+    localStorage.setItem('role', res.rol);
+    localStorage.setItem('authenticated', res.autenticado);
+
+    console.log(res)
+    // Redirigir según tipo de usuario
+    if (res.rol === 'Cliente') {
+      navigate('/');
+      console.log("vista cliente")
+    } else if (res.rol === 'empleado') {
+      navigate('/dashboard-empleado');
+    } else {
+      navigate('/');
+    }
+
+  } catch (error) {
+    showAlert("Correo o contraseña incorrectos", "failed");
+    console.error(error);
+  }
+};
+
 
     return (
         <Zoom in={true} timeout={800}>
