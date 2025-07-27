@@ -21,7 +21,7 @@ function App() {
 
   return (
     <AlertProvider>
-      <BrowserRouter>
+
         <Routes>
           <Route path="/" 
           element={<MainLayout>
@@ -60,9 +60,7 @@ function App() {
 
 
 
-          <Route path="/dashboard" element={
-            <DashboardLayout />}>
-
+          <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<ManageProfile />} /> {/* ruta  */}
           </Route>
 
@@ -70,7 +68,6 @@ function App() {
 
 
         <GlobalAlert />
-      </BrowserRouter>
 
     </AlertProvider>
   )

@@ -10,13 +10,19 @@ import {
   Box,
   Typography,
   IconButton,
-  Button
+  Button,
+  TextField,
+  InputAdornment
 } from "@mui/material";
+
+import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 function Row({ employee, onRequestDelete }) {
+
+
   const [open, setOpen] = useState(false);
 
   return (
@@ -68,7 +74,28 @@ function Row({ employee, onRequestDelete }) {
 }
 
 export default function EmployeeList({ employees, onRequestDelete }) {
+  const [searchId, setSearchId] = useState('');
+
   return (
+<>
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+  <TextField
+    variant="outlined"
+    size="small"
+    placeholder="Search by ID"
+    value={searchId}
+    onChange={(e) => setSearchId(e.target.value)}
+    InputProps={{
+      startAdornment: (
+        <InputAdornment position="start">
+          <SearchIcon />
+        </InputAdornment>
+      ),
+    }}
+    sx={{ width: 250 }}
+  />
+</Box>
+
     <TableContainer component={Paper} sx={{ mt: 2 }}>
       <Table>
         <TableHead>
@@ -80,11 +107,14 @@ export default function EmployeeList({ employees, onRequestDelete }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {employees.map((emp) => (
+          {employees
+  .filter(emp => emp.id.toLowerCase().includes(searchId.toLowerCase()))
+  .map((emp) => (
             <Row key={emp.id} employee={emp} onRequestDelete={onRequestDelete} />
           ))}
         </TableBody>
       </Table>
     </TableContainer>
+    </>
   );
 }
