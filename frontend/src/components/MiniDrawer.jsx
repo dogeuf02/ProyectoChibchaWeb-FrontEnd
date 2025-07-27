@@ -18,7 +18,6 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { Outlet } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -78,10 +77,8 @@ export default function MiniDrawer() {
   };
 
   const menuItems = [
-    { text: 'Home', icon: <HomeIcon />, path: '/dashboard/home' },
     { text: 'Profile', icon: <AccountCircleIcon />, path: '/dashboard/profile' },
     { text: 'Payments', icon: <CreditCardIcon />, path: '/dashboard/payments' },
-    { text: 'Settings', icon: <SettingsIcon />, path: '/dashboard/settings' },
     { text: 'Logout', icon: <LogoutIcon />, path: '/dashboard/logout' },
   ];
 

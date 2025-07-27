@@ -17,7 +17,8 @@ import DashboardLayout from './layout/DashboardLayout';
 import AdminManageDistributors from './pages/AdminManageDistributors.jsx'
 import AdminManageAdmins from './pages/AdminManageAdmins.jsx'
 import AdminManageDistributorRequests from './pages/AdminManageDistributorRequests.jsx'
-
+import Payments from './pages/Payments.jsx'
+import MyPlans from './pages/MyPlans.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -67,7 +68,13 @@ function App() {
           <Route path="ManageDistributorRequests" element={<AdminManageDistributorRequests />} /> {/* /admin/distributor-requests */}
 
         </Route>
+          <Route path="/Payments" element={<MainLayout>
+            <Payments />
+          </MainLayout>} />
 
+          <Route path="/MyPlans" element={<MainLayout>
+            <MyPlans />
+          </MainLayout>} />
 
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<ManageProfile />} />
