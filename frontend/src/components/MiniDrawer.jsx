@@ -88,7 +88,20 @@ export default function MiniDrawer() {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <Drawer variant="permanent" open={open}>
+      <Drawer variant="permanent" open={open} 
+  
+  sx={{
+    width: drawerWidth,           // ancho del drawer (ej: 240px)
+    flexShrink: 0,                // evita que se reduzca en layouts flex
+    [`& .MuiDrawer-paper`]: {
+         // ancho interno del panel del drawer
+      boxSizing: 'border-box',    // para que padding/border se respeten
+      top: '64px',                // evita que tape al Navbar fijo de 64px
+      height: 'calc(100% - 64px)' // ajusta altura al resto de la ventana
+    },
+  }}
+>
+
         <DrawerHeader>
           <IconButton onClick={toggleDrawer}>
             {open ? (

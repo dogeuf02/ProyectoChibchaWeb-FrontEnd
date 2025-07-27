@@ -107,7 +107,7 @@ export default function ManageProfile() {
             lastName: 'Pérez',
             phone: '3216549870',
             birthDate: '1990-01-01',
-            roleName: 'Distribuidor', // o 'Distribuidor', 'Cliente'
+            roleName: 'Cliente', // o 'Distribuidor', 'Cliente'
             position: 'IT Manager', // only if employee
             documentType: 'CC', // only if distributor
 

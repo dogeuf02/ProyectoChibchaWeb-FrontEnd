@@ -60,7 +60,9 @@ function App() {
 
 
 
-          <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route path="/dashboard" element={
+            <DashboardLayout />}>
+
             <Route index element={<ManageProfile />} /> {/* ruta  */}
           </Route>
 

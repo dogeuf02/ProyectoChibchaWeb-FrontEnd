@@ -44,7 +44,10 @@ export default function NavbarMUI() {
 
   return (
     <>
-      <AppBar position="fixed" sx={{ backgroundColor: '#212121' }}>
+      <AppBar
+  position="fixed"
+  sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, bgcolor: '#212121' }}
+>
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           {/* Menú lateral en móviles o botones normales en desktop */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -102,13 +105,7 @@ export default function NavbarMUI() {
                 </ListItemButton>
               </ListItem>
             ))}
-            {rol === 'usuario' && (
-              <ListItem disablePadding>
-                <ListItemButton onClick={() => navigate('/login')}>
-                  <ListItemText primary="Login" />
-                </ListItemButton>
-              </ListItem>
-            )}
+
           </List>
         </Box>
       </Drawer>
