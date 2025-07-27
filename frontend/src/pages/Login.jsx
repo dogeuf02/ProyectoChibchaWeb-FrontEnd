@@ -12,6 +12,7 @@ import {
 import useScrollToTop from '../hooks/useScrollToTop';
 import { useGlobalAlert } from "../context/AlertContext";
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from "../context/AuthContext";
 
 import { login } from '../api/authApi';
 
@@ -43,9 +44,8 @@ export default function Login() {
 
     showAlert("Login successful!", "success");
 
-    // Guardar datos en localStorage o Context
-    localStorage.setItem('role', res.rol);
-    localStorage.setItem('authenticated', res.autenticado);
+login(res.rol);  // actualiza el contexto global
+
 
     console.log(res)
     // Redirigir según tipo de usuario
