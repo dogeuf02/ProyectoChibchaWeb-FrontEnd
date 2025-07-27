@@ -42,7 +42,7 @@ export default function Home() {
           />
 
           <Typography
-            variant="body1"
+            variant="h6"
             sx={{ color: 'grey.400', lineHeight: 2 }}
           >
             Top web hosting company in Colombia.<br />
