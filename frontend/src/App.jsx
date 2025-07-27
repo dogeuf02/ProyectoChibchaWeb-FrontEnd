@@ -14,7 +14,8 @@ import Plans from './pages/Plans.jsx'
 import AdminManageEmployees from './pages/AdminManageEmployees.jsx'
 import Distributor from './pages/Distributor.jsx'
 import DashboardLayout from './layout/DashboardLayout';
-
+import Payments from './pages/Payments.jsx'
+import MyPlans from './pages/MyPlans.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -58,7 +59,13 @@ function App() {
             <AdminManageEmployees />
           </MainLayout>} />
 
+          <Route path="/Payments" element={<MainLayout>
+            <Payments />
+          </MainLayout>} />
 
+          <Route path="/MyPlans" element={<MainLayout>
+            <MyPlans />
+          </MainLayout>} />
 
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<ManageProfile />} /> {/* ruta  */}
