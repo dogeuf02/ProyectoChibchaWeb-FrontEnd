@@ -13,6 +13,7 @@ import Domains from './pages/Domains.jsx'
 import Plans from './pages/Plans.jsx'
 import AdminManageEmployees from './pages/AdminManageEmployees.jsx'
 import Distributor from './pages/Distributor.jsx'
+import DashboardLayout from './layout/DashboardLayout';
 
 
 function App() {
@@ -58,6 +59,11 @@ function App() {
           </MainLayout>} />
 
 
+
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<ManageProfile />} /> {/* ruta  */}
+          </Route>
+
         </Routes>
 
 
@@ -69,4 +75,3 @@ function App() {
 }
 
 export default App
-

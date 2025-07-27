@@ -7,16 +7,13 @@ import {
     Box,
     Paper,
     Button,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Snackbar,
-    Alert,
+
 } from '@mui/material';
 
 import useScrollToTop from '../hooks/useScrollToTop';
 import { useGlobalAlert } from "../context/AlertContext";
+import ConfirmDialog from "../components/ConfirmDialog";
+
 
 export default function ManageProfile() {
 
@@ -30,7 +27,7 @@ export default function ManageProfile() {
         lastName: '',
         phone: '',
         birthDate: '',
-        roleName: '', 
+        roleName: '',
         position: '',
     });
     const [editMode, setEditMode] = useState(false);
@@ -113,7 +110,7 @@ export default function ManageProfile() {
             roleName: 'Administrador', // o 'Distribuidor', 'Cliente'
             position: 'IT Manager', // only if employee
             documentType: 'CC', // only if distributor
-            
+
         };
         setProfile(simulatedData);
     }, []);
@@ -138,45 +135,45 @@ export default function ManageProfile() {
                                 disabled
                             />
 
-                            
+
                             {profile.roleName === 'Administrador' && (
                                 <>
-                                
-                                                            <TextField
-                                label="First Name"
-                                name="firstName"
-                                value={profile.firstName}
-                                onChange={handleChange}
-                                fullWidth
-                                margin="normal"
-                                disabled={!editMode}
-                            />
-                            <TextField
-                                label="Last Name"
-                                name="lastName"
-                                value={profile.lastName}
-                                onChange={handleChange}
-                                fullWidth
-                                margin="normal"
-                                disabled={!editMode}
-                            />
 
-                                                        <TextField
-                                label="Birth Date"
-                                name="birthDate"
-                                type="date"
-                                value={profile.birthDate}
-                                onChange={handleChange}
-                                fullWidth
-                                margin="normal"
-                                InputLabelProps={{ shrink: true }}
-                                disabled={!editMode}
-                            />
-                                
-                                
-                                
-                                
-                                
+                                    <TextField
+                                        label="First Name"
+                                        name="firstName"
+                                        value={profile.firstName}
+                                        onChange={handleChange}
+                                        fullWidth
+                                        margin="normal"
+                                        disabled={!editMode}
+                                    />
+                                    <TextField
+                                        label="Last Name"
+                                        name="lastName"
+                                        value={profile.lastName}
+                                        onChange={handleChange}
+                                        fullWidth
+                                        margin="normal"
+                                        disabled={!editMode}
+                                    />
+
+                                    <TextField
+                                        label="Birth Date"
+                                        name="birthDate"
+                                        type="date"
+                                        value={profile.birthDate}
+                                        onChange={handleChange}
+                                        fullWidth
+                                        margin="normal"
+                                        InputLabelProps={{ shrink: true }}
+                                        disabled={!editMode}
+                                    />
+
+
+
+
+
                                 </>)}
 
                             {profile.roleName === 'Distribuidor' && (
@@ -200,7 +197,7 @@ export default function ManageProfile() {
                                         fullWidth
                                         margin="normal"
                                         disabled
- />
+                                    />
                                     <TextField
                                         label="Company name"
                                         name="companyName"
@@ -209,7 +206,7 @@ export default function ManageProfile() {
                                         fullWidth
                                         margin="normal"
                                         disabled
-  />
+                                    />
                                     <TextField
                                         label="Company address"
                                         name="companyAddress"
@@ -218,7 +215,7 @@ export default function ManageProfile() {
                                         fullWidth
                                         margin="normal"
                                         disabled
-                                         />
+                                    />
 
 
 
@@ -233,55 +230,55 @@ export default function ManageProfile() {
 
                             {profile.roleName === 'Cliente' && (
                                 <>
-                                
-                                <TextField
-                                label="First Name"
-                                name="firstName"
-                                value={profile.firstName}
-                                onChange={handleChange}
-                                fullWidth
-                                margin="normal"
-                                disabled={!editMode}
-                            />
-                            <TextField
-                                label="Last Name"
-                                name="lastName"
-                                value={profile.lastName}
-                                onChange={handleChange}
-                                fullWidth
-                                margin="normal"
-                                disabled={!editMode}
-                            />
-                            <TextField
-                                label="Phone Number"
-                                name="phone"
-                                value={profile.phone}
-                                onChange={handleChange}
-                                fullWidth
-                                margin="normal"
-                                disabled={!editMode}
-                            />
-                            <TextField
-                                label="Birth Date"
-                                name="birthDate"
-                                type="date"
-                                value={profile.birthDate}
-                                onChange={handleChange}
-                                fullWidth
-                                margin="normal"
-                                InputLabelProps={{ shrink: true }}
-                                disabled={!editMode}
-                            />
 
-                                
-                                
-                                
-                                
-                                
-                                
+                                    <TextField
+                                        label="First Name"
+                                        name="firstName"
+                                        value={profile.firstName}
+                                        onChange={handleChange}
+                                        fullWidth
+                                        margin="normal"
+                                        disabled={!editMode}
+                                    />
+                                    <TextField
+                                        label="Last Name"
+                                        name="lastName"
+                                        value={profile.lastName}
+                                        onChange={handleChange}
+                                        fullWidth
+                                        margin="normal"
+                                        disabled={!editMode}
+                                    />
+                                    <TextField
+                                        label="Phone Number"
+                                        name="phone"
+                                        value={profile.phone}
+                                        onChange={handleChange}
+                                        fullWidth
+                                        margin="normal"
+                                        disabled={!editMode}
+                                    />
+                                    <TextField
+                                        label="Birth Date"
+                                        name="birthDate"
+                                        type="date"
+                                        value={profile.birthDate}
+                                        onChange={handleChange}
+                                        fullWidth
+                                        margin="normal"
+                                        InputLabelProps={{ shrink: true }}
+                                        disabled={!editMode}
+                                    />
+
+
+
+
+
+
+
                                 </>)}
 
-                            
+
 
                             <TextField
                                 label="Role"
@@ -361,76 +358,19 @@ export default function ManageProfile() {
                         </Box>
 
                     </Paper>
-                    <Dialog open={openDialog} onClose={handleCloseDialog}
-                        PaperProps={{
-                            sx: {
-                                backgroundColor: "#FAFAFA", // fondo blanco
-                                borderRadius: 3,
-                                boxShadow: 8,
-                                p: 2,
-                            },
-                        }}>
-                        <DialogTitle
-                            sx={{
-                                color: "#212121",        // texto negro
-                                fontWeight: "bold",
-                                fontSize: "1.25rem",
-                                textAlign: "center",
-                            }}>
-                            Delete Account</DialogTitle>
-                        <DialogContent>
-                            <Typography sx={{ color: "#212121", textAlign: "center" }}>
-                                Are you sure you want to delete your account? <br />
-                                This action <strong>cannot be undone</strong>.
-                            </Typography>
-                        </DialogContent>
-                        <DialogActions sx={{ justifyContent: "center", gap: 1 }}>
-                            <Button
-                                onClick={handleCloseDialog}
-                                variant="outlined"
-                                sx={{
-                                    borderColor: "#BDBDBD",
-                                    color: "#212121",
-                                    ":hover": {
-                                        borderColor: "#FFBE02",
-                                        backgroundColor: "#FFBE02",
-                                        color: "#212121",
-                                    },
-                                }}
-                            >
-                                Cancel</Button>
-                            <Button onClick={handleConfirmDelete} color="error"
-                                variant="contained"
-                                sx={{
-                                    backgroundColor: "#f04507ff",
-                                    ":hover": {
-                                        backgroundColor: "#FFBE02",
-                                    },
-                                }}>
-                                Confirm Delete
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
+                    <ConfirmDialog
+                        open={openDialog}
+                        onClose={handleCloseDialog}
+                        onConfirm={handleConfirmDelete}
+                        title="Delete Account"
+                        message="Are you sure you want to delete your account? This action cannot be undone."
+                        confirmText="Confirm Delete"
+                    />
 
                 </Container>
 
             </Zoom>
 
-            <Snackbar
-                open={snackbarOpen}
-                autoHideDuration={4000}
-                onClose={handleSnackbarClose}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-            >
-                <Alert
-                    onClose={handleSnackbarClose}
-                    severity="success"
-                    variant="filled"
-                    sx={{ width: '100%' }}
-                >
-                    Profile updated successfully!
-                </Alert>
-            </Snackbar>
         </>
 
 
