@@ -37,7 +37,7 @@ export default function AdminManageClients() {
   };
 
   useEffect(() => {
-    const cargarClientes = async () => {
+    const fetchClients = async () => {
       const response = await getClients();
 
       if (response.exito) {
@@ -48,7 +48,7 @@ export default function AdminManageClients() {
       }
     };
 
-    cargarClientes();
+    fetchClients();
   }, []);
 
   const handleRequestDelete = (id) => {

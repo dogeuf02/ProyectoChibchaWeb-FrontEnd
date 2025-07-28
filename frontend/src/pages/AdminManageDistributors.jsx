@@ -6,6 +6,7 @@ import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Stack, MenuItem } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { createDistributor, getDistributors } from "../api/distributorApi";
 
 export default function AdminManageDistributors() {
   useScrollToTop();
@@ -29,109 +30,19 @@ export default function AdminManageDistributors() {
   ];
 
   useEffect(() => {
-    setDistributors([
-      {
-        distributor_id: "DIST001",
-        role: "Distributor",
-        email: "empresa1@example.com",
-        status: "Active",
-        company_document_type: "NIT",
-        company_document_number: "900123456",
-        company_name: "Distribuciones XYZ",
-        company_address: "Calle 123 #45-67",
-      },
-      {
-        distributor_id: "DIST002",
-        role: "Distributor",
-        email: "ventas@logistimax.com",
-        status: "Active",
-        company_document_type: "CUIT",
-        company_document_number: "20456789012",
-        company_name: "LogistiMax",
-        company_address: "Av. Siempre Viva 742",
-      },
-      {
-        distributor_id: "DIST003",
-        role: "Distributor",
-        email: "contacto@distribureal.com",
-        status: "Inactive",
-        company_document_type: "RUC",
-        company_document_number: "10458963245",
-        company_name: "DistribuReal SAC",
-        company_address: "Carrera 8 #12-34",
-      },
-      {
-        distributor_id: "DIST004",
-        role: "Distributor",
-        email: "info@andescorp.com",
-        status: "Active",
-        company_document_type: "NIT",
-        company_document_number: "901245678",
-        company_name: "AndesCorp",
-        company_address: "Cra 7 #56-78",
-      },
-      {
-        distributor_id: "DIST005",
-        role: "Distributor",
-        email: "soporte@tecmundo.net",
-        status: "Active",
-        company_document_type: "RIF",
-        company_document_number: "J123456789",
-        company_name: "TecMundo C.A.",
-        company_address: "Zona Industrial, Calle 10",
-      },
-      {
-        distributor_id: "DIST006",
-        role: "Distributor",
-        email: "ventas@alfaentregas.com",
-        status: "Inactive",
-        company_document_type: "CPF_CNPJ",
-        company_document_number: "12.345.678/0001-90",
-        company_name: "Alfa Entregas",
-        company_address: "Rua das Flores 100",
-      },
-      {
-        distributor_id: "DIST007",
-        role: "Distributor",
-        email: "admin@fastmove.co",
-        status: "Active",
-        company_document_type: "PASSPORT",
-        company_document_number: "P20240987",
-        company_name: "FastMove Intl",
-        company_address: "Global Street 999",
-      },
-      {
-        distributor_id: "DIST008",
-        role: "Distributor",
-        email: "servicio@neogistics.com",
-        status: "Active",
-        company_document_type: "TIN",
-        company_document_number: "TX10203948",
-        company_name: "NeoGistics",
-        company_address: "Loop Road 45",
-      },
-      {
-        distributor_id: "DIST009",
-        role: "Distributor",
-        email: "gerencia@solucioneslog.com",
-        status: "Inactive",
-        company_document_type: "OTHER",
-        company_document_number: "X000111222",
-        company_name: "SolucionesLog",
-        company_address: "Av. Central #22-10",
-      },
-      {
-        distributor_id: "DIST010",
-        role: "Distributor",
-        email: "contact@deliveryhub.org",
-        status: "Active",
-        company_document_type: "BUSINESS_ID",
-        company_document_number: "BI88776655",
-        company_name: "DeliveryHub",
-        company_address: "Main Street 101",
+    const fetchDistributors = async () => {
+      const result = await getDistributors();
+
+      if (result.exito) {
+        setDistributors(result.distribuidores);
+      } else {
+        showAlert(result.mensaje || "Error al cargar distribuidores", "error");
       }
-    ]);
+    };
+
+    fetchDistributors();
   }, []);
+
 
   const handleRequestDelete = (id) => {
     setSelectedId(id);
@@ -145,7 +56,7 @@ export default function AdminManageDistributors() {
     showAlert("Distributor deleted successfully", "success");
   };
 
-  const handleAddDistributor = () => {
+  const handleAddDistributor = async () => {
     const requiredFields = [
       "email",
       "company_document_type",
@@ -169,21 +80,47 @@ export default function AdminManageDistributors() {
       }
     }
 
-    setDistributors(prev => [
-      ...prev,
-      { id: `DIST${prev.length + 1}`.padStart(7, "0"), ...newDistributor }
-    ]);
-    setNewDistributor({
-      email: "",
-      status: "",
-      company_document_type: "",
-      company_document_number: "",
-      company_name: "",
-      company_address: ""
-    });
-    setOpenForm(false);
+    const payload = {
+      correoDistrbuidor: newDistributor.email,
+      contrasenaDistribuidor: "admin@123",
+      nombreTipoDoc: newDistributor.company_document_type,
+      numeroDocEmpresa: newDistributor.company_document_number,
+      nombreEmpresa: newDistributor.company_name,
+      direccionEmpresa: newDistributor.company_address
+    };
 
-    showAlert("Distributor added successfully", "success");
+    console.log("Payload enviado al backend:", payload); // 🔍 Verifica el formato exacto
+
+    try {
+      const response = await createDistributor(payload);
+      console.log("Respuesta de la API:", response); // 🔍 Verifica si viene algún mensaje útil
+
+      if (response.exito) {
+        showAlert("Distribuidor creado exitosamente", "success");
+        const updated = await getDistributors();
+        if (updated.exito) {
+          setDistributors(updated.distribuidores);
+        }
+        setOpenForm(false);
+        setNewDistributor({
+          email: "",
+          company_document_number: "",
+          company_name: "",
+          company_address: "",
+          company_document_type: "",
+        });
+      } else {
+        showAlert(response.mensaje || "No se pudo crear el distribuidor", "error");
+      }
+    } catch (error) {
+      if (error.response) {
+        console.error("Error 400+ de la API:", error.response.data); // 🔍 Importante para el error 400
+        showAlert(error.response.data?.mensaje || "Error en la solicitud", "error");
+      } else {
+        console.error("Error inesperado:", error);
+        showAlert("Hubo un error al registrar el distribuidor", "error");
+      }
+    }
   };
 
   return (
