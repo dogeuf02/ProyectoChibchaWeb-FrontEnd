@@ -14,6 +14,8 @@ import { useGlobalAlert } from "../context/AlertContext";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../context/AuthContext";
 
+import { login } from '../api/authApi';
+
 export default function Login() {
     const { showAlert } = useGlobalAlert();
     const { login } = useAuth();

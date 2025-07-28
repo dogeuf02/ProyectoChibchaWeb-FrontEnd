@@ -108,10 +108,11 @@ export default function EmployeeList({ employees, onRequestDelete }) {
         </TableHead>
         <TableBody>
           {employees
-  .filter(emp => emp.id.toLowerCase().includes(searchId.toLowerCase()))
-  .map((emp) => (
-            <Row key={emp.id} employee={emp} onRequestDelete={onRequestDelete} />
-          ))}
+  .filter(emp => emp.id && emp.id.toLowerCase().includes(searchId.toLowerCase()))
+  .map(emp => (
+    <Row key={emp.id} employee={emp} onRequestDelete={onRequestDelete} />
+  ))
+}
         </TableBody>
       </Table>
     </TableContainer>
