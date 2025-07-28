@@ -104,11 +104,11 @@ export default function AdminManageClients() {
       }
     }
 
-    const contrasenaGenerada = `${newClient.nombre}${newClient.apellido}`.toLowerCase().replace(/\s+/g, "");
+    const generatedPassword = `${newClient.nombre}${newClient.apellido}`.toLowerCase().replace(/\s+/g, "");
 
-    const clienteParaBackend = {
+    const client = {
       correoCliente: newClient.correo,
-      contrasenaCliente: contrasenaGenerada,
+      contrasenaCliente: generatedPassword,
       nombreCliente: newClient.nombre,
       apellidoCliente: newClient.apellido,
       telefono: newClient.telefono,
@@ -116,7 +116,7 @@ export default function AdminManageClients() {
     };
 
     try {
-      const response = await createClient(clienteParaBackend);
+      const response = await createClient(client);
 
       if (response.exito) {
         showAlert("Client added successfully", "success");

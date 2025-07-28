@@ -45,20 +45,24 @@ export const getEmployees = async () => {
   }
 };
 
-export const deactivateUser = async (idUsuario) => {
+export const deactivateUser = async (correo) => {
   try {
-    const response = await api.put(`/usuarios/${idUsuario}`, {
-      estado: "INACTIVA"
+    const response = await api.put(`/usuarios/correo/${correo}`, {
+      estado: "INACTIVO"
     });
 
     return { exito: true, data: response.data };
-
   } catch (error) {
     if (error.response && error.response.data) {
-      const { exito, mensaje } = error.response.data;
-      return { exito, mensaje };
+      return {
+        exito: false,
+        mensaje: error.response.data.mensaje || "Error al desactivar el usuario"
+      };
     } else {
-      return { exito: false, mensaje: 'Error desconocido al desactivar el usuario' };
+      return {
+        exito: false,
+        mensaje: "Error desconocido al desactivar el usuario"
+      };
     }
   }
 };
