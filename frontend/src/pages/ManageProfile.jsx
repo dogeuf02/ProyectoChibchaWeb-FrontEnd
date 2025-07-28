@@ -185,20 +185,21 @@ const handleConfirmDelete = async () => {
             if (res.exito) {
                 const data = res.data;
 
-                setProfile({
-                    id: data.idCliente || data.idEmpleado || data.idDistribuidor || data.idAdmin || '',
-                    email: data.correo || '',
-                    firstName: data.nombreEmpleado || data.nombreCliente || '',
-                    lastName: data.apellidoEmpleado || data.apellidoCliente || '',
-                    phone: data.telefono || '',
-                    birthDate: data.fechaNacimientoEmpleado || data.fechaNacimientoCliente || '',
-                    roleName: userRole,
-                    position: data.cargoEmpleado || '',
-                    documentType: data.nombreTipoDoc || '',
-                    companyName: data.nombreEmpresa || '',
-                    companyAddress: data.direccionEmpresa || '',
-                    companyNumber: data.numeroDocEmpresa || ''
-                });
+setProfile({
+    id: data.idCliente || data.idEmpleado || data.idDistribuidor || data.idAdmin || '',
+    email: data.correo || '',
+    firstName: data.nombreEmpleado || data.nombreCliente || data.nombreAdmin || '',
+    lastName: data.apellidoEmpleado || data.apellidoCliente || data.apellidoAdmin || '',
+    phone: data.telefono || '',
+    birthDate: data.fechaNacimientoEmpleado || data.fechaNacimientoCliente || data.fechaNacimientoAdmin || '',
+    roleName: userRole,
+    position: data.cargoEmpleado || '',
+    documentType: data.nombreTipoDoc || '',
+    companyName: data.nombreEmpresa || '',
+    companyAddress: data.direccionEmpresa || '',
+    companyNumber: data.numeroDocEmpresa || ''
+});
+
             } else {
                 showAlert(res.mensaje, "error");
             }

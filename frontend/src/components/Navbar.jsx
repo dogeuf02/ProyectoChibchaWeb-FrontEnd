@@ -72,10 +72,10 @@ export default function NavbarMUI() {
         navigate('/admin/ManageProfile');
         break;
       case "Cliente":
-        navigate('/cliente/ManageProfile');
+        navigate('/client/ManageProfile');
         break;
       case "Empleado":
-        navigate('/empleado/ManageProfile');
+        navigate('/employee/ManageProfile');
         break;
       case "Distribuidor":
         navigate('/distributor/ManageProfile'); break;
