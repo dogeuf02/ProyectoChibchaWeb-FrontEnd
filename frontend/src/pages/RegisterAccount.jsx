@@ -12,7 +12,8 @@ import useScrollToTop from '../hooks/useScrollToTop';
 import Zoom from '@mui/material/Zoom';
 import { useGlobalAlert } from "../context/AlertContext";
 
-import { createUser } from '../api/clienteApi';
+import { createClient } from '../api/clienteApi';
+import { ConstructionOutlined } from '@mui/icons-material';
 
 export default function RegisterAccount() {
 
@@ -32,7 +33,7 @@ export default function RegisterAccount() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (form.password !== form.confirmPassword) {
@@ -67,22 +68,31 @@ export default function RegisterAccount() {
       }
     }
 
+    //Descomentar para tomar los datos desde el form
+    // const client = {
+    //   "correoCliente": form.email,
+    //   "contrasenaCliente": form.password,
+    //   "nombreCliente": form.firstName,
+    //   "apellidoCliente": form.lastName,
+    //   "telefono": form.phone,
+    //   "fechaNacimientoCliente": form.birthDate
+    // }
 
-    const usuario = {
-      "correoCliente": form.email,
-      "contrasenaCliente": form.password,
-      "nombreCliente": form.firstName,
-      "apellidoCliente": form.lastName,
-      "telefono": form.phone,
-      "fechaNacimientoCliente": form.birthDate
+    const client = {
+      "correoCliente": "pasumama@sapo.com",
+      "contrasenaCliente": "SapoRana@123",
+      "nombreCliente": "Sapo",
+      "apellidoCliente": "Rana",
+      "telefono": "100000",
+      "fechaNacimientoCliente": "2025-07-28"
     }
-    console.log(usuario)
-    if (createUser(usuario)) {
-      console.log('Registrando usuario:', form);
-      showAlert('Registro fallido', 'failed');
-    } else {
-      console.log('Registrando usuario:', form);
+
+    const res = await createClient(client)
+    if (res.exito) {
       showAlert('Registro exitoso', 'success');
+    } else {
+      //console.log('Registrando usuario:', form);
+      showAlert(res.mensaje, 'error');
     }
 
   };

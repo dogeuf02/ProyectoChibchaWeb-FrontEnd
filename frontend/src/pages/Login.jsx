@@ -12,11 +12,12 @@ import {
 import useScrollToTop from '../hooks/useScrollToTop';
 import { useGlobalAlert } from "../context/AlertContext";
 import { useNavigate } from 'react-router-dom';
-
-import { login } from '../api/authApi';
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
     const { showAlert } = useGlobalAlert();
+    const { login } = useAuth();
+
     const navigate = useNavigate();
 
     useScrollToTop();
@@ -31,38 +32,17 @@ export default function Login() {
     };
 
     const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  const credentials = {
-    correo: form.email,
-    contrasena: form.password
-  };
-
-  try {
-    const res = await login(credentials); // espera la respuesta
-
-    showAlert("Login successful!", "success");
-
-    // Guardar datos en localStorage o Context
-    localStorage.setItem('role', res.rol);
-    localStorage.setItem('authenticated', res.autenticado);
-
-    console.log(res)
-    // Redirigir según tipo de usuario
-    if (res.rol === 'Cliente') {
-      navigate('/');
-      console.log("vista cliente")
-    } else if (res.rol === 'empleado') {
-      navigate('/dashboard-empleado');
-    } else {
-      navigate('/');
-    }
-
-  } catch (error) {
-    showAlert("Correo o contraseña incorrectos", "failed");
-    console.error(error);
-  }
-};
+        e.preventDefault();
+        const result = await login(form.email, form.password);
+        if (result.success) {
+            console.log("logeates")
+            navigate("/");
+        } else {
+            // Mostrar alerta o error
+            console.log("no logeates")
+            //alert(result.message);
+        }
+    };
 
 
     return (
