@@ -5,7 +5,6 @@ import {
   Grid,
   Card,
   CardContent,
-  CardMedia,
   Typography,
   Button,
   CardActions,
@@ -15,18 +14,21 @@ const cardData = [
   {
     title: 'CHIBCHAORO',
     description: 'Descripción breve del servicio número 1.',
+    color: '#B59709',
   },
   {
     title: 'CHIBCHAPLATA',
     description: 'Descripción breve del servicio número 2.',
+    color: '#696460',
   },
   {
     title: 'CHIBCHAPLATINO',
     description: 'Descripción breve del servicio número 3.',
+    color: '#A3775C',
   },
 ];
 
-export default function Plans() {
+export default function PlansInfo() {
   return (
     <Box id='Plans' sx={{ bgcolor: '#f5f5f5', py: 8 }}>
       <Container>
@@ -38,7 +40,12 @@ export default function Plans() {
             <Grid item key={index} xs={12} sm={6} md={4}>
               <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
+                  <Typography
+                    gutterBottom
+                    variant="h4"
+                    component="div"
+                    sx={{ color: card.color }}
+                  >
                     {card.title}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
@@ -47,7 +54,7 @@ export default function Plans() {
                 </CardContent>
                 <CardActions sx={{ mt: 'auto' }}>
                   <Button size="small" color="primary">
-                    Más información
+                    Get the plan
                   </Button>
                 </CardActions>
               </Card>

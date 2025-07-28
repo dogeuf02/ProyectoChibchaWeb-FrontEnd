@@ -6,7 +6,7 @@ import {
   Link,
 } from '@mui/material';
 
-export default function Distributor() {
+export default function DistributorInfo() {
   return (
     <Box id='Distributor' sx={{ bgcolor: '#f5f5f5', py: 8 }}>
       <Container>
