@@ -67,6 +67,7 @@ function App() {
 
         <Route path="/admin" element={<DashboardLayout />}>
           <Route index element={<ManageProfile />} /> {/* /admin */}
+          <Route path="ManageProfile" element={<ManageProfile />} /> {/* /admin/manageProfile */}
           <Route path="ManageDistributors" element={<AdminManageDistributors />} /> {/* /admin/distributors */}
           <Route path="ManageAdministrators" element={<AdminManageAdmins />} /> {/* /admin/administrators */}
           <Route path="ManageEmployees" element={<AdminManageEmployees />} /> {/* /admin/employees */}

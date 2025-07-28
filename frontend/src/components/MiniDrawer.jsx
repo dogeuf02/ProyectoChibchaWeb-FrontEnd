@@ -26,7 +26,8 @@ import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import PersonIcon from '@mui/icons-material/Person';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 
-const rol = 'distributor'; // Cambiar según el rol actual: 'admin', 'client', 'distributor'
+// Cambiar esta constante según el rol actual del usuario:
+const rol = 'distributor'; // 'admin' | 'client' | 'distributor'
 
 const drawerWidth = 240;
 
@@ -82,13 +83,8 @@ export default function MiniDrawer() {
   const [open, setOpen] = React.useState(true);
   const [openManage, setOpenManage] = React.useState(false);
 
-  const toggleDrawer = () => {
-    setOpen(!open);
-  };
-
-  const handleToggleManage = () => {
-    setOpenManage((prev) => !prev);
-  };
+  const toggleDrawer = () => setOpen(!open);
+  const handleToggleManage = () => setOpenManage((prev) => !prev);
 
   const manageItems = [
     { text: 'Clients', icon: <PeopleIcon />, path: '/admin/Manageclients' },
@@ -98,14 +94,26 @@ export default function MiniDrawer() {
     { text: 'Distributor Request', icon: <AssignmentIcon />, path: '/admin/ManageDistributorRequests' },
   ];
 
-  const clientOrDistributorItems = [
-    { text: 'Payments', icon: <CreditCardIcon />, path: '/client/payments' },
-    { text: 'MyDomains', icon: <DnsIcon />, path: '/client/mydomains' },
-    { text: 'DomainRequest', icon: <DnsIcon />, path: '/client/DomainRequest' },
+  // Para rutas dinámicas por rol
+  const getPath = (base) => {
+    if (rol === 'admin') return `/admin/${base}`;
+    if (rol === 'client') return `/client/${base}`;
+    if (rol === 'distributor') return `/distributor/${base}`;
+    return '/';
+  };
+
+  const sharedItems = [
+    { text: 'Profile', icon: <AccountCircleIcon />, basePath: 'manageProfile' },
+  ];
+
+  const clientDistributorItems = [
+    { text: 'Payments', icon: <CreditCardIcon />, basePath: 'payments' },
+    { text: 'MyDomains', icon: <DnsIcon />, basePath: 'mydomains' },
+    { text: 'Domain Request', icon: <DnsIcon />, basePath: 'DomainRequest' },
   ];
 
   const clientOnlyItems = [
-    { text: 'MyPlans', icon: <ListAltIcon />, path: '/client/myplans' },
+    { text: 'My Plans', icon: <ListAltIcon />, path: '/client/myplans' },
   ];
 
   return (
@@ -134,21 +142,54 @@ export default function MiniDrawer() {
         <Divider />
 
         <List>
+          {/* Botón Profile siempre visible para todos los roles */}
+          {sharedItems.map(({ text, icon, basePath }) => (
+            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+              <ListItemButton
+                onClick={() => navigate(getPath(basePath))}
+                sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
+              >
+                <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+                  {icon}
+                </ListItemIcon>
+                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
+          ))}
 
-          {/* Siempre visible: Profile */}
-          <ListItem disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
-              onClick={() => navigate('/client/manageProfile')}
-              sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
-            >
-              <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
-                <AccountCircleIcon />
-              </ListItemIcon>
-              <ListItemText primary="Profile" sx={{ opacity: open ? 1 : 0 }} />
-            </ListItemButton>
-          </ListItem>
+          {/* Buttons solo para client y distributor */}
+          {(rol === 'client' || rol === 'distributor') &&
+            clientDistributorItems.map(({ text, icon, basePath }) => (
+              <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
+                  onClick={() => navigate(getPath(basePath))}
+                  sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
+                >
+                  <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+                    {icon}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            ))}
 
-          {/* Admin: Manage Section */}
+          {/* Solo para client: MyPlans */}
+          {rol === 'client' &&
+            clientOnlyItems.map(({ text, icon, path }) => (
+              <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
+                  onClick={() => navigate(path)}
+                  sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
+                >
+                  <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+                    {icon}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+
+          {/* Admin: Sección Manage */}
           {rol === 'admin' && (
             <>
               <ListItem disablePadding sx={{ display: 'block' }}>
@@ -177,39 +218,7 @@ export default function MiniDrawer() {
             </>
           )}
 
-          {/* Cliente o Distribuidor: Payments y MyDomains */}
-          {(rol === 'client' || rol === 'distributor') &&
-            clientOrDistributorItems.map(({ text, icon, path }) => (
-              <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                <ListItemButton
-                  onClick={() => navigate(path)}
-                  sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
-                >
-                  <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
-                    {icon}
-                  </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-
-          {/* Solo cliente: MyPlans */}
-          {rol === 'client' &&
-            clientOnlyItems.map(({ text, icon, path }) => (
-              <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                <ListItemButton
-                  onClick={() => navigate(path)}
-                  sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
-                >
-                  <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
-                    {icon}
-                  </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-
-          {/* Siempre visible: Logout */}
+          {/* Logout siempre visible */}
           <ListItem disablePadding sx={{ display: 'block' }}>
             <ListItemButton
               onClick={() => navigate('/')}
