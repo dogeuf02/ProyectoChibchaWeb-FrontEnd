@@ -40,6 +40,8 @@ function Row({ employee, onRequestDelete }) {
         </TableCell>
         <TableCell>{employee.position}</TableCell>
         <TableCell>{employee.email}</TableCell>
+        <TableCell>{employee.estado}</TableCell>
+
       </TableRow>
 
       <TableRow>
@@ -50,21 +52,22 @@ function Row({ employee, onRequestDelete }) {
                 Details
               </Typography>
               <Typography variant="body2">ID: {employee.id}</Typography>
-              <Button
-                variant="contained"
-                color="error"
-                sx={{
-                  mt: 2,
-
-                  ':hover': {
-                    backgroundColor: '#FFBE02',
-                    color: '#212121',
-                  },
-                }}
-                onClick={() => onRequestDelete(employee.id)}
-              >
-                Delete employee
-              </Button>
+              {onRequestDelete && employee.status === "ACTIVO" && (
+                <Button
+                  variant="contained"
+                  color="error"
+                  sx={{
+                    mt: 2,
+                    ':hover': {
+                      backgroundColor: '#FFBE02',
+                      color: '#212121',
+                    },
+                  }}
+                  onClick={() => onRequestDelete(employee.id)}
+                >
+                  Delete employee
+                </Button>
+              )}
             </Box>
           </Collapse>
         </TableCell>
@@ -104,8 +107,10 @@ export default function EmployeeList({ employees, onRequestDelete }) {
               <TableCell sx={{ fontWeight: 'bold' }}>Full Name</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Position</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
             {employees
               .filter(emp => {

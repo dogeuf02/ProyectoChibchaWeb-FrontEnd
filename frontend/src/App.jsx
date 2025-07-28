@@ -12,7 +12,6 @@ import GlobalAlert from './components/GlobalAlert.jsx'
 import Domains from './pages/DomainsInfo.jsx'
 import Plans from './pages/PlansInfo.jsx'
 import AdminManageEmployees from './pages/AdminManageEmployees.jsx'
-import Distributor from './pages/DistributorInfo.jsx'
 import DashboardLayout from './layout/DashboardLayout';
 import AdminManageDistributors from './pages/AdminManageDistributors.jsx'
 import AdminManageAdmins from './pages/AdminManageAdmins.jsx'
@@ -25,6 +24,7 @@ import MyDomains from './pages/MyDomains.jsx'
 import DistributorInfo from './pages/DistributorInfo.jsx'
 import DomainsInfo from './pages/DomainsInfo.jsx'
 import PlansInfo from './pages/PlansInfo.jsx'
+import DomainRequest from './pages/DomainRequest.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -59,6 +59,7 @@ function App() {
         <Route path="/Domains" element={<MainLayout>
           <Domains />
         </MainLayout>} />
+
         <Route path="/Plans" element={<MainLayout>
           <Plans />
         </MainLayout>} />
@@ -81,16 +82,17 @@ function App() {
           <Route path="Payments" element={<Payments />} /> {/* /client/payments */}
           <Route path="MyPlans" element={<MyPlans />} /> {/* /client/myplans */}
           <Route path='MyDomains' element={<MyDomains />} /> {/* /client/mydomains */}
-
+          <Route path='DomainRequest' element={<DomainRequest />} /> {/* /distributor/DomainRequest */}
         </Route>
+        
         <Route path="/Distributor" element={<DashboardLayout />}>
           <Route index element={<ManageProfile />} />
           <Route path="ManageProfile" element={<ManageProfile />} /> {/* /distributor/manageProfile */}
           <Route path="Payments" element={<Payments />} /> {/* /distributor/payments */}
-          <Route path="MyPlans" element={<MyPlans />} /> {/* /distributor/myplans */}
           <Route path='MyDomains' element={<MyDomains />} /> {/* /distributor/mydomains */}
-
+          <Route path='DomainRequest' element={<DomainRequest />} /> {/* /distributor/DomainRequest */}
         </Route>
+
 
       </Routes>
 

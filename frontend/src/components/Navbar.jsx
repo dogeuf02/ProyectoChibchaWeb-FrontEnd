@@ -26,7 +26,6 @@ export default function NavbarMUI() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
-  const rol = 'usuario'; // Puedes cambiar esto según tu lógica
   const [anchorEl, setAnchorEl] = useState(null);
   const { authenticated, role, logout } = useAuth();
   const navItems = [
@@ -35,10 +34,6 @@ export default function NavbarMUI() {
     { label: 'Hosting plan', to: '#Plans' },
     { label: 'Distributor', to: '#Distributor' },
   ];
-
-  if (rol === 'admin') {
-    navItems.push({ label: 'Admin', to: '/admin' });
-  }
 
   const handleNavigateToSection = (hash) => {
     if (window.location.pathname !== '/') {
@@ -131,15 +126,28 @@ export default function NavbarMUI() {
                     {role}
                   </Typography>
                 </MenuItem>
-                <MenuItem onClick={handleGoToProfile}>Mi perfil</MenuItem>
+                <MenuItem onClick={handleGoToProfile}>My profile</MenuItem>
                 {role === 'Administrador' && (
                   <MenuItem onClick={() => { navigate('/admin/ManageEmployees'); handleMenuClose(); }}>
-                    Gestión empleados
+                    Employees management
                   </MenuItem>
+                  
+                )}
+                {role === 'Administrador' && (
+                  <MenuItem onClick={() => { navigate('/admin/ManageDistributors'); handleMenuClose(); }}>
+                    Distributors management
+                  </MenuItem>
+                  
+                )}
+                 {role === 'Administrador' && (
+                  <MenuItem onClick={() => { navigate('/admin/ManageClients'); handleMenuClose(); }}>
+                    Clients management
+                  </MenuItem>
+                  
                 )}
                 {role === 'empleado' && (
                   <MenuItem onClick={() => { navigate('/dashboard-empleado'); handleMenuClose(); }}>
-                    Panel empleado
+                    Employee panel
                   </MenuItem>
                 )}
                 <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>

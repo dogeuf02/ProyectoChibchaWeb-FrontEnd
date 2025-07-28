@@ -40,7 +40,7 @@ export default function Login() {
         } else {
             // Mostrar alerta o error
             console.log("no logeates")
-            //alert(result.message);
+            showAlert("Verify your credentials", "error");
         }
     };
 

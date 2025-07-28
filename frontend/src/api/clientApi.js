@@ -13,3 +13,56 @@ export const createClient = async (cliente) => {
     }
   }
 };
+
+export const getClients = async () => {
+  try {
+    const response = await api.get('/clienteDirectos/obtenerClientes');
+
+    const rawClients = response.data;
+
+    const clientesAdaptados = rawClients.map(cli => ({
+      id_cliente: cli.idCliente,
+      nombre: cli.nombreCliente,
+      apellido: cli.apellidoCliente,
+      correo: cli.correo,
+      telefono: cli.telefono,
+      fecha_nacimiento: cli.fechaNacimiento,
+      estado: cli.estado
+    }));
+
+    return {
+      exito: true,
+      clientes: clientesAdaptados
+    };
+
+  } catch (error) {
+    if (error.response && error.response.data) {
+      const { exito, mensaje } = error.response.data;
+      return { exito, mensaje };
+    } else {
+      return { exito: false, mensaje: 'Error desconocido al obtener los clientes' };
+    }
+  }
+}
+
+export const deactivateUser = async (correo) => {
+  try {
+    const response = await api.put(`/usuarios/correo/${correo}`, {
+      estado: "INACTIVO"
+    });
+
+    return { exito: true, data: response.data };
+  } catch (error) {
+    if (error.response && error.response.data) {
+      return {
+        exito: false,
+        mensaje: error.response.data.mensaje || "Error al desactivar el usuario"
+      };
+    } else {
+      return {
+        exito: false,
+        mensaje: "Error desconocido al desactivar el usuario"
+      };
+    }
+  }
+};
