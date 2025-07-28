@@ -60,7 +60,9 @@ export default function NavbarMUI() {
 
   const handleGoToProfile = () => {
     handleMenuClose();
-    navigate('/ManageProfile');
+    navigate('/admin/ManageProfile');
+    //navigate('/client/ManageProfile');
+    //navigate('/distributor/ManageProfile');
   };
 
 
@@ -131,26 +133,32 @@ export default function NavbarMUI() {
                   <MenuItem onClick={() => { navigate('/admin/ManageEmployees'); handleMenuClose(); }}>
                     Employees management
                   </MenuItem>
-                  
+
                 )}
                 {role === 'Administrador' && (
                   <MenuItem onClick={() => { navigate('/admin/ManageDistributors'); handleMenuClose(); }}>
                     Distributors management
                   </MenuItem>
-                  
+
                 )}
-                 {role === 'Administrador' && (
+                {role === 'Administrador' && (
                   <MenuItem onClick={() => { navigate('/admin/ManageClients'); handleMenuClose(); }}>
                     Clients management
                   </MenuItem>
-                  
+
+                )}
+                {role === 'Administrador' && (
+                  <MenuItem onClick={() => { navigate('/admin/ManageDistributorRequests'); handleMenuClose(); }}>
+                    Manage distributor requests
+                  </MenuItem>
+
                 )}
                 {role === 'empleado' && (
                   <MenuItem onClick={() => { navigate('/dashboard-empleado'); handleMenuClose(); }}>
                     Employee panel
                   </MenuItem>
                 )}
-                <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
+                <MenuItem onClick={handleLogout}>Log out</MenuItem>
               </Menu>
             </>
           )}

@@ -6,7 +6,7 @@ import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Stack, MenuItem } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { createDistributor, getDistributors, deactivateUser } from "../api/distributorApi";
+import { createDistributor, getDistributors, updateState } from "../api/distributorApi";
 
 export default function AdminManageDistributors() {
   useScrollToTop();
@@ -59,7 +59,7 @@ export default function AdminManageDistributors() {
     }
 
     try {
-      const result = await deactivateUser(distributor.email);
+      const result = await updateState(distributor.email, "INACTIVO");
 
       if (result.exito) {
         showAlert("Distribuidor desactivado exitosamente", "success");

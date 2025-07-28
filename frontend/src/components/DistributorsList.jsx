@@ -67,6 +67,21 @@ function Row({ distributor, onRequestDelete }) {
               >
                 Delete distributor
               </Button>
+
+              <Button
+                variant="contained"
+                color="success"
+                sx={{
+                  mt: 2,
+                  ':hover': {
+                    backgroundColor: '#FFBE02',
+                    color: '#212121',
+                  },
+                }}
+                onClick={() => onRequestDelete(distributor.distributor_id)}
+              >
+                Accept request
+              </Button>
             </Box>
           </Collapse>
         </TableCell>

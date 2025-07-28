@@ -36,7 +36,7 @@ function App() {
         <Route path="/"
           element={<MainLayout>
             <Home />
-            <DomainsInfo/>
+            <DomainsInfo />
             <PlansInfo />
             <DistributorInfo />
           </MainLayout>
@@ -67,6 +67,7 @@ function App() {
 
         <Route path="/admin" element={<DashboardLayout />}>
           <Route index element={<ManageProfile />} /> {/* /admin */}
+          <Route path="ManageProfile" element={<ManageProfile />} /> {/* /client/manageProfile */}
           <Route path="ManageDistributors" element={<AdminManageDistributors />} /> {/* /admin/distributors */}
           <Route path="ManageAdministrators" element={<AdminManageAdmins />} /> {/* /admin/administrators */}
           <Route path="ManageEmployees" element={<AdminManageEmployees />} /> {/* /admin/employees */}
@@ -76,7 +77,7 @@ function App() {
 
         </Route>
 
-        <Route path="/Client" element={<DashboardLayout />}>
+        <Route path="/client" element={<DashboardLayout />}>
           <Route index element={<ManageProfile />} />
           <Route path="ManageProfile" element={<ManageProfile />} /> {/* /client/manageProfile */}
           <Route path="Payments" element={<Payments />} /> {/* /client/payments */}
@@ -84,8 +85,8 @@ function App() {
           <Route path='MyDomains' element={<MyDomains />} /> {/* /client/mydomains */}
           <Route path='DomainRequest' element={<DomainRequest />} /> {/* /distributor/DomainRequest */}
         </Route>
-        
-        <Route path="/Distributor" element={<DashboardLayout />}>
+
+        <Route path="/distributor" element={<DashboardLayout />}>
           <Route index element={<ManageProfile />} />
           <Route path="ManageProfile" element={<ManageProfile />} /> {/* /distributor/manageProfile */}
           <Route path="Payments" element={<Payments />} /> {/* /distributor/payments */}
