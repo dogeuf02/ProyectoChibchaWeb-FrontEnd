@@ -19,6 +19,8 @@ import AdminManageAdmins from './pages/AdminManageAdmins.jsx'
 import AdminManageDistributorRequests from './pages/AdminManageDistributorRequests.jsx'
 import Payments from './pages/Payments.jsx'
 import MyPlans from './pages/MyPlans.jsx'
+import AdminManageDomainRequests from './pages/AdminManageDomainRequests.jsx'
+import AdminManageClients from './pages/AdminManageClients.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -66,6 +68,8 @@ function App() {
           <Route path="ManageAdministrators" element={<AdminManageAdmins />} /> {/* /admin/administrators */}
           <Route path="ManageEmployees" element={<AdminManageEmployees />} /> {/* /admin/employees */}
           <Route path="ManageDistributorRequests" element={<AdminManageDistributorRequests />} /> {/* /admin/distributor-requests */}
+          <Route path="ManageDomainRequests" element={<AdminManageDomainRequests />} /> {/* /admin/domain-requests */}
+          <Route path='ManageClients' element={<AdminManageClients />} /> {/* /admin/manage-clients */}
 
         </Route>
           <Route path="/Payments" element={<MainLayout>
