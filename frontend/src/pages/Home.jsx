@@ -31,15 +31,12 @@ export default function Home() {
             textAlign: 'left',
           }}
         >
-          <Box
-            component="img"
-            src="/logo.png"
-            alt="Chibchaweb Logo"
-            sx={{
-              height: { xs: 150, sm: 200, md: 200 },
-              mb: 2, // margen inferior opcional
-            }}
-          />
+          <Typography
+            variant="h2"
+            sx={{ color: '#FFBE02', lineHeight: 2 }}
+          >
+            CHIBCHAWEB
+          </Typography>
 
           <Typography
             variant="h6"
@@ -53,17 +50,17 @@ export default function Home() {
           </Typography>
         </Box>
 
-        {/* Imagen */}
+        {/* LOGO */}
         <Box
           component="img"
-          src="/banner.png"
+          src="/logo.png"
           alt="Banner"
           sx={{
             flex: 1,
             width: '100%',
             display: { xs: 'none', md: 'block' },
             width: '100%',
-            maxWidth: 500,
+            maxWidth: 600 ,
             objectFit: 'contain',
           }}
         />

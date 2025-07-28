@@ -1,3 +1,4 @@
+// MiniDrawer.jsx
 import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
@@ -11,16 +12,24 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import CreditCardIcon from '@mui/icons-material/CreditCard';
-import LogoutIcon from '@mui/icons-material/Logout';
+import Collapse from '@mui/material/Collapse';
+
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import DnsIcon from '@mui/icons-material/Dns';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import CreditCardIcon from '@mui/icons-material/CreditCard';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import DnsIcon from '@mui/icons-material/Dns';
+import LogoutIcon from '@mui/icons-material/Logout';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import PeopleIcon from '@mui/icons-material/People';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import PersonIcon from '@mui/icons-material/Person';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 
+const rol = 'admin'; // Cambia según el rol actual: 'admin', 'client', 'distributor'
 
-const rol = 'cliente'; // Puedes cambiar esto según tu lógica
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -71,72 +80,148 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function MiniDrawer() {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
   const navigate = useNavigate();
+  const [open, setOpen] = React.useState(true);
+  const [openManage, setOpenManage] = React.useState(false);
 
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-  const menuItems = [
-    { text: 'Profile', icon: <AccountCircleIcon />, path: '/client/manageProfile' },
+  const handleToggleManage = () => {
+    setOpenManage((prev) => !prev);
+  };
+
+  const manageItems = [
+    { text: 'Clients', icon: <PeopleIcon />, path: '/admin/Manageclients' },
+    { text: 'Distributors', icon: <SupervisorAccountIcon />, path: '/admin/ManageDistributors' },
+    { text: 'Employees', icon: <PersonIcon />, path: '/admin/ManageEmployees' },
+    { text: 'Domain Request', icon: <AssignmentIcon />, path: '/admin/ManageDomainRequests' },
+    { text: 'Distributor Request', icon: <AssignmentIcon />, path: '/admin/ManageDistributorRequests' },
+  ];
+
+  const clientOrDistributorItems = [
     { text: 'Payments', icon: <CreditCardIcon />, path: '/client/payments' },
-    { text: 'MyPlans', icon: <ListAltIcon />, path: '/client/myplans' },
     { text: 'MyDomains', icon: <DnsIcon />, path: '/client/mydomains' },
-    { text: 'Logout', icon: <LogoutIcon />, path: '/' },
+  ];
+
+  const clientOnlyItems = [
+    { text: 'MyPlans', icon: <ListAltIcon />, path: '/client/myplans' },
   ];
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <Drawer variant="permanent" open={open}
-
+      <Drawer
+        variant="permanent"
+        open={open}
         sx={{
-          width: drawerWidth,           // ancho del drawer (ej: 240px)
-          flexShrink: 0,                // evita que se reduzca en layouts flex
+          width: drawerWidth,
+          flexShrink: 0,
           [`& .MuiDrawer-paper`]: {
-
-            boxSizing: 'border-box',    // para que padding/border se respeten
-            top: '64px',                // evita que tape al Navbar fijo de 64px
-            height: 'calc(100% - 64px)' // ajusta altura al resto de la ventana
+            boxSizing: 'border-box',
+            top: '64px',
+            height: 'calc(100% - 64px)',
           },
         }}
       >
-
         <DrawerHeader>
           <IconButton onClick={toggleDrawer}>
-            {open ? (
-              theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />
-            ) : (
-              theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />
-            )}
+            {open
+              ? theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />
+              : theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </DrawerHeader>
         <Divider />
+
         <List>
-          {menuItems.map(({ text, icon, path }) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                onClick={() => navigate(path)}
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
+
+          {/* Siempre visible: Profile */}
+          <ListItem disablePadding sx={{ display: 'block' }}>
+            <ListItemButton
+              onClick={() => navigate('/client/manageProfile')}
+              sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
+            >
+              <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+                <AccountCircleIcon />
+              </ListItemIcon>
+              <ListItemText primary="Profile" sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+
+          {/* Admin: Manage Section */}
+          {rol === 'admin' && (
+            <>
+              <ListItem disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
+                  onClick={handleToggleManage}
+                  sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
                 >
-                  {icon}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+                  <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+                    <SupervisorAccountIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage" sx={{ opacity: open ? 1 : 0 }} />
+                  {open && (openManage ? <ExpandLess /> : <ExpandMore />)}
+                </ListItemButton>
+              </ListItem>
+
+              <Collapse in={openManage} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {manageItems.map(({ text, icon, path }) => (
+                    <ListItemButton key={text} sx={{ pl: open ? 6 : 2.5 }} onClick={() => navigate(path)}>
+                      <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>{icon}</ListItemIcon>
+                      <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                    </ListItemButton>
+                  ))}
+                </List>
+              </Collapse>
+            </>
+          )}
+
+          {/* Cliente o Distribuidor: Payments y MyDomains */}
+          {(rol === 'client' || rol === 'distributor') &&
+            clientOrDistributorItems.map(({ text, icon, path }) => (
+              <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
+                  onClick={() => navigate(path)}
+                  sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
+                >
+                  <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+                    {icon}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+
+          {/* Solo cliente: MyPlans */}
+          {rol === 'client' &&
+            clientOnlyItems.map(({ text, icon, path }) => (
+              <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
+                  onClick={() => navigate(path)}
+                  sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
+                >
+                  <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+                    {icon}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+
+          {/* Siempre visible: Logout */}
+          <ListItem disablePadding sx={{ display: 'block' }}>
+            <ListItemButton
+              onClick={() => navigate('/')}
+              sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
+            >
+              <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
         </List>
       </Drawer>
     </Box>
