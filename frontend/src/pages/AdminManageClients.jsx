@@ -24,7 +24,7 @@ export default function AdminManageClients() {
     apellido: "",
     correo: "",
     telefono: "",
-    fecha_nacimiento: "",
+    fechaNacimientoCliente: "",
   });
 
   // Utilidad para ordenar: primero ACTIVO, luego INACTIVO
@@ -88,13 +88,13 @@ export default function AdminManageClients() {
   };
 
   const handleAddClient = async () => {
-    const requiredFields = ["nombre", "apellido", "correo", "telefono", "fecha_nacimiento"];
+    const requiredFields = ["nombre", "apellido", "correo", "telefono", "fechaNacimientoCliente"];
     const friendlyNames = {
       nombre: "First Name",
       apellido: "Last Name",
       correo: "Email",
       telefono: "Phone",
-      fecha_nacimiento: "Birth Date",
+      fechaNacimientoCliente: "Birth Date",
     };
 
     for (let field of requiredFields) {
@@ -112,7 +112,7 @@ export default function AdminManageClients() {
       nombreCliente: newClient.nombre,
       apellidoCliente: newClient.apellido,
       telefono: newClient.telefono,
-      fechaNacimientoCliente: newClient.fecha_nacimiento
+      fechaNacimientoCliente: newClient.fechaNacimientoCliente
     };
 
     try {
@@ -132,7 +132,7 @@ export default function AdminManageClients() {
           apellido: "",
           correo: "",
           telefono: "",
-          fecha_nacimiento: "",
+          fechaNacimientoCliente: "",
         });
       } else {
         showAlert(response.mensaje || "Error adding client", "error");
@@ -190,8 +190,8 @@ export default function AdminManageClients() {
             <TextField label="Phone" value={newClient.telefono}
               onChange={(e) => setNewClient({ ...newClient, telefono: e.target.value })} fullWidth />
             <TextField label="Birth Date" type="date" InputLabelProps={{ shrink: true }}
-              value={newClient.fecha_nacimiento}
-              onChange={(e) => setNewClient({ ...newClient, fecha_nacimiento: e.target.value })} fullWidth />
+              value={newClient.fechaNacimientoCliente}
+              onChange={(e) => setNewClient({ ...newClient, fechaNacimientoCliente: e.target.value })} fullWidth />
 
           </Stack>
         </DialogContent>

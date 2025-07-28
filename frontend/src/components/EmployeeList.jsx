@@ -52,7 +52,7 @@ function Row({ employee, onRequestDelete }) {
                 Details
               </Typography>
               <Typography variant="body2">ID: {employee.id}</Typography>
-              {onRequestDelete && employee.status === "ACTIVO" && (
+              {onRequestDelete && employee.estado === "ACTIVO" && (
                 <Button
                   variant="contained"
                   color="error"

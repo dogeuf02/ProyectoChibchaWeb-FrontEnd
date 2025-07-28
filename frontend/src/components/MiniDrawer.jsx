@@ -27,7 +27,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 
 // Cambiar esta constante según el rol actual del usuario:
-const rol = 'distributor'; // 'admin' | 'client' | 'distributor'
+const rol = localStorage.getItem("userRole");
+
 
 const drawerWidth = 240;
 
@@ -96,9 +97,10 @@ export default function MiniDrawer() {
 
   // Para rutas dinámicas por rol
   const getPath = (base) => {
-    if (rol === 'admin') return `/admin/${base}`;
-    if (rol === 'client') return `/client/${base}`;
-    if (rol === 'distributor') return `/distributor/${base}`;
+    if (rol === 'Administrador') return `/admin/${base}`;
+    if (rol === 'Cliente') return `/client/${base}`;
+    if (rol === 'Distribuidor') return `/distributor/${base}`;
+    if (rol === 'Empleado') return `/employee/${base}`;
     return '/';
   };
 
@@ -158,7 +160,7 @@ export default function MiniDrawer() {
           ))}
 
           {/* Buttons solo para client y distributor */}
-          {(rol === 'client' || rol === 'distributor') &&
+          {(rol === 'Cliente' || rol === 'Distribuidor') &&
             clientDistributorItems.map(({ text, icon, basePath }) => (
               <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                 <ListItemButton
@@ -190,7 +192,7 @@ export default function MiniDrawer() {
             ))}
 
           {/* Admin: Sección Manage */}
-          {rol === 'admin' && (
+          {rol === 'Administrador' && (
             <>
               <ListItem disablePadding sx={{ display: 'block' }}>
                 <ListItemButton

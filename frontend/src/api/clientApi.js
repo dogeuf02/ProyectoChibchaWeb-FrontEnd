@@ -26,7 +26,7 @@ export const getClients = async () => {
       apellido: cli.apellidoCliente,
       correo: cli.correo,
       telefono: cli.telefono,
-      fecha_nacimiento: cli.fechaNacimiento,
+      fechaNacimientoCliente: cli.fechaNacimientoCliente,
       estado: cli.estado
     }));
 

@@ -107,7 +107,7 @@ export default function AdminManageDistributors() {
 
     const payload = {
       correoDistrbuidor: newDistributor.email,
-      contrasenaDistribuidor: "admin@123",
+      contrasenaDistribuidor: "distri@123",
       nombreTipoDoc: newDistributor.company_document_type,
       numeroDocEmpresa: newDistributor.company_document_number,
       nombreEmpresa: newDistributor.company_name,

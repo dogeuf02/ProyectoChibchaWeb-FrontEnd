@@ -49,7 +49,7 @@ function Row({ client, onRequestDelete }) {
               </Typography>
               <Typography variant="body2">Client ID: {client.id_cliente}</Typography>
               <Typography variant="body2">Phone: {client.telefono}</Typography>
-              <Typography variant="body2">Birth Date: {client.fecha_nacimiento}</Typography>
+              <Typography variant="body2">Birth Date: {client.fechaNacimientoCliente}</Typography>
 
               {onRequestDelete && client.estado === "ACTIVO" && (
                 <Button

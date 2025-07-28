@@ -94,7 +94,7 @@ export default function AdminManageEmployees() {
         apellidoEmpleado: newEmployee.lastName,
         cargoEmpleado: newEmployee.position,
         correo: newEmployee.email,
-        contrasena: newEmployee.phone // temporalmente se usa phone
+        contrasena: "employee@123" // temporalmente se usa phone
       };
 
       const response = await createEmployee(employee);
