@@ -13,12 +13,14 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
-import HomeIcon from '@mui/icons-material/Home';
-import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import DnsIcon from '@mui/icons-material/Dns';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 
+
+const rol = 'cliente'; // Puedes cambiar esto según tu lógica
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -77,9 +79,11 @@ export default function MiniDrawer() {
   };
 
   const menuItems = [
-    { text: 'Profile', icon: <AccountCircleIcon />, path: '/dashboard/profile' },
-    { text: 'Payments', icon: <CreditCardIcon />, path: '/dashboard/payments' },
-    { text: 'Logout', icon: <LogoutIcon />, path: '/dashboard/logout' },
+    { text: 'Profile', icon: <AccountCircleIcon />, path: '/client/manageProfile' },
+    { text: 'Payments', icon: <CreditCardIcon />, path: '/client/payments' },
+    { text: 'MyPlans', icon: <ListAltIcon />, path: '/client/myplans' },
+    { text: 'MyDomains', icon: <DnsIcon />, path: '/client/mydomains' },
+    { text: 'Logout', icon: <LogoutIcon />, path: '/' },
   ];
 
   return (

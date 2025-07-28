@@ -45,7 +45,7 @@ const cardData = [
   },
 ];
 
-export default function Domains() {
+export default function DomainsInfo() {
   return (
     <Box id="Domains" sx={{ bgcolor: '#f5f5f5', py: 8 }} >
       <Container>
