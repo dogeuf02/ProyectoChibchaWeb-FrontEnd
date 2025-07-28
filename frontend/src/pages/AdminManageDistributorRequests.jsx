@@ -35,7 +35,7 @@ export default function AdminManageDistributorRequests() {
 
   const handleRequestAccept = async (id) => {
     setSelectedId(id);
-    const distributor = distributors.find(dist => dist.distributor_id === selectedId);
+    const distributor = distributors.find(dist => dist.distributor_id === id);
         console.log(selectedId)
         if (!distributor) {
           showAlert("Distribuidor no encontrado", "error");

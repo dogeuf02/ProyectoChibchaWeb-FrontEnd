@@ -1,18 +1,16 @@
-import { useState } from 'react'
 import './App.css'
 import MainLayout from './layout/MainLayout.jsx'
 import RegisterAccount from './pages/RegisterAccount.jsx'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import RegisterDistributor from './pages/RegisterDistributor.jsx'
 import Login from './pages/Login.jsx'
 import ManageProfile from './pages/ManageProfile.jsx'
 import Home from './pages/Home.jsx'
-import { AlertProvider } from './context/AlertContext.jsx'
 import GlobalAlert from './components/GlobalAlert.jsx'
 import Domains from './pages/DomainsInfo.jsx'
 import Plans from './pages/PlansInfo.jsx'
 import AdminManageEmployees from './pages/AdminManageEmployees.jsx'
-import DashboardLayout from './layout/DashboardLayout';
+import DashboardLayout from './layout/DashboardLayout.jsx'
 import AdminManageDistributors from './pages/AdminManageDistributors.jsx'
 import AdminManageAdmins from './pages/AdminManageAdmins.jsx'
 import AdminManageDistributorRequests from './pages/AdminManageDistributorRequests.jsx'
@@ -27,81 +25,83 @@ import PlansInfo from './pages/PlansInfo.jsx'
 import DomainRequest from './pages/DomainRequest.jsx'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <AlertProvider>
-
+    <>
       <Routes>
-        <Route path="/"
-          element={<MainLayout>
+        <Route path="/" element={
+          <MainLayout>
             <Home />
             <DomainsInfo />
             <PlansInfo />
             <DistributorInfo />
           </MainLayout>
+        } />
 
-          } />
         <Route path="/registerAccount" element={
           <MainLayout>
             <RegisterAccount />
           </MainLayout>
         } />
 
-        <Route path="/registerDistributor" element={<MainLayout>
-          <RegisterDistributor />
-        </MainLayout>} />
+        <Route path="/registerDistributor" element={
+          <MainLayout>
+            <RegisterDistributor />
+          </MainLayout>
+        } />
 
-        <Route path="/Login" element={<MainLayout>
-          <Login />
-        </MainLayout>} />
+        <Route path="/Login" element={
+          <MainLayout>
+            <Login />
+          </MainLayout>
+        } />
 
-        <Route path="/Domains" element={<MainLayout>
-          <Domains />
-        </MainLayout>} />
+        <Route path="/Domains" element={
+          <MainLayout>
+            <Domains />
+          </MainLayout>
+        } />
 
-        <Route path="/Plans" element={<MainLayout>
-          <Plans />
-        </MainLayout>} />
+        <Route path="/Plans" element={
+          <MainLayout>
+            <Plans />
+          </MainLayout>
+        } />
 
-
+        {/* Admin Dashboard */}
         <Route path="/admin" element={<DashboardLayout />}>
-          <Route index element={<ManageProfile />} /> {/* /admin */}
-          <Route path="ManageProfile" element={<ManageProfile />} /> {/* /client/manageProfile */}
-          <Route path="ManageDistributors" element={<AdminManageDistributors />} /> {/* /admin/distributors */}
-          <Route path="ManageAdministrators" element={<AdminManageAdmins />} /> {/* /admin/administrators */}
-          <Route path="ManageEmployees" element={<AdminManageEmployees />} /> {/* /admin/employees */}
-          <Route path="ManageDistributorRequests" element={<AdminManageDistributorRequests />} /> {/* /admin/distributor-requests */}
-          <Route path="ManageDomainRequests" element={<AdminManageDomainRequests />} /> {/* /admin/domain-requests */}
-          <Route path='ManageClients' element={<AdminManageClients />} /> {/* /admin/manage-clients */}
-
+          <Route index element={<ManageProfile />} />
+          <Route path="ManageProfile" element={<ManageProfile />} />
+          <Route path="ManageDistributors" element={<AdminManageDistributors />} />
+          <Route path="ManageAdministrators" element={<AdminManageAdmins />} />
+          <Route path="ManageEmployees" element={<AdminManageEmployees />} />
+          <Route path="ManageDistributorRequests" element={<AdminManageDistributorRequests />} />
+          <Route path="ManageDomainRequests" element={<AdminManageDomainRequests />} />
+          <Route path="ManageClients" element={<AdminManageClients />} />
         </Route>
 
+        {/* Client Dashboard */}
         <Route path="/client" element={<DashboardLayout />}>
           <Route index element={<ManageProfile />} />
-          <Route path="ManageProfile" element={<ManageProfile />} /> {/* /client/manageProfile */}
-          <Route path="Payments" element={<Payments />} /> {/* /client/payments */}
-          <Route path="MyPlans" element={<MyPlans />} /> {/* /client/myplans */}
-          <Route path='MyDomains' element={<MyDomains />} /> {/* /client/mydomains */}
-          <Route path='DomainRequest' element={<DomainRequest />} /> {/* /distributor/DomainRequest */}
+          <Route path="ManageProfile" element={<ManageProfile />} />
+          <Route path="Payments" element={<Payments />} />
+          <Route path="MyPlans" element={<MyPlans />} />
+          <Route path="MyDomains" element={<MyDomains />} />
+          <Route path="DomainRequest" element={<DomainRequest />} />
         </Route>
 
+        {/* Distributor Dashboard */}
         <Route path="/distributor" element={<DashboardLayout />}>
           <Route index element={<ManageProfile />} />
-          <Route path="ManageProfile" element={<ManageProfile />} /> {/* /distributor/manageProfile */}
-          <Route path="Payments" element={<Payments />} /> {/* /distributor/payments */}
-          <Route path='MyDomains' element={<MyDomains />} /> {/* /distributor/mydomains */}
-          <Route path='DomainRequest' element={<DomainRequest />} /> {/* /distributor/DomainRequest */}
+          <Route path="ManageProfile" element={<ManageProfile />} />
+          <Route path="Payments" element={<Payments />} />
+          <Route path="MyDomains" element={<MyDomains />} />
+          <Route path="DomainRequest" element={<DomainRequest />} />
         </Route>
-
-
       </Routes>
 
-
       <GlobalAlert />
-
-    </AlertProvider>
-  )
+    </>
+  );
 }
 
-export default App
+export default App;

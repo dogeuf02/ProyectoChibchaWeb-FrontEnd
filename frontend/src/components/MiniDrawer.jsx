@@ -26,6 +26,8 @@ import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import PersonIcon from '@mui/icons-material/Person';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 
+import { useAuth } from '../context/AuthContext';
+
 // Cambiar esta constante según el rol actual del usuario:
 const rol = localStorage.getItem("userRole");
 
@@ -83,6 +85,7 @@ export default function MiniDrawer() {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(true);
   const [openManage, setOpenManage] = React.useState(false);
+  const { authenticated, role, logout } = useAuth();
 
   const toggleDrawer = () => setOpen(!open);
   const handleToggleManage = () => setOpenManage((prev) => !prev);
@@ -117,6 +120,11 @@ export default function MiniDrawer() {
   const clientOnlyItems = [
     { text: 'My Plans', icon: <ListAltIcon />, path: '/client/myplans' },
   ];
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -223,7 +231,7 @@ export default function MiniDrawer() {
           {/* Logout siempre visible */}
           <ListItem disablePadding sx={{ display: 'block' }}>
             <ListItemButton
-              onClick={() => navigate('/')}
+              onClick={handleLogout}
               sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
             >
               <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>

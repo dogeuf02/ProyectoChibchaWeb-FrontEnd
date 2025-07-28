@@ -65,17 +65,23 @@ export default function NavbarMUI() {
     navigate('/');
   };
 
-const handleGoToProfile = () => {
-  handleMenuClose();
+  const handleGoToProfile = () => {
+    handleMenuClose();
+    switch (role) {
+      case "Administrador":
+        navigate('/admin/ManageProfile');
+        break;
+      case "Cliente":
+        navigate('/cliente/ManageProfile');
+        break;
+      case "Empleado":
+        navigate('/empleado/ManageProfile');
+        break;
+      case "Distribuidor":
+        navigate('/distributor/ManageProfile'); break;
+    }
+  };
 
-  const path = rolePathMap[role];
-
-  if (path) {
-    navigate(path);
-  } else {
-    showAlert("Unknown role, cannot redirect to profile", "error");
-  }
-};
 
   return (
     <>
@@ -169,7 +175,7 @@ const handleGoToProfile = () => {
                     Employee panel
                   </MenuItem>
                 )}
-                <MenuItem onClick={handleLogout}>Log out</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </>
           )}
