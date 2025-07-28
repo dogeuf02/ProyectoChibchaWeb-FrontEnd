@@ -1,9 +1,12 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { auth } from '../api/authApi';
+import { useGlobalAlert } from "../context/AlertContext";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const { showAlert } = useGlobalAlert();
+
   const [authenticated, setAuthenticated] = useState(() => {
     return localStorage.getItem("authenticated") === "true";
   });
@@ -56,10 +59,11 @@ export const AuthProvider = ({ children }) => {
     localStorage.clear()
     localStorage.removeItem("authenticated");
     localStorage.removeItem("userRole");
+    showAlert("Logged out", "success")
   };
 
   return (
-    <AuthContext.Provider value={{ authenticated, setAuthenticated, role, setRole , login, logout}}>
+    <AuthContext.Provider value={{ authenticated, setAuthenticated, role, setRole, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -60,9 +60,19 @@ export default function NavbarMUI() {
 
   const handleGoToProfile = () => {
     handleMenuClose();
-    navigate('/admin/ManageProfile');
-    //navigate('/client/ManageProfile');
-    //navigate('/distributor/ManageProfile');
+    switch (role) {
+      case "Administrador":
+        navigate('/admin/ManageProfile');
+        break;
+      case "Cliente":
+        navigate('/cliente/ManageProfile');
+        break;
+      case "Empleado":
+        navigate('/empleado/ManageProfile');
+        break;
+      case "Distribuidor":
+        navigate('/distributor/ManageProfile'); break;
+    }
   };
 
 
@@ -158,7 +168,7 @@ export default function NavbarMUI() {
                     Employee panel
                   </MenuItem>
                 )}
-                <MenuItem onClick={handleLogout}>Log out</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </>
           )}
