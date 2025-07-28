@@ -34,7 +34,7 @@ export const getDistributors = async () => {
             distributor_id: d.idDistribuidor,
             role: "Distribuidor",
             email: d.correo,
-            status: "ACTIVO",
+            status: d.estado,
             company_document_type: d.nombreTipoDoc,
             company_document_number: d.numeroDocEmpresa,
             company_name: d.nombreEmpresa,
@@ -58,3 +58,24 @@ export const getDistributors = async () => {
     }
 };
 
+export const deactivateUser = async (correo) => {
+  try {
+    const response = await api.put(`/usuarios/correo/${correo}`, {
+      estado: "INACTIVO"
+    });
+
+    return { exito: true, data: response.data };
+  } catch (error) {
+    if (error.response && error.response.data) {
+      return {
+        exito: false,
+        mensaje: error.response.data.mensaje || "Error al desactivar el usuario"
+      };
+    } else {
+      return {
+        exito: false,
+        mensaje: "Error desconocido al desactivar el usuario"
+      };
+    }
+  }
+};

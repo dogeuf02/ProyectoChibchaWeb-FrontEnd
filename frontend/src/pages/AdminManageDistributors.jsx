@@ -6,7 +6,7 @@ import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Stack, MenuItem } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { createDistributor, getDistributors } from "../api/distributorApi";
+import { createDistributor, getDistributors, deactivateUser } from "../api/distributorApi";
 
 export default function AdminManageDistributors() {
   useScrollToTop();
@@ -49,12 +49,37 @@ export default function AdminManageDistributors() {
     setOpenDialog(true);
   };
 
-  const handleConfirmDelete = () => {
-    setDistributors(prev => prev.filter(dist => dist.id !== selectedId));
-    setOpenDialog(false);
-    setSelectedId(null);
-    showAlert("Distributor deleted successfully", "success");
+  const handleConfirmDelete = async () => {
+    const distributor = distributors.find(dist => dist.distributor_id === selectedId);
+    console.log(distributor)
+    if (!distributor) {
+      showAlert("Distribuidor no encontrado", "error");
+      setOpenDialog(false);
+      return;
+    }
+
+    try {
+      const result = await deactivateUser(distributor.email);
+
+      if (result.exito) {
+        showAlert("Distribuidor desactivado exitosamente", "success");
+        const updated = await getDistributors();
+        if (updated.exito) {
+          console.log("sexito")
+          setDistributors(updated.distribuidores);
+        }
+      } else {
+        showAlert(result.mensaje || "Error al desactivar distribuidor", "error");
+      }
+    } catch (error) {
+      console.error("Error inesperado al desactivar:", error);
+      showAlert("Hubo un error al intentar desactivar el distribuidor", "error");
+    } finally {
+      setOpenDialog(false);
+      setSelectedId(null);
+    }
   };
+
 
   const handleAddDistributor = async () => {
     const requiredFields = [
