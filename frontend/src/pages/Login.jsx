@@ -59,7 +59,7 @@ login(res.rol);  // actualiza el contexto global
     }
 
   } catch (error) {
-    showAlert("Correo o contraseña incorrectos", "failed");
+    showAlert("Mail or password incorrect", "failed");
     console.error(error);
   }
 };
