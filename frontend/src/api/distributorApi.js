@@ -3,7 +3,7 @@ import api from './axiosInstance';
 export const createDistributor = async (distributor) => {
     try {
         console.log("Payload enviado al backend:", distributor); // 🔍 Verifica el formato exacto
-        const response = await api.post('/distribuidors/registroDistribuidor', distributor);
+        const response = await api.post('/distribuidor/registroDistribuidor', distributor);
 
         return { exito: true, data: response.data };
     } catch (error) {
@@ -18,7 +18,7 @@ export const createDistributor = async (distributor) => {
 
 export const getDistributors = async () => {
     try {
-        const response = await api.get("/distribuidors/obtenerDistribuidores");
+        const response = await api.get("/distribuidor/obtenerDistribuidores");
 
         const data = response.data;
 
@@ -54,7 +54,7 @@ export const getDistributors = async () => {
 
 export const updateState = async (email, state) => {
   try {
-    const response = await api.put(`/usuarios/correo/${email}`, {
+    const response = await api.put(`/usuario/correo/${email}`, {
       estado: state
     });
 
@@ -76,7 +76,7 @@ export const updateState = async (email, state) => {
 
 export const getPendingDistributors = async () => {
     try {
-        const response = await api.get("/distribuidors/obtenerDistribuidores");
+        const response = await api.get("/distribuidor/obtenerDistribuidores");
         const data = response.data;
 
         const pendings = data.filter(d => d.estado === "PENDIENTE");

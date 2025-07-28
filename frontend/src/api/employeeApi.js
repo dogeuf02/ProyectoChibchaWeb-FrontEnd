@@ -2,7 +2,7 @@ import api from './axiosInstance';
 
 export const createEmployee = async (employee) => {
   try {
-    const response = await api.post('/empleados/registroEmpleado', employee);
+    const response = await api.post('/empleado/registroEmpleado', employee);
     return { exito: true, data: response.data };
   } catch (error) {
     if (error.response && error.response.data) {
@@ -17,7 +17,7 @@ export const createEmployee = async (employee) => {
 //Get employees with email
 export const getEmployees = async () => {
   try {
-    const response = await api.get('/empleados/obtenerEmpleados');
+    const response = await api.get('/empleado/obtenerEmpleados');
 
     const rawEmployees = response.data;
 
@@ -47,7 +47,7 @@ export const getEmployees = async () => {
 
 export const deactivateUser = async (correo) => {
   try {
-    const response = await api.put(`/usuarios/correo/${correo}`, {
+    const response = await api.put(`/usuario/correo/${correo}`, {
       estado: "INACTIVO"
     });
 
