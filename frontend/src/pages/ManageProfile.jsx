@@ -13,12 +13,29 @@ import {
 import useScrollToTop from '../hooks/useScrollToTop';
 import { useGlobalAlert } from "../context/AlertContext";
 import ConfirmDialog from "../components/ConfirmDialog";
+import { useAuth } from "../context/AuthContext";
+import {
+    getUserProfile,
+    updateClientProfile,
+    updateEmployeeProfile,
+    updateDistributorProfile,
+    updateAdminProfile,
+    deactivateUserById
+} from '../api/userApi';
+import { useNavigate } from 'react-router-dom';
+
 
 
 export default function ManageProfile() {
 
 
     useScrollToTop();
+
+    const navigate = useNavigate();
+    const { role, logout } = useAuth();
+    const userId = localStorage.getItem("userId");
+
+
 
     const { showAlert } = useGlobalAlert();
     const [profile, setProfile] = useState({
@@ -45,17 +62,10 @@ export default function ManageProfile() {
     const handleChange = (e) => {
         setProfile({ ...profile, [e.target.name]: e.target.value });
     };
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const requiredFields = [
-            'firstName',
-            'lastName',
-            'phone',
-            'birthDate',
-        ];
-
+        const requiredFields = ['firstName', 'lastName', 'phone', 'birthDate'];
         const friendlyNames = {
             email: 'Email',
             firstName: 'First Name',
@@ -71,10 +81,61 @@ export default function ManageProfile() {
             }
         }
 
-        setSnackbarOpen(true);
-        setEditMode(false);
-        showAlert("Profile updated successfully", "success"); // placeholder
+        try {
+            let updateFunction;
+            let id = profile.id;
 
+            const formattedData = {
+                nombreCliente: profile.firstName,
+                apellidoCliente: profile.lastName,
+                telefono: profile.phone,
+                fechaNacimientoCliente: profile.birthDate,
+            };
+
+            switch (role) {
+                case 'Cliente':
+                    updateFunction = updateClientProfile;
+                    break;
+                case 'Empleado':
+                    updateFunction = updateEmployeeProfile;
+                    formattedData.nombreEmpleado = profile.firstName;
+                    formattedData.apellidoEmpleado = profile.lastName;
+                    formattedData.fechaNacimientoEmpleado = profile.birthDate;
+                    delete formattedData.nombreCliente;
+                    delete formattedData.apellidoCliente;
+                    delete formattedData.fechaNacimientoCliente;
+                    break;
+                case 'Distribuidor':
+                    updateFunction = updateDistributorProfile;
+                    // agrega los campos si vas a permitir edición para distribuidores
+                    break;
+                case 'Administrador':
+                    updateFunction = updateAdminProfile;
+                    formattedData.nombreAdmin = profile.firstName;
+                    formattedData.apellidoAdmin = profile.lastName;
+                    formattedData.fechaNacimientoAdmin = profile.birthDate;
+                    delete formattedData.nombreCliente;
+                    delete formattedData.apellidoCliente;
+                    delete formattedData.fechaNacimientoCliente;
+                    break;
+                default:
+                    showAlert("Not supported rol", "error");
+                    return;
+            }
+
+            const res = await updateFunction(id, formattedData);
+
+            if (res && res.status === 200) {
+                setEditMode(false);
+                showAlert("Profile updated successfully", "success");
+            } else {
+                showAlert("There was a problem updating the profile", "error");
+            }
+
+        } catch (err) {
+            console.error("❌ Error actualizando perfil:", err);
+            showAlert("Error updating profile", "error");
+        }
     };
 
     const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -88,31 +149,62 @@ export default function ManageProfile() {
     const handleOpenDialog = () => setOpenDialog(true);
     const handleCloseDialog = () => setOpenDialog(false);
 
-    const handleConfirmDelete = () => {
-        // Aquí va la lógica de borrado (API, logout, redirección)
-        showAlert("Account deleted", "success"); // placeholder
-        setOpenDialog(false);
+const handleConfirmDelete = async () => {
+  const userId = localStorage.getItem("userId");
+
+  const res = await deactivateUserById(userId);
+
+  if (res.exito) {
+    showAlert("Account Succesfully Deleted", "success");
+
+    setOpenDialog(false);
+    
+    logout();
+
+    setTimeout(() => {
+    navigate('/');
+  }, 500);
+  } else {
+    showAlert("Error Deleting Acount", "error");
+    setOpenDialog(false);
+  }
+};
 
 
-
-
-
-    };
 
     useEffect(() => {
-        // Simula carga de datos desde localStorage o backend
-        const simulatedData = {
-            email: 'admin@example.com',
-            firstName: 'Juan',
-            lastName: 'Pérez',
-            phone: '3216549870',
-            birthDate: '1990-01-01',
-            roleName: 'Administrador', // o 'Distribuidor', 'Cliente'
-            position: 'IT Manager', // only if employee
-            documentType: 'CC', // only if distributor
+        const fetchProfile = async () => {
+            const userId = localStorage.getItem("userId");
+            const userRole = role; // desde useAuth()
 
+            if (!userId || !userRole) return;
+
+            const res = await getUserProfile(userRole, userId);
+            console.log("Profile data:", res);
+
+            if (res.exito) {
+                const data = res.data;
+
+                setProfile({
+                    id: data.idCliente || data.idEmpleado || data.idDistribuidor || data.idAdmin || '',
+                    email: data.correo || '',
+                    firstName: data.nombreEmpleado || data.nombreCliente || '',
+                    lastName: data.apellidoEmpleado || data.apellidoCliente || '',
+                    phone: data.telefono || '',
+                    birthDate: data.fechaNacimientoEmpleado || data.fechaNacimientoCliente || '',
+                    roleName: userRole,
+                    position: data.cargoEmpleado || '',
+                    documentType: data.nombreTipoDoc || '',
+                    companyName: data.nombreEmpresa || '',
+                    companyAddress: data.direccionEmpresa || '',
+                    companyNumber: data.numeroDocEmpresa || ''
+                });
+            } else {
+                showAlert(res.mensaje, "error");
+            }
         };
-        setProfile(simulatedData);
+
+        fetchProfile();
     }, []);
 
     return (
@@ -278,6 +370,30 @@ export default function ManageProfile() {
 
                                 </>)}
 
+                            {profile.roleName === 'Empleado' && (
+                                <>
+
+                                    <TextField
+                                        label="First Name"
+                                        name="firstName"
+                                        value={profile.firstName}
+                                        onChange={handleChange}
+                                        fullWidth
+                                        margin="normal"
+                                        disabled={!editMode}
+                                    />
+                                    <TextField
+                                        label="Last Name"
+                                        name="lastName"
+                                        value={profile.lastName}
+                                        onChange={handleChange}
+                                        fullWidth
+                                        margin="normal"
+                                        disabled={!editMode}
+                                    />
+
+
+                                </>)}
 
 
                             <TextField

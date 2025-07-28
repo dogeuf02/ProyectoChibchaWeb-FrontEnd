@@ -14,10 +14,12 @@ import { useGlobalAlert } from "../context/AlertContext";
 
 import { createClient } from '../api/clientApi';
 import { ConstructionOutlined } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 export default function RegisterAccount() {
 
   useScrollToTop();
+  const navigate = useNavigate();
   const { showAlert } = useGlobalAlert();
   const [form, setForm] = useState({
     firstName: '',
@@ -69,27 +71,23 @@ export default function RegisterAccount() {
     }
 
     //Descomentar para tomar los datos desde el form
-    // const client = {
-    //   "correoCliente": form.email,
-    //   "contrasenaCliente": form.password,
-    //   "nombreCliente": form.firstName,
-    //   "apellidoCliente": form.lastName,
-    //   "telefono": form.phone,
-    //   "fechaNacimientoCliente": form.birthDate
-    // }
-
     const client = {
-      "correoCliente": "pasumama@sapo.com",
-      "contrasenaCliente": "SapoRana@123",
-      "nombreCliente": "Sapo",
-      "apellidoCliente": "Rana",
-      "telefono": "100000",
-      "fechaNacimientoCliente": "2025-07-28"
+      "correoCliente": form.email,
+      "contrasenaCliente": form.password,
+      "nombreCliente": form.firstName,
+      "apellidoCliente": form.lastName,
+      "telefono": form.phone,
+      "fechaNacimientoCliente": form.birthDate
     }
+
 
     const res = await createClient(client)
     if (res.exito) {
-      showAlert('Registro exitoso', 'success');
+      showAlert('Register success', 'success');
+       setTimeout(() => {
+    navigate('/login');
+  }, 500); // espera .5 segundos antes de redirigir
+
     } else {
       //console.log('Registrando usuario:', form);
       showAlert(res.mensaje, 'error');

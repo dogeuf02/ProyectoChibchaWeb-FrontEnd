@@ -28,6 +28,13 @@ export default function NavbarMUI() {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const { authenticated, role, logout } = useAuth();
+  const rolePathMap = {
+  Administrador: '/admin/ManageProfile',
+  Cliente: '/client/ManageProfile',
+  Distribuidor: '/distributor/ManageProfile',
+  Empleado: '/employee/ManageProfile'
+};
+
   const navItems = [
     { label: 'Chibchaweb', to: '#Home' },
     { label: 'Domains', to: '#Domains' },
@@ -58,13 +65,17 @@ export default function NavbarMUI() {
     navigate('/');
   };
 
-  const handleGoToProfile = () => {
-    handleMenuClose();
-    navigate('/admin/ManageProfile');
-    //navigate('/client/ManageProfile');
-    //navigate('/distributor/ManageProfile');
-  };
+const handleGoToProfile = () => {
+  handleMenuClose();
 
+  const path = rolePathMap[role];
+
+  if (path) {
+    navigate(path);
+  } else {
+    showAlert("Unknown role, cannot redirect to profile", "error");
+  }
+};
 
   return (
     <>

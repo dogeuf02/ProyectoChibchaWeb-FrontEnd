@@ -2,7 +2,7 @@ import api from './axiosInstance';
 
 export const createClient = async (cliente) => {
   try {
-    const response = await api.post('/clienteDirectos/registroCliente', cliente);
+    const response = await api.post('/clienteDirecto/registroCliente', cliente);
     return { exito: true, data: response.data };
   } catch (error) {
     if (error.response && error.response.data) {
@@ -16,7 +16,7 @@ export const createClient = async (cliente) => {
 
 export const getClients = async () => {
   try {
-    const response = await api.get('/clienteDirectos/obtenerClientes');
+    const response = await api.get('/clienteDirecto/obtenerClientes');
 
     const rawClients = response.data;
 
@@ -47,7 +47,7 @@ export const getClients = async () => {
 
 export const deactivateUser = async (correo) => {
   try {
-    const response = await api.put(`/usuarios/correo/${correo}`, {
+    const response = await api.put(`/usuario/correo/${correo}`, {
       estado: "INACTIVO"
     });
 

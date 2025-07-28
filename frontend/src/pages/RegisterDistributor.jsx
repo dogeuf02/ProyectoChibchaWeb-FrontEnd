@@ -94,7 +94,7 @@ export default function RegisterDistributor() {
             const result = await createDistributor(distributor);
 
             if (result.exito) {
-                showAlert('Registro exitoso', 'success');
+                showAlert('Register Success', 'success');
                 setForm({
                     email: '',
                     password: '',
