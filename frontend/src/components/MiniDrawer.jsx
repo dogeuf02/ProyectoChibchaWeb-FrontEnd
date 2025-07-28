@@ -1,4 +1,3 @@
-// MiniDrawer.jsx
 import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +12,6 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
-
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -28,7 +26,7 @@ import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import PersonIcon from '@mui/icons-material/Person';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 
-const rol = 'admin'; // Cambia según el rol actual: 'admin', 'client', 'distributor'
+const rol = 'distributor'; // Cambiar según el rol actual: 'admin', 'client', 'distributor'
 
 const drawerWidth = 240;
 
@@ -103,6 +101,7 @@ export default function MiniDrawer() {
   const clientOrDistributorItems = [
     { text: 'Payments', icon: <CreditCardIcon />, path: '/client/payments' },
     { text: 'MyDomains', icon: <DnsIcon />, path: '/client/mydomains' },
+    { text: 'DomainRequest', icon: <DnsIcon />, path: '/client/DomainRequest' },
   ];
 
   const clientOnlyItems = [
