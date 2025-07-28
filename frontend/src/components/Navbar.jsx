@@ -132,7 +132,7 @@ export default function NavbarMUI() {
                   </Typography>
                 </MenuItem>
                 <MenuItem onClick={handleGoToProfile}>Mi perfil</MenuItem>
-                {role === 'admin' && (
+                {role === 'Administrador' && (
                   <MenuItem onClick={() => { navigate('/admin/ManageEmployees'); handleMenuClose(); }}>
                     Gestión empleados
                   </MenuItem>

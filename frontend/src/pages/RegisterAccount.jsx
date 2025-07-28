@@ -12,7 +12,7 @@ import useScrollToTop from '../hooks/useScrollToTop';
 import Zoom from '@mui/material/Zoom';
 import { useGlobalAlert } from "../context/AlertContext";
 
-import { createClient } from '../api/clienteApi';
+import { createClient } from '../api/clientApi';
 import { ConstructionOutlined } from '@mui/icons-material';
 
 export default function RegisterAccount() {
