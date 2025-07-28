@@ -51,7 +51,7 @@ function Row({ client, onRequestDelete }) {
               <Typography variant="body2">Phone: {client.telefono}</Typography>
               <Typography variant="body2">Birth Date: {client.fecha_nacimiento}</Typography>
 
-              {onRequestDelete && (
+              {onRequestDelete && client.estado === "ACTIVO" && (
                 <Button
                   variant="contained"
                   color="error"

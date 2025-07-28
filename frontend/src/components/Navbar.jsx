@@ -136,6 +136,19 @@ export default function NavbarMUI() {
                   <MenuItem onClick={() => { navigate('/admin/ManageEmployees'); handleMenuClose(); }}>
                     Gestión empleados
                   </MenuItem>
+                  
+                )}
+                {role === 'Administrador' && (
+                  <MenuItem onClick={() => { navigate('/admin/ManageDistributors'); handleMenuClose(); }}>
+                    Gestión Distribuidores
+                  </MenuItem>
+                  
+                )}
+                 {role === 'Administrador' && (
+                  <MenuItem onClick={() => { navigate('/admin/ManageClients'); handleMenuClose(); }}>
+                    Gestión Clientes
+                  </MenuItem>
+                  
                 )}
                 {role === 'empleado' && (
                   <MenuItem onClick={() => { navigate('/dashboard-empleado'); handleMenuClose(); }}>

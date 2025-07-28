@@ -6,7 +6,7 @@ import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { createEmployee, getEmployees } from '../api/employeeApi';
+import { createEmployee, getEmployees, deactivateUser } from '../api/employeeApi';
 
 
 export default function AdminManageEmployees() {
@@ -30,18 +30,32 @@ export default function AdminManageEmployees() {
   }, []);
 
 
-  const handleRequestDelete = (id) => {
+  const handleRequestDelete = async (id) => {
     setSelectedId(id);
     setOpenDialog(true);
   };
 
-  const handleConfirmDelete = () => {
-    setEmployees(prev => prev.filter(emp => emp.id !== selectedId));
-    setOpenDialog(false);
-    setSelectedId(null);
-    showAlert("Employee deleted successfully", "success");
+  const handleConfirmDelete = async () => {
+    try {
+      console.log(selectedId)
+      const resultado = await deactivateUser(selectedId);
 
+      if (resultado.exito) {
+        setEmployees(prev => prev.filter(emp => emp.id !== selectedId));
+        showAlert("Employee deactivated successfully", "success");
+      } else {
+        showAlert(resultado.mensaje || "Failed to deactivate employee", "error");
+      }
+
+    } catch (error) {
+      console.error("❌ Error al desactivar usuario:", error);
+      showAlert("Unexpected error during deactivation", "error");
+    } finally {
+      setOpenDialog(false);
+      setSelectedId(null);
+    }
   };
+
 
   const handleAddEmployee = async () => {
     const requiredFields = ['firstName', 'lastName', 'position', 'phone', 'email'];

@@ -14,18 +14,20 @@ export const createEmployee = async (employee) => {
   }
 }
 
+//Get employees with email
 export const getEmployees = async () => {
   try {
     const response = await api.get('/empleados/obtenerEmpleados');
 
-    const empleadosCrudos = response.data;
+    const rawEmployees = response.data;
 
-    const empleadosAdaptados = empleadosCrudos.map(emp => ({
+    const empleadosAdaptados = rawEmployees.map(emp => ({
       id: emp.idEmpleado,
       firstName: emp.nombreEmpleado,
       lastName: emp.apellidoEmpleado,
       position: emp.cargoEmpleado,
-      email: emp.correo
+      email: emp.correo,
+      estado: emp.estado
     }));
 
     return {
@@ -42,3 +44,22 @@ export const getEmployees = async () => {
     }
   }
 };
+
+export const deactivateUser = async (idUsuario) => {
+  try {
+    const response = await api.put(`/usuarios/${idUsuario}`, {
+      estado: "INACTIVA"
+    });
+
+    return { exito: true, data: response.data };
+
+  } catch (error) {
+    if (error.response && error.response.data) {
+      const { exito, mensaje } = error.response.data;
+      return { exito, mensaje };
+    } else {
+      return { exito: false, mensaje: 'Error desconocido al desactivar el usuario' };
+    }
+  }
+};
+
