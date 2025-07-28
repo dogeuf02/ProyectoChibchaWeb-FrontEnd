@@ -108,7 +108,7 @@ export default function AdminManageClients() {
 
     const client = {
       correoCliente: newClient.correo,
-      contrasenaCliente: generatedPassword,
+      contrasenaCliente: "employee@123",
       nombreCliente: newClient.nombre,
       apellidoCliente: newClient.apellido,
       telefono: newClient.telefono,
