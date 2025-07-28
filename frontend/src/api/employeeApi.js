@@ -16,7 +16,7 @@ export const createEmployee = async (employee) => {
 
 export const getEmployees = async () => {
   try {
-    const response = await api.get('/empleados');
+    const response = await api.get('/empleados/obtenerEmpleados');
 
     const empleadosCrudos = response.data;
 

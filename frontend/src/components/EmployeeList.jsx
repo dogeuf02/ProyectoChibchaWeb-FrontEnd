@@ -55,7 +55,7 @@ function Row({ employee, onRequestDelete }) {
                 color="error"
                 sx={{
                   mt: 2,
-                  
+
                   ':hover': {
                     backgroundColor: '#FFBE02',
                     color: '#212121',
@@ -77,45 +77,47 @@ export default function EmployeeList({ employees, onRequestDelete }) {
   const [searchId, setSearchId] = useState('');
 
   return (
-<>
-    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-  <TextField
-    variant="outlined"
-    size="small"
-    placeholder="Search by ID"
-    value={searchId}
-    onChange={(e) => setSearchId(e.target.value)}
-    InputProps={{
-      startAdornment: (
-        <InputAdornment position="start">
-          <SearchIcon />
-        </InputAdornment>
-      ),
-    }}
-    sx={{ width: 250 }}
-  />
-</Box>
+    <>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+        <TextField
+          variant="outlined"
+          size="small"
+          placeholder="Search by ID"
+          value={searchId}
+          onChange={(e) => setSearchId(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          sx={{ width: 250 }}
+        />
+      </Box>
 
-    <TableContainer component={Paper} sx={{ mt: 2 }}>
-      <Table>
-        <TableHead>
-          <TableRow sx={{ bgcolor: '#fff3e0' }}>
-            <TableCell />
-            <TableCell sx={{ fontWeight: 'bold' }}>Full Name</TableCell>
-            <TableCell sx={{ fontWeight: 'bold' }}>Position</TableCell>
-            <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {employees
-  .filter(emp => emp.id && emp.id.toLowerCase().includes(searchId.toLowerCase()))
-  .map(emp => (
-    <Row key={emp.id} employee={emp} onRequestDelete={onRequestDelete} />
-  ))
-}
-        </TableBody>
-      </Table>
-    </TableContainer>
+      <TableContainer component={Paper} sx={{ mt: 2 }}>
+        <Table>
+          <TableHead>
+            <TableRow sx={{ bgcolor: '#fff3e0' }}>
+              <TableCell />
+              <TableCell sx={{ fontWeight: 'bold' }}>Full Name</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Position</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {employees
+              .filter(emp => {
+                if (!searchId) return true;
+                return emp.id?.toString().includes(searchId);
+              }).map(emp => (
+                <Row key={emp.id} employee={emp} onRequestDelete={onRequestDelete} />
+              ))
+            }
+          </TableBody>
+        </Table>
+      </TableContainer>
     </>
   );
 }
