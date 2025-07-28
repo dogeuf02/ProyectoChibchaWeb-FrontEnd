@@ -93,7 +93,6 @@ export default function AdminManageDistributors() {
 
     try {
       const response = await createDistributor(payload);
-      console.log("Respuesta de la API:", response); // 🔍 Verifica si viene algún mensaje útil
 
       if (response.exito) {
         showAlert("Distribuidor creado exitosamente", "success");

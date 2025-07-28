@@ -1,26 +1,18 @@
 import api from './axiosInstance';
 
-export const createDistributor = async (data) => {
+export const createDistributor = async (distributor) => {
     try {
-        const response = await api.post('/distribuidors/registroDistribuidor', {
-            correoDistrbuidor: data.correo,
-            contrasenaDistribuidor: data.contrasena,
-            numeroDocEmpresa: data.numeroDocumento,
-            nombreEmpresa: data.nombreEmpresa,
-            direccionEmpresa: data.direccionEmpresa,
-            nombreTipoDoc: data.tipoDocumento
-        });
+        console.log("Payload enviado al backend:", distributor); // 🔍 Verifica el formato exacto
+        const response = await api.post('/distribuidors/registroDistribuidor', distributor);
 
-        const { exito, mensaje } = response.data;
-
-        if (exito) {
-            return { success: true, message: mensaje };
-        } else {
-            return { success: false, message: mensaje };
-        }
+        return { exito: true, data: response.data };
     } catch (error) {
-        console.error("Error al crear distribuidor:", error);
-        return { success: false, message: "Error al conectar con el servidor." };
+        if (error.response && error.response.data) {
+            const { exito, mensaje } = error.response.data;
+            return { exito, mensaje }; // devuelve el mensaje del backend
+        } else {
+            return { exito: false, mensaje: 'Error desconocido al crear el distribuidor' };
+        }
     }
 };
 
