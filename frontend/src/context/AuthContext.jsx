@@ -53,6 +53,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setAuthenticated(false);
     setRole(null);
+    localStorage.clear()
     localStorage.removeItem("authenticated");
     localStorage.removeItem("userRole");
   };

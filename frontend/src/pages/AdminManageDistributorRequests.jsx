@@ -6,6 +6,7 @@ import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Stack, MenuItem } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { getPendingDistributors, updateState } from "../api/distributorApi"; // ajusta la ruta si es necesario
 
 export default function AdminManageDistributorRequests() {
   useScrollToTop();
@@ -17,28 +18,51 @@ export default function AdminManageDistributorRequests() {
 
 
   useEffect(() => {
-    setDistributors([
-      {
-        distributor_id: "DIST010",
-        role: "Distributor",
-        email: "contact@deliveryhub.org",
-        status: "Pending",
-        company_document_type: "BUSINESS_ID",
-        company_document_number: "BI88776655",
-        company_name: "DeliveryHub",
-        company_address: "Main Street 101",
+    const fetchPendingDistributors = async () => {
+      try {
+        const result = await getPendingDistributors();
+   
+        setDistributors(result.distribuidores);
+      } catch (error) {
+        showAlert("Error fetching distributor requests", "error");
       }
-    ]);
+    };
+
+    fetchPendingDistributors();
   }, []);
 
 
-  const handleRequestAccept = (id) => {
-    setDistributors(prev =>
-      prev.map(dist =>
-        dist.distributor_id === id ? { ...dist, status: "Approved" } : dist
-      )
-    );
-    showAlert("Distributor request approved", "success");
+
+  const handleRequestAccept = async (id) => {
+    setSelectedId(id);
+    const distributor = distributors.find(dist => dist.distributor_id === selectedId);
+        console.log(selectedId)
+        if (!distributor) {
+          showAlert("Distribuidor no encontrado", "error");
+          setOpenDialog(false);
+          return;
+        }
+    
+        try {
+          const result = await updateState(distributor.email, "ACTIVO");
+    
+          if (result.exito) {
+            showAlert("Distribuidor desactivado exitosamente", "success");
+            const updated = await getPendingDistributors();
+            if (updated.exito) {
+              console.log("sexito")
+              setDistributors(updated.distribuidores);
+            }
+          } else {
+            showAlert(result.mensaje || "Error al desactivar distribuidor", "error");
+          }
+        } catch (error) {
+          console.error("Error inesperado al desactivar:", error);
+          showAlert("Hubo un error al intentar desactivar el distribuidor", "error");
+        } finally {
+          setOpenDialog(false);
+          setSelectedId(null);
+        }
   };
 
   const handleRequestDeny = (id) => {
@@ -65,11 +89,11 @@ export default function AdminManageDistributorRequests() {
         </Typography>
       </Box>
 
-<RegisterDistributorRequestsList
-  requests={distributors} // este valor debe ser un array
-  onRequestAccept={handleRequestAccept}
-  onRequestDeny={handleRequestDeny}
-/>
+      <RegisterDistributorRequestsList
+        requests={distributors} // este valor debe ser un array
+        onRequestAccept={handleRequestAccept}
+        onRequestDeny={handleRequestDeny}
+      />
 
 
       <ConfirmDialog

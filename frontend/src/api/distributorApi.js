@@ -18,19 +18,13 @@ export const createDistributor = async (distributor) => {
 
 export const getDistributors = async () => {
     try {
-        const response = await api.get(
-            "/distribuidors/obtenerDistribuidores"
-        );
+        const response = await api.get("/distribuidors/obtenerDistribuidores");
 
-        const datos = response.data;
-        console.log("🚀 Datos crudos:", datos);
+        const data = response.data;
 
-        const sorted = [
-            ...datos.filter(d => d.estado === "ACTIVO"),
-            ...datos.filter(d => d.estado !== "ACTIVO")
-        ];
+        const filtered =  data.filter(d => d.estado === "ACTIVO");
 
-        const adaptados = sorted.map((d) => ({
+        const adaptados = filtered.map((d) => ({
             distributor_id: d.idDistribuidor,
             role: "Distribuidor",
             email: d.correo,
@@ -58,10 +52,10 @@ export const getDistributors = async () => {
     }
 };
 
-export const deactivateUser = async (correo) => {
+export const updateState = async (email, state) => {
   try {
-    const response = await api.put(`/usuarios/correo/${correo}`, {
-      estado: "INACTIVO"
+    const response = await api.put(`/usuarios/correo/${email}`, {
+      estado: state
     });
 
     return { exito: true, data: response.data };
@@ -78,4 +72,41 @@ export const deactivateUser = async (correo) => {
       };
     }
   }
+};
+
+export const getPendingDistributors = async () => {
+    try {
+        const response = await api.get("/distribuidors/obtenerDistribuidores");
+        const data = response.data;
+
+        const pendings = data.filter(d => d.estado === "PENDIENTE");
+
+        const adaptados = pendings.map((d) => ({
+            distributor_id: d.idDistribuidor,
+            role: "Distribuidor",
+            email: d.correo,
+            status: d.estado,
+            company_document_type: d.nombreTipoDoc,
+            company_document_number: d.numeroDocEmpresa,
+            company_name: d.nombreEmpresa,
+            company_address: d.direccionEmpresa,
+        }));
+
+        return {
+            exito: true,
+            distribuidores: adaptados
+        };
+    } catch (error) {
+        if (error.response && error.response.data) {
+            return {
+                exito: false,
+                mensaje: error.response.data.mensaje || "Error al obtener los distribuidores pendientes"
+            };
+        } else {
+            return {
+                exito: false,
+                mensaje: "Error desconocido al obtener distribuidores pendientes"
+            };
+        }
+    }
 };

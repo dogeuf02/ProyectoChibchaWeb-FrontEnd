@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import useScrollToTop from '../hooks/useScrollToTop';
 import { useGlobalAlert } from "../context/AlertContext";
+import { createDistributor } from '../api/distributorApi'; // ajusta la ruta si es diferente
 
 export default function RegisterDistributor() {
 
@@ -45,9 +46,9 @@ export default function RegisterDistributor() {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('handleSubmit llamado');
+
         if (form.password !== form.confirmPassword) {
             showAlert('Passwords do not match', 'warning');
             return;
@@ -80,21 +81,38 @@ export default function RegisterDistributor() {
             }
         }
 
-
         const distributor = {
-            "numeroDocEmpresa": form.companyNumber,
-            "nombreEmpresa": form.companyName,
-            "direccionEmpresa": form.companyAddress,
-            "nombreTipoDoc": form.documentType,
-            "correoDistribuidor": form.email,
-            "contrasenaDistribuidor": form.password
+            numeroDocEmpresa: form.companyNumber,
+            nombreEmpresa: form.companyName,
+            direccionEmpresa: form.companyAddress,
+            nombreTipoDoc: form.documentType,
+            correoDistrbuidor: form.email,
+            contrasenaDistribuidor: form.password,
+        };
+
+        try {
+            const result = await createDistributor(distributor);
+
+            if (result.exito) {
+                showAlert('Registro exitoso', 'success');
+                setForm({
+                    email: '',
+                    password: '',
+                    confirmPassword: '',
+                    companyNumber: '',
+                    companyAddress: '',
+                    documentType: 'NIT',
+                    companyName: '',
+                });
+            } else {
+                showAlert(result.mensaje || 'Error al registrar el distribuidor', 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            showAlert('Error inesperado al registrar el distribuidor', 'error');
         }
-
-        
-
-        console.log('Registrando usuario:', form);
-        showAlert('Registro exitoso', 'success');
     };
+
 
     return (
         <Container maxWidth="xl" sx={{ mt: 6 }}>
