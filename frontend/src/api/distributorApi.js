@@ -22,7 +22,8 @@ export const getDistributors = async () => {
 
         const data = response.data;
 
-        const filtered =  data.filter(d => d.estado === "ACTIVO");
+        const filtered =  data.filter(d => d.estado === "ACTIVO" || d.estado === "INACTIVO")
+
 
         const adaptados = filtered.map((d) => ({
             distributor_id: d.idDistribuidor,

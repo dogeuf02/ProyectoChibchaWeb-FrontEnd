@@ -65,7 +65,7 @@ export default function AdminManageDistributors() {
         showAlert("Distribuidor desactivado exitosamente", "success");
         const updated = await getDistributors();
         if (updated.exito) {
-          console.log("sexito")
+
           setDistributors(updated.distribuidores);
         }
       } else {

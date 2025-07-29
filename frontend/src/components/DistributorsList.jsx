@@ -53,20 +53,23 @@ function Row({ distributor, onRequestDelete }) {
               <Typography variant="body2">Document Number: {distributor.company_document_number}</Typography>
               <Typography variant="body2">Company Address: {distributor.company_address}</Typography>
 
-              <Button
-                variant="contained"
-                color="error"
-                sx={{
-                  mt: 2,
-                  ':hover': {
-                    backgroundColor: '#FFBE02',
-                    color: '#212121',
-                  },
-                }}
-                onClick={() => onRequestDelete(distributor.distributor_id)}
-              >
-                Delete distributor
-              </Button>
+              {distributor.status === "ACTIVO" && (
+                <Button
+                  variant="contained"
+                  color="error"
+                  sx={{
+                    mt: 2,
+                    ':hover': {
+                      backgroundColor: '#FFBE02',
+                      color: '#212121',
+                    },
+                  }}
+                  onClick={() => onRequestDelete(distributor.distributor_id)}
+                >
+                  Delete distributor
+                </Button>
+              )}
+
             </Box>
           </Collapse>
         </TableCell>

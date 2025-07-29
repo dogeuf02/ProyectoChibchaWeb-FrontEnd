@@ -65,7 +65,25 @@ export default function ManageProfile() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const requiredFields = ['firstName', 'lastName', 'phone', 'birthDate'];
+let requiredFields = [];
+
+switch (role) {
+  case 'Cliente':
+    requiredFields = ['firstName', 'lastName', 'phone', 'birthDate'];
+    break;
+  case 'Empleado':
+    requiredFields = ['firstName', 'lastName'];
+    break;
+  case 'Administrador':
+    requiredFields = ['firstName', 'lastName', 'birthDate'];
+    break;
+  case 'Distribuidor':
+    requiredFields = []; // No validación
+    break;
+  default:
+    requiredFields = [];
+}
+
         const friendlyNames = {
             email: 'Email',
             firstName: 'First Name',
