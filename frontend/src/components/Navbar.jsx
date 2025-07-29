@@ -170,8 +170,8 @@ export default function NavbarMUI() {
                   </MenuItem>
 
                 )}
-                {role === 'empleado' && (
-                  <MenuItem onClick={() => { navigate('/dashboard-empleado'); handleMenuClose(); }}>
+                {role === 'Empleado' && (
+                  <MenuItem onClick={() => { navigate('/'); handleMenuClose(); }}>
                     Employee panel
                   </MenuItem>
                 )}

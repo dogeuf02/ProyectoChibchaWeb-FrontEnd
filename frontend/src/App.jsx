@@ -97,7 +97,15 @@ function App() {
           <Route path="MyDomains" element={<MyDomains />} />
           <Route path="DomainRequest" element={<DomainRequest />} />
         </Route>
+
+        <Route path="/employee" element={<DashboardLayout />}>
+          <Route index element={<ManageProfile />} />
+          <Route path="ManageProfile" element={<ManageProfile />} />
+ 
+        </Route>
       </Routes>
+
+      
 
       <GlobalAlert />
     </>

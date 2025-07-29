@@ -5,7 +5,7 @@ export const getUserProfile = async (role, userId) => {
     // 1. Obtener el usuario general por su ID
     const userRes = await api.get(`/usuario/${userId}`);
     const user = userRes.data;
-
+    console.log(user)
     // 2. Determinar el ID relacionado según el rol
     let relatedId;
     switch (role) {
@@ -55,7 +55,10 @@ export const getUserProfile = async (role, userId) => {
 
     // 4. Obtener el perfil específico
     const profileRes = await api.get(endpoint);
-
+    console.log("profile res")
+    profileRes.data.email = user.correoUsuario; // Aseguramos que el email del usuario esté presente en el perfil
+    console.log(profileRes.data)
+    
     return { exito: true, data: profileRes.data };
 
   } catch (error) {
