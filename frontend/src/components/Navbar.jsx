@@ -82,6 +82,19 @@ export default function NavbarMUI() {
     }
   };
 
+  const checkRole = (role) =>{
+    switch(role){
+      case "Administrador":
+        return "Administrator"
+      case "Cliente":
+        return "Client"
+      case "Empleado":
+        return "Employee"
+      case "Distribuidor":
+        return "Distributor" 
+    }
+  }
+
 
   return (
     <>
@@ -142,7 +155,7 @@ export default function NavbarMUI() {
               >
                 <MenuItem disabled>
                   <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                    {role}
+                    {checkRole(role)}
                   </Typography>
                 </MenuItem>
                 <MenuItem onClick={handleGoToProfile}>My profile</MenuItem>

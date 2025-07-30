@@ -36,7 +36,7 @@ export default function AdminManageDistributors() {
       if (result.exito) {
         setDistributors(result.distribuidores);
       } else {
-        showAlert(result.mensaje || "Error al cargar distribuidores", "error");
+        showAlert(result.mensaje || "Error loading distributors", "error");
       }
     };
 
@@ -53,7 +53,7 @@ export default function AdminManageDistributors() {
     const distributor = distributors.find(dist => dist.distributor_id === selectedId);
     console.log(distributor)
     if (!distributor) {
-      showAlert("Distribuidor no encontrado", "error");
+      showAlert("Distribuidor not found", "error");
       setOpenDialog(false);
       return;
     }
@@ -62,18 +62,17 @@ export default function AdminManageDistributors() {
       const result = await updateState(distributor.email, "INACTIVO");
 
       if (result.exito) {
-        showAlert("Distribuidor desactivado exitosamente", "success");
+        showAlert("Distribuidor disabled successfully", "success");
         const updated = await getDistributors();
         if (updated.exito) {
 
           setDistributors(updated.distribuidores);
         }
       } else {
-        showAlert(result.mensaje || "Error al desactivar distribuidor", "error");
+        showAlert(result.mensaje || "Error while disabling distributor", "error");
       }
     } catch (error) {
-      console.error("Error inesperado al desactivar:", error);
-      showAlert("Hubo un error al intentar desactivar el distribuidor", "error");
+      showAlert("Server error", "error");
     } finally {
       setOpenDialog(false);
       setSelectedId(null);
@@ -120,8 +119,9 @@ export default function AdminManageDistributors() {
       const response = await createDistributor(payload);
 
       if (response.exito) {
-        showAlert("Distribuidor creado exitosamente", "success");
+        showAlert("Distributor created seccessfully", "success");
         const updated = await getDistributors();
+        console.log("updated" + updated)
         if (updated.exito) {
           setDistributors(updated.distribuidores);
         }
@@ -134,15 +134,15 @@ export default function AdminManageDistributors() {
           company_document_type: "",
         });
       } else {
-        showAlert(response.mensaje || "No se pudo crear el distribuidor", "error");
+        showAlert(response.mensaje || "Error. Can't create distributor", "error");
       }
     } catch (error) {
       if (error.response) {
         console.error("Error 400+ de la API:", error.response.data); // 🔍 Importante para el error 400
-        showAlert(error.response.data?.mensaje || "Error en la solicitud", "error");
+        showAlert(error.response.data?.mensaje || "Server error.", "error");
       } else {
         console.error("Error inesperado:", error);
-        showAlert("Hubo un error al registrar el distribuidor", "error");
+        showAlert("Uncaught error", "error");
       }
     }
   };

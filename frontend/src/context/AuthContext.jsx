@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, use } from "react";
 import { auth } from '../api/authApi';
 import { useGlobalAlert } from "../context/AlertContext";
 
@@ -6,6 +6,14 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const { showAlert } = useGlobalAlert();
+
+  const [userId, setUserId] = useState(() => {
+    return localStorage.getItem("userId") || null;
+  })
+
+  const [roleId, setRoleId] = useState(() =>{
+    return localStorage.getItem("roleId") || null;
+  })
 
   const [authenticated, setAuthenticated] = useState(() => {
     return localStorage.getItem("authenticated") === "true";
@@ -15,7 +23,14 @@ export const AuthProvider = ({ children }) => {
     return localStorage.getItem("userRole") || null;
   });
 
-  // Efecto para mantener sincronizado con localStorage
+  useEffect(() => {
+    localStorage.setItem("userId", userId);
+  }, [userId])
+
+  useEffect(() => {
+    localStorage.setItem("roleId", roleId);
+  }, [roleId])
+
   useEffect(() => {
     localStorage.setItem("authenticated", authenticated);
   }, [authenticated]);
@@ -38,18 +53,19 @@ export const AuthProvider = ({ children }) => {
       const response = await auth(credentials);
 
       if (response.autenticado) {
+        setUserId(response.id);
+        setRoleId(response.idRol);
         setAuthenticated(true);
         setRole(response.rol);
 
-        // Guardar también el id si lo necesitas en localStorage
-        localStorage.setItem("userId", response.id);
+ 
 
         return { success: true };
       } else {
-        return { success: false, message: response.mensaje || "Credenciales incorrectas" };
+        return { success: false, message: response.mensaje};
       }
     } catch (error) {
-      return { success: false, message: "Error del servidor" };
+      return { success: false, message: error.mensaje};
     }
   };
 

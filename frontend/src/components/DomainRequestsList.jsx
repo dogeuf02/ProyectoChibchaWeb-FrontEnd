@@ -22,7 +22,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 function Row({ request, onAccept, onReject }) {
     const [open, setOpen] = useState(false);
-    const fullDomain = `${request.domain_name}.${request.tld}`;
+    const fullDomain = `${request.nombreDominio}${request.tld}`;
 
     return (
         <>
@@ -33,11 +33,11 @@ function Row({ request, onAccept, onReject }) {
                     </IconButton>
                 </TableCell>
                 <TableCell>{fullDomain}</TableCell>
-                <TableCell>{request.domain_status}</TableCell>
-                <TableCell>{request.request_status}</TableCell>
-                <TableCell>{request.applicant.name}</TableCell>
-                <TableCell>{request.applicant.role}</TableCell>
-                <TableCell>{request.reviewedBy?.name || "-"}</TableCell>
+                <TableCell>{request.estado}</TableCell>
+                <TableCell>{request.estado}</TableCell>
+                <TableCell>{request.nombreUsuario || "-"}</TableCell>
+                <TableCell>{request.rolUsuario || "-"}</TableCell>
+                <TableCell>-</TableCell> {/* Placeholder for reviewedBy */}
             </TableRow>
 
             <TableRow>
@@ -47,38 +47,28 @@ function Row({ request, onAccept, onReject }) {
                             <Typography variant="subtitle1" gutterBottom color="text.primary">
                                 Request Details
                             </Typography>
-                            <Typography variant="body2">Request ID: {request.id}</Typography>
-
+                            <Typography variant="body2">Request ID: {request.idSolicitud}</Typography>
                             <Typography variant="body2">Full Domain: {fullDomain}</Typography>
-                            <Typography variant="body2">Domain Status: {request.domain_status}</Typography>
-                            <Typography variant="body2">Request Status: {request.request_status}</Typography>
+                            <Typography variant="body2">Domain Status: {request.estado}</Typography>
+                            <Typography variant="body2">Request Status: {request.estado}</Typography>
 
                             <Typography variant="subtitle2" sx={{ mt: 2 }}>Applicant Info</Typography>
-                            <Typography variant="body2">Name: {request.applicant.name}</Typography>
-                            <Typography variant="body2">Email: {request.applicant.email}</Typography>
-                            <Typography variant="body2">Role: {request.applicant.role}</Typography>
+                            <Typography variant="body2">Name: {request.nombreUsuario || "-"}</Typography>
+                            <Typography variant="body2">Role: {request.rolUsuario || "-"}</Typography>
 
-                            {request.request_status !== 'pending' && request.reviewedBy && (
-                                <>
-                                    <Typography variant="subtitle2" sx={{ mt: 2 }}>Reviewed By</Typography>
-                                    <Typography variant="body2">Admin: {request.reviewedBy.name}</Typography>
-                                    <Typography variant="body2">Email: {request.reviewedBy.email}</Typography>
-                                </>
-                            )}
-
-                            {request.request_status === 'pending' && (
+                            {request.estado === 'pending' && (
                                 <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                                     <Button
                                         variant="contained"
                                         color="success"
-                                        onClick={() => onAccept(request.id)}
+                                        onClick={() => onAccept(request.idSolicitud)}
                                     >
                                         Accept
                                     </Button>
                                     <Button
                                         variant="contained"
                                         color="error"
-                                        onClick={() => onReject(request.id)}
+                                        onClick={() => onReject(request.idSolicitud)}
                                     >
                                         Reject
                                     </Button>
@@ -131,13 +121,13 @@ export default function DomainRequestsList({ domainRequests, onAccept, onReject 
                     <TableBody>
                         {(domainRequests || [])
                             .filter(req =>
-                                `${req.domain_name}.${req.tld}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                req.id.toString().includes(searchTerm)
+                                `${req.nombreDominio}.${req.tld}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                req.idSolicitud.toString().includes(searchTerm)
                             )
 
                             .map((req) => (
                                 <Row
-                                    key={req.id}
+                                    key={req.idSolicitud}
                                     request={req}
                                     onAccept={onAccept}
                                     onReject={onReject}

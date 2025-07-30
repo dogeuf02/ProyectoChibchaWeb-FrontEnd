@@ -3,6 +3,7 @@ import { Box, Typography } from "@mui/material";
 import DomainRequestsList from "../components/DomainRequestsList";
 import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
+import { getDomainRequests } from "../api/domainRequestApi";
 
 export default function AdminManageDomainRequests() {
   useScrollToTop();
@@ -17,56 +18,20 @@ export default function AdminManageDomainRequests() {
   const [domainRequests, setDomainRequests] = useState([]);
 
   useEffect(() => {
-    // Simulated initial data
-    setDomainRequests([
-      {
-        id: 1,
-        domain_name: "example",
-        tld: "com",
-        domain_status: "available",
-        request_status: "pending",
-        applicant: {
-          name: "Carlos Ramírez",
-          email: "carlos@mail.com",
-          role: "client"
-        },
-        reviewedBy: null
-      },
-      {
-        id: 2,
-        domain_name: "logistimax",
-        tld: "net",
-        domain_status: "pending",
-        request_status: "approved",
-        applicant: {
-          name: "Laura Torres",
-          email: "laura@mail.com",
-          role: "distributor"
-        },
-        reviewedBy: {
-          name: "Admin One",
-          email: "admin1@system.com"
-        }
-      },
-            {
-        id:3,
-        domain_name: "logistimax",
-        tld: "net",
-        domain_status: "pending",
-        request_status: "pending",
-        applicant: {
-          name: "Laura Torres",
-          email: "laura@mail.com",
-          role: "distributor"
-        },
-        reviewedBy: {
-          name: "Admin One",
-          email: "admin1@system.com"
-        }
-      },
 
-      
-    ]);
+    const fetchDomainRequests = async () => {
+      const result = await getDomainRequests();
+      if (result.exito) {
+        setDomainRequests(result.data);
+      }
+      else {
+        showAlert(result.mensaje, "error");
+      }
+      console.log(result);
+    }
+
+    fetchDomainRequests();
+
   }, []);
 
   const handleAccept = (id) => {
@@ -74,11 +39,11 @@ export default function AdminManageDomainRequests() {
       prev.map(req =>
         req.id === id
           ? {
-              ...req,
-              request_status: "approved",
-              domain_status: "active",
-              reviewedBy: currentAdmin
-            }
+            ...req,
+            request_status: "approved",
+            domain_status: "active",
+            reviewedBy: currentAdmin
+          }
           : req
       )
     );
@@ -90,11 +55,11 @@ export default function AdminManageDomainRequests() {
       prev.map(req =>
         req.id === id
           ? {
-              ...req,
-              request_status: "denied",
-              domain_status: "unavailable",
-              reviewedBy: currentAdmin
-            }
+            ...req,
+            request_status: "denied",
+            domain_status: "unavailable",
+            reviewedBy: currentAdmin
+          }
           : req
       )
     );

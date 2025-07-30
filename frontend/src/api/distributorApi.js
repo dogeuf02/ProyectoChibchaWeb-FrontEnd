@@ -93,6 +93,8 @@ export const getPendingDistributors = async () => {
             company_address: d.direccionEmpresa,
         }));
 
+        console.log("Adaptados" + adaptados)
+
         return {
             exito: true,
             distribuidores: adaptados
@@ -111,3 +113,28 @@ export const getPendingDistributors = async () => {
         }
     }
 };
+
+export const getDistributorById = async (id) => {
+    try {
+        const response = await api.get(`/distribuidor/${id}`);
+        console.log("Distributor data:", response.data);
+        return {
+            exito: true,
+            distribuidor: response.data
+        };
+    } catch (error) {
+        if (error.response && error.response.data) {
+            return {
+                exito: false,
+                mensaje: error.response.data.mensaje || "Error al obtener el distribuidor"
+            };
+        } else {
+            return {
+                exito: false,
+                mensaje: "Error desconocido al obtener el distribuidor"
+            };
+        }
+    }
+}
+
+

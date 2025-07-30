@@ -66,3 +66,18 @@ export const deactivateUser = async (correo) => {
     }
   }
 };
+
+export const getClientById = async (id) => {
+  try {
+    const response = await api.get(`/clienteDirecto/${id}`);
+    console.log("Client data:", response.data);
+    return { exito: true, data: response.data };
+  } catch (error) {
+    if (error.response && error.response.data) {
+      const { exito, mensaje } = error.response.data;
+      return { exito, mensaje }; // devuelve el mensaje del backend
+    } else {
+      return { exito: false, mensaje: 'Error desconocido al obtener el cliente' };
+    }
+  }
+}

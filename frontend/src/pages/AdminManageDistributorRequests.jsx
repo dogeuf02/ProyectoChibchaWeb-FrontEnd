@@ -38,7 +38,7 @@ export default function AdminManageDistributorRequests() {
     const distributor = distributors.find(dist => dist.distributor_id === id);
         console.log(selectedId)
         if (!distributor) {
-          showAlert("Distribuidor no encontrado", "error");
+          showAlert("Distributor not found.", "error");
           setOpenDialog(false);
           return;
         }
@@ -47,18 +47,17 @@ export default function AdminManageDistributorRequests() {
           const result = await updateState(distributor.email, "ACTIVO");
     
           if (result.exito) {
-            showAlert("Distribuidor desactivado exitosamente", "success");
+            showAlert("Distribuitor disabled succesfully.", "success");
             const updated = await getPendingDistributors();
             if (updated.exito) {
               console.log("sexito")
               setDistributors(updated.distribuidores);
             }
           } else {
-            showAlert(result.mensaje || "Error al desactivar distribuidor", "error");
+            showAlert(result.mensaje || "Error disabling distributor", "error");
           }
         } catch (error) {
-          console.error("Error inesperado al desactivar:", error);
-          showAlert("Hubo un error al intentar desactivar el distribuidor", "error");
+          showAlert("Server error trying to disable a distributor", "error");
         } finally {
           setOpenDialog(false);
           setSelectedId(null);

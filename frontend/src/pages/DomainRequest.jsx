@@ -9,33 +9,75 @@ import {
 } from '@mui/material';
 import { useGlobalAlert } from '../context/AlertContext';
 import Zoom from '@mui/material/Zoom';
+import getTodayDate from '../utils/dateUtils';
+import { createDomainRequest } from '../api/domainRequestApi';
 
 export default function DomainRequest() {
   const { showAlert } = useGlobalAlert();
   const [formData, setFormData] = useState({
     domainName: '',
+    domainTld: '',
     description: '',
   });
+
+  const getCurrentUserId = () => {
+    const role = localStorage.getItem("userRole");
+    let clienId = null;
+    let distributorId = null;
+
+    switch (role) {
+      case "Cliente":
+        clienId = localStorage.getItem("roleId")
+        break;
+      case "Distribuidor":
+        distributorId = localStorage.getItem("roleId")
+    }
+    return [clienId, distributorId];
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { domainName, description } = formData;
+    const { domainName, domainTld, description } = formData;
 
-    if (!domainName.trim() || !description.trim()) {
+    if (!domainName.trim() || !domainTld.trim() || !description.trim()) {
       showAlert("Please fill in all fields", "warning");
       return;
     }
+    const todayDate = getTodayDate();
+    const [client, distributor] = getCurrentUserId();
+    const domainRequest = {
+      nombreDominio: domainName,
+      estadoSolicitud: "En Revision",
+      tld: domainTld,
+      fechaSolicitud: todayDate,
+      cliente: client,
+      distributor: distributor
+    }
 
-    // Simulación de envío
-    console.log("Domain Request Sent:", formData);
+    console.log(domainRequest)
+
+    try {
+      const response = await createDomainRequest(domainRequest);
+      if (response.exito) {
+        showAlert(response.message, "success")
+      } else {
+        showAlert(response.message, "error")
+
+      }
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response)
+      }
+    }
+
     showAlert("Domain request submitted successfully!", "success");
-    setFormData({ domainName: '', description: '' }); // limpia el formulario
+    setFormData({ domainName: '', domainTld: '', description: '' }); // limpia el formulario
   };
 
   return (
@@ -50,6 +92,15 @@ export default function DomainRequest() {
               label="Domain Name"
               name="domainName"
               value={formData.domainName}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              placeholder="example.com"
+            />
+            <TextField
+              label="TLD"
+              name="domainTld"
+              value={formData.domainTld}
               onChange={handleChange}
               fullWidth
               margin="normal"
