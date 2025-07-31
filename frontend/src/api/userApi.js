@@ -113,3 +113,49 @@ export const deactivateUserById = async (userId) => {
     };
   }
 };
+
+export const getAllAdmins = async () => {
+  try {
+    const res = await api.get("/administrador/obtenerAdministradores");
+    return { exito: true, administradores: res.data };
+  } catch (err) {
+    console.error("❌ Error al obtener administradores:", err);
+    return { exito: false, mensaje: "Error al obtener administradores" };
+  }
+};
+
+export const registerAdmin = async (data) => {
+  try {
+    const res = await api.post("/administrador/registroAdministrador", data);
+    return { exito: true, data: res.data };
+  } catch (error) {
+    console.error("❌ Error al registrar administrador:", error);
+    return {
+      exito: false,
+      mensaje: error.response?.data?.mensaje || "Error al registrar administrador"
+    };
+  }
+};
+
+
+export const deactivateUser = async (correo) => {
+  try {
+    const response = await api.put(`/usuario/correo/${correo}`, {
+      estado: "INACTIVO"
+    });
+
+    return { exito: true, data: response.data };
+  } catch (error) {
+    if (error.response && error.response.data) {
+      return {
+        exito: false,
+        mensaje: error.response.data.mensaje || "Error al desactivar el usuario"
+      };
+    } else {
+      return {
+        exito: false,
+        mensaje: "Error desconocido al desactivar el usuario"
+      };
+    }
+  }
+};

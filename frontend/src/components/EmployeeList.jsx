@@ -20,7 +20,7 @@ import { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
-function Row({ employee, onRequestDelete }) {
+function Row({ employee, onRequestDelete, onRequestEdit }) {
 
 
   const [open, setOpen] = useState(false);
@@ -51,32 +51,42 @@ function Row({ employee, onRequestDelete }) {
               <Typography variant="subtitle1" gutterBottom color="text.primary">
                 Details
               </Typography>
+
               <Typography variant="body2">ID: {employee.id}</Typography>
-              {onRequestDelete && employee.estado === "ACTIVO" && (
+
+
+              <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#FF6300",
+                    borderRadius: 30,
+                    "&:hover": { backgroundColor: "#FFBE02", color: "#212121" },
+                  }}
+                  onClick={() => onRequestEdit(employee)}
+                >
+                  Edit Profile
+                </Button>
+
                 <Button
                   variant="contained"
                   color="error"
-                  sx={{
-                    mt: 2,
-                    ':hover': {
-                      backgroundColor: '#FFBE02',
-                      color: '#212121',
-                    },
-                  }}
+                  sx={{ borderRadius: 30 }}
                   onClick={() => onRequestDelete(employee.id)}
                 >
-                  Delete employee
+                  Delete Employee
                 </Button>
-              )}
+              </Box>
             </Box>
           </Collapse>
+
         </TableCell>
       </TableRow>
     </>
   );
 }
 
-export default function EmployeeList({ employees, onRequestDelete }) {
+export default function EmployeeList({ employees, onRequestDelete, onRequestEdit }) {
   const [searchId, setSearchId] = useState('');
 
   return (
@@ -117,7 +127,12 @@ export default function EmployeeList({ employees, onRequestDelete }) {
                 if (!searchId) return true;
                 return emp.id?.toString().includes(searchId);
               }).map(emp => (
-                <Row key={emp.id} employee={emp} onRequestDelete={onRequestDelete} />
+                <Row
+                  key={emp.id}
+                  employee={emp}
+                  onRequestDelete={onRequestDelete}
+                  onRequestEdit={onRequestEdit}
+                />
               ))
             }
           </TableBody>

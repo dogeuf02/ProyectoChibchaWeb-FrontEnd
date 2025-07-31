@@ -6,10 +6,15 @@ import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Stack, MenuItem } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { createDistributor, getDistributors, updateState } from "../api/distributorApi";
+import { updateClientProfile, updateEmployeeProfile, updateDistributorProfile, updateAdminProfile } from "../api/userApi";
+import { getDistributors, createDistributor, updateState } from "../api/distributorApi";
+import EditUserDialog from "../components/EditUserDialog";
+
 
 export default function AdminManageDistributors() {
   useScrollToTop();
+
+  const [editDistributor, setEditDistributor] = useState(null);
   const { showAlert } = useGlobalAlert();
   const [distributors, setDistributors] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -29,19 +34,28 @@ export default function AdminManageDistributors() {
     "NIT", "RUC", "CUIT", "RIF", "CPF_CNPJ", "TIN", "PASSPORT", "BUSINESS_ID", "OTHER"
   ];
 
-  useEffect(() => {
-    const fetchDistributors = async () => {
-      const result = await getDistributors();
+  const distributorFields = [
+  { name: "email", label: "Email" },
+  { name: "company_document_type", label: "Document Type" },
+  { name: "company_document_number", label: "Document Number" },
+  { name: "company_name", label: "Company Name" },
+  { name: "company_address", label: "Company Address" }
+];
 
-      if (result.exito) {
-        setDistributors(result.distribuidores);
-      } else {
-        showAlert(result.mensaje || "Error loading distributors", "error");
-      }
-    };
 
-    fetchDistributors();
-  }, []);
+useEffect(() => {
+  const fetchDistributors = async () => {
+    const result = await getDistributors();
+    if (result.exito) {
+      setDistributors(result.distribuidores);
+    } else {
+      showAlert(result.mensaje || "Error loading distributors", "error");
+    }
+  };
+
+  fetchDistributors();
+}, []);
+
 
 
   const handleRequestDelete = (id) => {
@@ -147,6 +161,45 @@ export default function AdminManageDistributors() {
     }
   };
 
+  const handleRequestEdit = (distributor) => {
+  setEditDistributor({
+    id: distributor.distributor_id, // para usarlo en la API
+    email: distributor.email,
+    company_document_type: distributor.company_document_type || distributor.nombreTipoDoc,
+    company_document_number: distributor.company_document_number || distributor.numeroDocEmpresa,
+    company_name: distributor.company_name || distributor.nombreEmpresa,
+    company_address: distributor.company_address || distributor.direccionEmpresa,
+  });
+};
+
+const handleEditChange = (field, value) => {
+  setEditDistributor((prev) => ({ ...prev, [field]: value }));
+};
+
+const handleSaveEdit = async () => {
+  if (!editDistributor) return;
+
+  const res = await updateDistributorProfile(editDistributor.id, {
+    nombreTipoDoc: editDistributor.company_document_type,
+    numeroDocEmpresa: editDistributor.company_document_number,
+    nombreEmpresa: editDistributor.company_name,
+    direccionEmpresa: editDistributor.company_address
+  });
+
+  if (res?.status === 200 || res?.exito) {
+    showAlert("Distributor updated successfully", "success");
+    const updated = await getDistributors();
+    if (updated.exito) {
+      setDistributors(updated.distribuidores);
+    }
+    setEditDistributor(null);
+  } else {
+    showAlert("Failed to update distributor", "error");
+  }
+};
+
+
+
   return (
     <Box sx={{ maxWidth: 1000, mx: "auto", mt: 10 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 6 }}>
@@ -158,13 +211,20 @@ export default function AdminManageDistributors() {
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => setOpenForm(true)}
-          sx={{ backgroundColor: "#FF6300", color: "#FAFAFA", "&:hover": { backgroundColor: "#e65c00" } }}
+          sx={{ backgroundColor: "#FF6300", color: "#FAFAFA", borderRadius:30,
+            "&:hover": { backgroundColor: "#e65c00" } }}
         >
           Add Distributor
         </Button>
       </Box>
 
-      <DistributorList distributors={distributors} onRequestDelete={handleRequestDelete} />
+<DistributorList
+  distributors={distributors}
+  onRequestDelete={handleRequestDelete}
+  onRequestEdit={handleRequestEdit} // ✅ ESTA LÍNEA FALTABA
+/>
+
+
 
       <ConfirmDialog
         open={openDialog}
@@ -235,12 +295,21 @@ export default function AdminManageDistributors() {
           <Button
             onClick={handleAddDistributor}
             variant="contained"
-            sx={{ backgroundColor: "#FF6300", color: "#FAFAFA", "&:hover": { backgroundColor: "#e65c00" } }}
+            sx={{ backgroundColor: "#FF6300", color: "#FAFAFA", borderRadius: 30, "&:hover": { backgroundColor: "#e65c00" } }}
           >
             Save
           </Button>
         </DialogActions>
       </Dialog>
+      <EditUserDialog
+  open={!!editDistributor}
+  onClose={() => setEditDistributor(null)}
+  onSave={handleSaveEdit}
+  userData={editDistributor || {}}
+  onChange={handleEditChange}
+  fields={distributorFields}
+/>
+
     </Box>
   );
 }

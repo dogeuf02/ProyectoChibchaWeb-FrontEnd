@@ -42,6 +42,7 @@ export default function ConfirmDialog({
           sx={{
             borderColor: "#BDBDBD",
             color: "#212121",
+            borderRadius: 30,
             ":hover": {
               borderColor: "#FFBE02",
               backgroundColor: "#FFBE02",
@@ -57,6 +58,7 @@ export default function ConfirmDialog({
           variant="contained"
           sx={{
             backgroundColor: "#f04507ff",
+            borderRadius: 30,
             ":hover": {
               backgroundColor: "#FFBE02",
             },

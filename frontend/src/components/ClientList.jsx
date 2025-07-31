@@ -20,7 +20,8 @@ import { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
-function Row({ client, onRequestDelete }) {
+function Row({ client, onRequestDelete, onRequestEdit }) {
+
   const [open, setOpen] = useState(false);
 
   return (
@@ -51,16 +52,34 @@ function Row({ client, onRequestDelete }) {
               <Typography variant="body2">Phone: {client.telefono}</Typography>
               <Typography variant="body2">Birth Date: {client.fechaNacimientoCliente}</Typography>
 
-              {onRequestDelete && client.estado === "ACTIVO" && (
-                <Button
-                  variant="contained"
-                  color="error"
-                  sx={{ mt: 2 }}
-                  onClick={() => onRequestDelete(client.id_cliente)}
-                >
-                  Delete client
-                </Button>
+              {(onRequestDelete && client.estado === "ACTIVO") && (
+                <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor: "#FF6300",
+                      borderRadius: 30,
+                      color: "#FAFAFA",
+                      "&:hover": {
+                        backgroundColor: "#FFBE02",
+                        color: "#212121",
+                      },
+                    }}
+                    onClick={() => onRequestEdit(client)}
+                  >
+                    Edit Profile
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    sx={{ borderRadius: 30 }}
+                    onClick={() => onRequestDelete(client.id_cliente)}
+                  >
+                    Delete Client
+                  </Button>
+                </Box>
               )}
+
             </Box>
           </Collapse>
         </TableCell>
@@ -69,7 +88,7 @@ function Row({ client, onRequestDelete }) {
   );
 }
 
-export default function ClientList({ clients, onRequestDelete }) {
+export default function ClientList({ clients, onRequestDelete, onRequestEdit }) {
   const [searchId, setSearchId] = useState('');
 
   return (
@@ -110,7 +129,9 @@ export default function ClientList({ clients, onRequestDelete }) {
                   key={client.id_cliente}
                   client={client}
                   onRequestDelete={onRequestDelete}
+                  onRequestEdit={onRequestEdit}
                 />
+
               ))}
           </TableBody>
         </Table>

@@ -9,15 +9,27 @@ import ConfirmDialog from "../components/ConfirmDialog";
 import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
 import { createClient, getClients, deactivateUser } from "../api/clientApi";
+import { updateClientProfile } from "../api/userApi";
+import EditUserDialog from "../components/EditUserDialog";
+
+
 
 export default function AdminManageClients() {
   useScrollToTop();
   const { showAlert } = useGlobalAlert();
 
   const [clients, setClients] = useState([]);
+  const [editClient, setEditClient] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [openForm, setOpenForm] = useState(false);
+
+  const clientFields = [
+  { name: "nombre", label: "First Name" },
+  { name: "apellido", label: "Last Name" },
+  { name: "telefono", label: "Phone" },
+  { name: "fechaNacimientoCliente", label: "Birth Date", type: "date" },
+];
 
   const [newClient, setNewClient] = useState({
     nombre: "",
@@ -87,6 +99,23 @@ export default function AdminManageClients() {
     }
   };
 
+const handleRequestEdit = (user) => {
+  setEditClient({
+    id: user.id_cliente, // ✅ esto es lo que el backend necesita
+    nombre: user.nombre,
+    apellido: user.apellido,
+    telefono: user.telefono,
+    fechaNacimientoCliente: user.fechaNacimientoCliente
+  });
+};
+
+
+const handleEditChange = (field, value) => {
+  setEditClient((prev) => ({ ...prev, [field]: value }));
+};
+
+
+
   const handleAddClient = async () => {
     const requiredFields = ["nombre", "apellido", "correo", "telefono", "fechaNacimientoCliente"];
     const friendlyNames = {
@@ -143,6 +172,33 @@ export default function AdminManageClients() {
     }
   };
 
+  const handleSaveEdit = async () => {
+    if (!editClient) return;
+
+    const { id, nombre, apellido, telefono, fechaNacimientoCliente } = editClient;
+
+    const formatted = {
+      nombreCliente: nombre,
+      apellidoCliente: apellido,
+      telefono,
+      fechaNacimientoCliente,
+    };
+
+    const res = await updateClientProfile(id, formatted);
+
+    if (res?.status === 200) {
+      showAlert("Client profile updated successfully", "success");
+      const updated = await getClients();
+      if (updated.exito) {
+        const ordenados = ordenarClientesPorEstado(updated.clientes);
+        setClients(ordenados);
+      }
+      setEditClient(null);
+    } else {
+      showAlert("Failed to update client", "error");
+    }
+  };
+
   return (
     <Box sx={{ maxWidth: 1000, mx: "auto", mt: 10 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 6 }}>
@@ -157,6 +213,7 @@ export default function AdminManageClients() {
           sx={{
             backgroundColor: "#FF6300",
             color: "#FAFAFA",
+            borderRadius: 30,
             "&:hover": {
               backgroundColor: "#e65c00",
             },
@@ -166,7 +223,12 @@ export default function AdminManageClients() {
         </Button>
       </Box>
 
-      <ClientList clients={clients} onRequestDelete={handleRequestDelete} />
+      <ClientList
+        clients={clients}
+        onRequestDelete={handleRequestDelete}
+        onRequestEdit={handleRequestEdit} // ✅ Aquí
+      />
+
 
       <ConfirmDialog
         open={openDialog}
@@ -196,18 +258,27 @@ export default function AdminManageClients() {
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenForm(false)} sx={{ color: "#212121" }}>
+          <Button onClick={() => setOpenForm(false)} sx={{ color: "#212121", borderRadius: 30 }}>
             Cancel
           </Button>
           <Button
             onClick={handleAddClient}
             variant="contained"
-            sx={{ backgroundColor: "#FF6300", color: "#FAFAFA", "&:hover": { backgroundColor: "#e65c00" } }}
+            sx={{ backgroundColor: "#FF6300", color: "#FAFAFA", borderRadius: 30, "&:hover": { backgroundColor: "#e65c00" } }}
           >
             Save
           </Button>
         </DialogActions>
       </Dialog>
+<EditUserDialog
+  open={!!editClient}
+  onClose={() => setEditClient(null)}
+  onSave={handleSaveEdit}
+  userData={editClient || {}}
+  onChange={handleEditChange}
+  fields={clientFields}
+/>
+
     </Box>
   );
 }

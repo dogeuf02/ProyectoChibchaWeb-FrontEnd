@@ -5,6 +5,10 @@ import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
 import ConfirmDialog from "../components/ConfirmDialog";
 import AdministratorList from "../components/AdministratorList";
+import { getAllAdmins, registerAdmin } from "../api/userApi";
+import { deactivateUser } from "../api/userApi";
+
+
 
 export default function AdminManageAdminis() {
   useScrollToTop();
@@ -13,6 +17,8 @@ export default function AdminManageAdminis() {
   const [administrators, setAdministrators] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const [selectedCorreo, setSelectedCorreo] = useState(null);
+
   const [openForm, setOpenForm] = useState(false);
 
   const [newAdministrator, setNewAdministrator] = useState({
@@ -26,120 +32,64 @@ export default function AdminManageAdminis() {
   });
 
   useEffect(() => {
-    setAdministrators([
-  {
-    id: "ADM001",
-    correo: "admin01@mail.com",
-    rol: "SUPERADMIN",
-    estado: "Activo",
-    nombre: "Carlos",
-    apellido: "Ramírez",
-    fecha_nacimiento: "1985-06-15"
-  },
-  {
-    id: "ADM002",
-    correo: "admin02@mail.com",
-    rol: "ADMIN",
-    estado: "Activo",
-    nombre: "Laura",
-    apellido: "Torres",
-    fecha_nacimiento: "1990-03-22"
-  },
-  {
-    id: "ADM003",
-    correo: "marco.reyes@mail.com",
-    rol: "ADMIN",
-    estado: "Inactivo",
-    nombre: "Marco",
-    apellido: "Reyes",
-    fecha_nacimiento: "1988-11-05"
-  },
-  {
-    id: "ADM004",
-    correo: "ana.mendez@mail.com",
-    rol: "SUPERADMIN",
-    estado: "Activo",
-    nombre: "Ana",
-    apellido: "Méndez",
-    fecha_nacimiento: "1979-01-30"
-  },
-  {
-    id: "ADM005",
-    correo: "lucia.ortiz@mail.com",
-    rol: "ADMIN",
-    estado: "Activo",
-    nombre: "Lucía",
-    apellido: "Ortiz",
-    fecha_nacimiento: "1993-07-18"
-  },
-  {
-    id: "ADM006",
-    correo: "jose.perez@mail.com",
-    rol: "ADMIN",
-    estado: "Inactivo",
-    nombre: "José",
-    apellido: "Pérez",
-    fecha_nacimiento: "1987-04-12"
-  },
-  {
-    id: "ADM007",
-    correo: "diana.gomez@mail.com",
-    rol: "ADMIN",
-    estado: "Activo",
-    nombre: "Diana",
-    apellido: "Gómez",
-    fecha_nacimiento: "1992-09-27"
-  },
-  {
-    id: "ADM008",
-    correo: "sebastian.vargas@mail.com",
-    rol: "SUPERADMIN",
-    estado: "Activo",
-    nombre: "Sebastián",
-    apellido: "Vargas",
-    fecha_nacimiento: "1983-02-10"
-  },
-  {
-    id: "ADM009",
-    correo: "paula.nieves@mail.com",
-    rol: "ADMIN",
-    estado: "Activo",
-    nombre: "Paula",
-    apellido: "Nieves",
-    fecha_nacimiento: "1991-06-08"
-  },
-  {
-    id: "ADM010",
-    correo: "francisco.lopez@mail.com",
-    rol: "ADMIN",
-    estado: "Activo",
-    nombre: "Francisco",
-    apellido: "López",
-    fecha_nacimiento: "1986-12-01"
-  }
-]
-);
+    const fetchAdmins = async () => {
+      const res = await getAllAdmins();
+      if (res.exito) {
+        const adapted = res.administradores.map((admin) => ({
+          id: admin.idAdmin,
+          nombre: admin.nombreAdmin,
+          apellido: admin.apellidoAdmin,
+          fecha_nacimiento: admin.fechaNacimientoAdmin,
+          correo: admin.correo,
+          estado: admin.estado
+        }));
+
+        setAdministrators(adapted);
+      } else {
+        showAlert(res.mensaje, "error");
+      }
+    };
+
+    fetchAdmins();
   }, []);
 
-  const handleRequestDelete = (id) => {
-    setSelectedId(id);
-    setOpenDialog(true);
+
+  const handleRequestDelete = (admin) => {
+    setSelectedCorreo(admin.correo);   // ✅ guardar correctamente el correo
+    setOpenDialog(true);               // ✅ abrir el diálogo
   };
 
-  const handleConfirmDelete = () => {
-    setAdministrators(prev => prev.filter(admin => admin.id !== selectedId));
-    setOpenDialog(false);
-    setSelectedId(null);
-    showAlert("Administrator deleted successfully", "success");
+
+
+  const handleConfirmDelete = async () => {
+
+    console.log("Correo seleccionado para desactivar:", selectedCorreo);
+    if (!selectedCorreo) return;
+
+    const res = await deactivateUser(selectedCorreo);
+
+    if (res.exito) {
+      setAdministrators(prev =>
+        prev.map(a =>
+          a.correo === selectedCorreo ? { ...a, estado: "INACTIVO" } : a
+        )
+      );
+      setOpenDialog(false);
+      setSelectedCorreo(null);
+      showAlert("Administrator successfully deactivated", "success");
+    } else {
+      showAlert(res.mensaje || "Failed to deactivate administrator", "error");
+    }
   };
 
-  const handleAddAdministrator = () => {
-    const requiredFields = ["correo",  "nombre", "apellido", "fecha_nacimiento"];
+
+  const handleAddAdministrator = async () => {
+    const requiredFields = ["correo", "nombre", "apellido", "fecha_nacimiento",];
     const friendlyNames = {
       correo: "Email",
       nombre: "First Name",
       apellido: "Last Name",
-      fecha_nacimiento: "Birthdate"
+      fecha_nacimiento: "Birthdate",
     };
 
     for (const field of requiredFields) {
@@ -149,19 +99,51 @@ export default function AdminManageAdminis() {
       }
     }
 
-    setAdministrators(prev => [...prev, { ...newAdministrator, id: `ADM${prev.length + 1}` }]);
-    setNewAdministrator({
-      id: "",
-      correo: "",
-      rol: "",
-      estado: "",
-      nombre: "",
-      apellido: "",
-      fecha_nacimiento: ""
-    });
-    setOpenForm(false);
-    showAlert("Administrator added successfully", "success");
+    const payload = {
+      nombreAdmin: newAdministrator.nombre,
+      apellidoAdmin: newAdministrator.apellido,
+      fechaNacimientoAdmin: newAdministrator.fecha_nacimiento,
+      correoAdmin: newAdministrator.correo,
+      contrasenaAdmin: "admin@123" // 🔐 Contraseña fija por defecto
+    };
+
+    const res = await registerAdmin(payload);
+
+    if (res.exito) {
+      showAlert("Administrator added successfully", "success");
+      setNewAdministrator({
+        id: "",
+        correo: "",
+        password: "",
+        rol: "",
+        estado: "",
+        nombre: "",
+        apellido: "",
+        fecha_nacimiento: ""
+      });
+      setOpenForm(false);
+
+      // Refrescar lista
+      const update = await getAllAdmins();
+      if (update.exito) {
+        const adapted = update.administradores.map((admin) => ({
+          id: admin.idAdmin,
+          nombre: admin.nombreAdmin,
+          apellido: admin.apellidoAdmin,
+          fecha_nacimiento: admin.fechaNacimientoAdmin,
+          correo: admin.correo,
+          estado: admin.estado
+        }));
+        setAdministrators(adapted);
+      }
+
+    } else {
+      showAlert(res.mensaje, "error");
+    }
   };
+
+
+
 
   return (
     <Box sx={{ maxWidth: 1000, mx: "auto", mt: 10 }}>
@@ -177,6 +159,7 @@ export default function AdminManageAdminis() {
           sx={{
             backgroundColor: "#FF6300",
             color: "#FAFAFA",
+            borderRadius: 30,
             "&:hover": {
               backgroundColor: "#e65c00",
             },
@@ -187,15 +170,15 @@ export default function AdminManageAdminis() {
       </Box>
 
       <AdministratorList admins={administrators} onRequestDelete={handleRequestDelete} />
-
       <ConfirmDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
-        onConfirm={handleConfirmDelete}
-        title="Delete Administrator"
-        message="Are you sure you want to delete this administrator? This action cannot be undone."
-        confirmText="Confirm Delete"
+        onConfirm={handleConfirmDelete} // ✅ debe estar así
+        title="Deactivate Administrator"
+        message="Are you sure you want to deactivate this administrator?"
+        confirmText="Confirm"
       />
+
 
       <Dialog open={openForm} onClose={() => setOpenForm(false)} fullWidth>
         <DialogTitle>Add New Administrator</DialogTitle>
@@ -236,7 +219,7 @@ export default function AdminManageAdminis() {
           <Button
             onClick={handleAddAdministrator}
             variant="contained"
-            sx={{ backgroundColor: "#FF6300", color: "#FAFAFA", "&:hover": { backgroundColor: "#e65c00" } }}
+            sx={{ backgroundColor: "#FF6300", color: "#FAFAFA", borderRadius: 30, "&:hover": { backgroundColor: "#e65c00" } }}
           >
             Save
           </Button>

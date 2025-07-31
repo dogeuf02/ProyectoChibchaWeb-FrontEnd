@@ -38,7 +38,7 @@ function Row({ admin, onRequestDelete }) {
         </TableCell>
         <TableCell>{admin.correo}</TableCell>
         <TableCell>{admin.estado}</TableCell>
-        <TableCell>{admin.rol}</TableCell>
+  
       </TableRow>
 
       <TableRow>
@@ -48,20 +48,25 @@ function Row({ admin, onRequestDelete }) {
               <Typography variant="subtitle1" gutterBottom color="text.primary">
                 Administrator Details
               </Typography>
-              <Typography variant="body2">ID: {admin.id}</Typography>
-              <Typography variant="body2">Birthdate: {admin.fecha_nacimiento}</Typography>
+<Typography variant="body2">ID: {admin.id}</Typography>
+<Typography variant="body2">Email: {admin.correo}</Typography>
+<Typography variant="body2">Birthdate: {admin.fecha_nacimiento}</Typography>
+<Typography variant="body2">Status: {admin.estado}</Typography>
+
 
               <Button
                 variant="contained"
                 color="error"
                 sx={{
                   mt: 2,
+                  backgroundColor: '#FF3D00',
+                  borderRadius: 30,
                   ':hover': {
                     backgroundColor: '#FFBE02',
                     color: '#212121',
                   },
                 }}
-                onClick={() => onRequestDelete(admin.id)}
+                onClick={() => onRequestDelete(admin)}
               >
                 Delete administrator
               </Button>
@@ -105,7 +110,6 @@ export default function AdministratorList({ admins, onRequestDelete }) {
               <TableCell sx={{ fontWeight: 'bold' }}>Full Name</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Role</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

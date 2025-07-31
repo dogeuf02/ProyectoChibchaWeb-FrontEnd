@@ -20,7 +20,7 @@ import { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
-function Row({ distributor, onRequestDelete }) {
+function Row({ distributor, onRequestDelete, onRequestEdit }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -54,23 +54,30 @@ function Row({ distributor, onRequestDelete }) {
               <Typography variant="body2">Company Address: {distributor.company_address}</Typography>
 
               {distributor.status === "ACTIVO" && (
-                <Button
-                  variant="contained"
-                  color="error"
-                  sx={{
-                    mt: 2,
-                    ':hover': {
-                      backgroundColor: '#FFBE02',
-                      color: '#212121',
-                    },
-                  }}
-                  onClick={() => onRequestDelete(distributor.distributor_id)}
-                >
-                  Delete distributor
-                </Button>
+                <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor: "#FF6300",
+                      borderRadius: 30,
+                      "&:hover": { backgroundColor: "#FFBE02", color: "#212121" },
+                    }}
+                    onClick={() => onRequestEdit(distributor)}
+                  >
+                    Edit Profile
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    sx={{ borderRadius: 30 }}
+                    onClick={() => onRequestDelete(distributor.distributor_id)}
+                  >
+                    Delete distributor
+                  </Button>
+                </Box>
               )}
-
             </Box>
+
           </Collapse>
         </TableCell>
       </TableRow>
@@ -78,7 +85,7 @@ function Row({ distributor, onRequestDelete }) {
   );
 }
 
-export default function DistributorsList({ distributors, onRequestDelete }) {
+export default function DistributorsList({ distributors, onRequestDelete, onRequestEdit }) {
   const [searchId, setSearchId] = useState('');
 
   return (
@@ -112,14 +119,27 @@ export default function DistributorsList({ distributors, onRequestDelete }) {
               <TableCell sx={{ fontWeight: 'bold' }}>Role</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {distributors
-              .filter(dist => dist.distributor_id?.toString().includes(searchId))
-              .map((dist) => (
-                <Row key={dist.distributor_id} distributor={dist} onRequestDelete={onRequestDelete} />
-              ))
-            }
-          </TableBody>
+<TableBody>
+  {distributors.length > 0 ? (
+    distributors
+      .filter(dist => dist.distributor_id?.toString().includes(searchId))
+      .map((dist) => (
+        <Row
+          key={dist.distributor_id}
+          distributor={dist}
+          onRequestDelete={onRequestDelete}
+          onRequestEdit={onRequestEdit}
+        />
+      ))
+  ) : (
+    <TableRow>
+      <TableCell colSpan={6} align="center">
+        No distributors found
+      </TableCell>
+    </TableRow>
+  )}
+</TableBody>
+
         </Table>
       </TableContainer>
     </>

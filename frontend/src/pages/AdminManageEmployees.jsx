@@ -7,14 +7,26 @@ import { useGlobalAlert } from "../context/AlertContext";
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { createEmployee, getEmployees, deactivateUser } from '../api/employeeApi';
+import { updateEmployeeProfile } from "../api/userApi";
+import EditUserDialog from "../components/EditUserDialog";
 
 
 export default function AdminManageEmployees() {
   useScrollToTop();
+
+  const [editEmployee, setEditEmployee] = useState(null);
   const { showAlert } = useGlobalAlert();
   const [employees, setEmployees] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+
+  const employeeFields = [
+    { name: "firstName", label: "First Name" },
+    { name: "lastName", label: "Last Name" },
+    { name: "position", label: "Position" },
+    { name: "email", label: "Email" }
+  ];
+
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -69,15 +81,16 @@ export default function AdminManageEmployees() {
 
 
   const handleAddEmployee = async () => {
-    const requiredFields = ['firstName', 'lastName', 'position', 'phone', 'email'];
+    const requiredFields = ['firstName', 'lastName', 'position', 'email'];
 
     const friendlyNames = {
       firstName: 'First Name',
       lastName: 'Last Name',
       position: 'Position',
-      phone: 'Phone',
       email: 'Email',
     };
+
+    
 
     // Validación de campos
     for (const field of requiredFields) {
@@ -119,7 +132,6 @@ export default function AdminManageEmployees() {
           firstName: "",
           lastName: "",
           position: "",
-          phone: "",
           email: "",
         });
       } else {
@@ -131,6 +143,40 @@ export default function AdminManageEmployees() {
     }
   };
 
+  const handleRequestEdit = (employee) => {
+    setEditEmployee({
+      id: employee.id,
+      firstName: employee.firstName || employee.nombreEmpleado,
+      lastName: employee.lastName || employee.apellidoEmpleado,
+      position: employee.position || employee.cargoEmpleado,
+      email: employee.email
+    });
+  };
+
+  const handleEditChange = (field, value) => {
+    setEditEmployee((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSaveEdit = async () => {
+      if (!editEmployee) return;
+
+      const res = await updateEmployeeProfile(editEmployee.id, {
+        nombreEmpleado: editEmployee.firstName,
+        apellidoEmpleado: editEmployee.lastName,
+        cargoEmpleado: editEmployee.position,
+      });
+
+      if (res?.status === 200 || res?.exito) {
+        showAlert("Employee updated successfully", "success");
+        const updated = await getEmployees();
+        if (updated.exito) {
+          setEmployees(updated.empleados);
+        }
+        setEditEmployee(null);
+      } else {
+        showAlert("Failed to update employee", "error");
+      }
+    };
 
 
   const [openForm, setOpenForm] = useState(false);
@@ -139,7 +185,6 @@ export default function AdminManageEmployees() {
     firstName: "",
     lastName: "",
     position: "",
-    phone: "",
     email: "",
   });
 
@@ -159,6 +204,7 @@ export default function AdminManageEmployees() {
           sx={{
             backgroundColor: "#FF6300",
             color: "#FAFAFA",
+            borderRadius: 30,
             "&:hover": {
               backgroundColor: "#e65c00",
             },
@@ -172,7 +218,9 @@ export default function AdminManageEmployees() {
       <EmployeeList
         employees={employees}
         onRequestDelete={handleRequestDelete}
+        onRequestEdit={handleRequestEdit}
       />
+
 
       <ConfirmDialog
         open={openDialog}
@@ -207,12 +255,6 @@ export default function AdminManageEmployees() {
               fullWidth
             />
             <TextField
-              label="Phone"
-              value={newEmployee.phone}
-              onChange={(e) => setNewEmployee({ ...newEmployee, phone: e.target.value })}
-              fullWidth
-            />
-            <TextField
               label="Email"
               value={newEmployee.email}
               onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })}
@@ -230,12 +272,21 @@ export default function AdminManageEmployees() {
           <Button
             onClick={handleAddEmployee}
             variant="contained"
-            sx={{ backgroundColor: "#FF6300", color: "#FAFAFA", "&:hover": { backgroundColor: "#e65c00" } }}
+            sx={{ backgroundColor: "#FF6300", color: "#FAFAFA", borderRadius: 30, "&:hover": { backgroundColor: "#e65c00" } }}
           >
             Save
           </Button>
         </DialogActions>
       </Dialog>
+      <EditUserDialog
+        open={!!editEmployee}
+        onClose={() => setEditEmployee(null)}
+        onSave={handleSaveEdit}
+        userData={editEmployee || {}}
+        onChange={handleEditChange}
+        fields={employeeFields}
+      />
+
 
     </Box>
   );

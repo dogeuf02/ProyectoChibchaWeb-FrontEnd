@@ -25,11 +25,14 @@ import PeopleIcon from '@mui/icons-material/People';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import PersonIcon from '@mui/icons-material/Person';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+
 
 import { useAuth } from '../context/AuthContext';
 
-// Cambiar esta constante según el rol actual del usuario:
-const rol = localStorage.getItem("userRole");
+
+
+
 
 
 const drawerWidth = 240;
@@ -81,11 +84,13 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function MiniDrawer() {
+
+  const { authenticated, role, logout } = useAuth();
   const theme = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(true);
   const [openManage, setOpenManage] = React.useState(false);
-  const { authenticated, role, logout } = useAuth();
+
 
   const toggleDrawer = () => setOpen(!open);
   const handleToggleManage = () => setOpenManage((prev) => !prev);
@@ -96,14 +101,19 @@ export default function MiniDrawer() {
     { text: 'Employees', icon: <PersonIcon />, path: '/admin/ManageEmployees' },
     { text: 'Domain Request', icon: <AssignmentIcon />, path: '/admin/ManageDomainRequests' },
     { text: 'Distributor Request', icon: <AssignmentIcon />, path: '/admin/ManageDistributorRequests' },
+    {
+      text: 'Administrators', // 👈 NUEVO
+      icon: <AdminPanelSettingsIcon />,
+      path: '/admin/manageAdministrators',
+    },
   ];
 
   // Para rutas dinámicas por rol
   const getPath = (base) => {
-    if (rol === 'Administrador') return `/admin/${base}`;
-    if (rol === 'Cliente') return `/client/${base}`;
-    if (rol === 'Distribuidor') return `/distributor/${base}`;
-    if (rol === 'Empleado') return `/employee/${base}`;
+    if (role === 'Administrador') return `/admin/${base}`;
+    if (role === 'Cliente') return `/client/${base}`;
+    if (role === 'Distribuidor') return `/distributor/${base}`;
+    if (role === 'Empleado') return `/employee/${base}`;
     return '/';
   };
 
@@ -153,61 +163,117 @@ export default function MiniDrawer() {
 
         <List>
           {/* Botón Profile siempre visible para todos los roles */}
-          {sharedItems.map(({ text, icon, basePath }) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                onClick={() => navigate(getPath(basePath))}
-                sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
-              >
-                <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
-                  {icon}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-
-          {/* Buttons solo para client y distributor */}
-          {(rol === 'Cliente' || rol === 'Distribuidor') &&
-            clientDistributorItems.map(({ text, icon, basePath }) => (
-              <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                <ListItemButton
-                  onClick={() => navigate(getPath(basePath))}
-                  sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
-                >
-                  <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
-                    {icon}
-                  </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-
-          {/* Solo para client: MyPlans */}
-          {rol === 'client' &&
-            clientOnlyItems.map(({ text, icon, path }) => (
+          {sharedItems.map(({ text, icon, basePath }) => {
+            const path = getPath(basePath);
+            const selected = location.pathname === path;
+            return (
               <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                 <ListItemButton
                   onClick={() => navigate(path)}
-                  sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
+                  selected={selected}
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
+                    color: '#212121',
+                    '&:hover': {
+                      backgroundColor: '#FFBE02',
+                      color: '#212121',
+                    },
+                    '&.Mui-selected': {
+                      backgroundColor: '#FF6400',
+                      color: '#FAFAFA',
+                      '& .MuiListItemIcon-root': {
+                        color: '#FAFAFA',
+                      },
+                    },
+                  }}
                 >
-                  <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                      color: '#FF6400',
+                    }}
+                  >
                     {icon}
                   </ListItemIcon>
                   <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
                 </ListItemButton>
               </ListItem>
-            ))}
+            );
+          })}
+
+          {/* client y distributor */}
+          {(role === 'Cliente' || role === 'Distribuidor') &&
+            clientDistributorItems.map(({ text, icon, basePath }) => {
+              const path = getPath(basePath);
+              const selected = location.pathname === path;
+              return (
+                <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                  <ListItemButton
+                    onClick={() => navigate(path)}
+                    selected={selected}
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: open ? 'initial' : 'center',
+                      px: 2.5,
+                      color: '#212121',
+                      '&:hover': {
+                        backgroundColor: '#FFBE02',
+                        color: '#212121',
+                      },
+                      '&.Mui-selected': {
+                        backgroundColor: '#FF6400',
+                        color: '#FAFAFA',
+                        '& .MuiListItemIcon-root': {
+                          color: '#FAFAFA',
+                        },
+                      },
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : 'auto',
+                        justifyContent: 'center',
+                        color: '#FF6400',
+                      }}
+                    >
+                      {icon}
+                    </ListItemIcon>
+                    <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
 
           {/* Admin: Sección Manage */}
-          {rol === 'Administrador' && (
+          {role === 'Administrador' && (
             <>
               <ListItem disablePadding sx={{ display: 'block' }}>
                 <ListItemButton
                   onClick={handleToggleManage}
-                  sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
+                    color: '#212121',
+                    '&:hover': {
+                      backgroundColor: '#FFBE02',
+                      color: '#212121',
+                    },
+                  }}
                 >
-                  <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                      color: '#FF6400',
+                    }}
+                  >
                     <SupervisorAccountIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage" sx={{ opacity: open ? 1 : 0 }} />
@@ -217,12 +283,42 @@ export default function MiniDrawer() {
 
               <Collapse in={openManage} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  {manageItems.map(({ text, icon, path }) => (
-                    <ListItemButton key={text} sx={{ pl: open ? 6 : 2.5 }} onClick={() => navigate(path)}>
-                      <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>{icon}</ListItemIcon>
-                      <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                    </ListItemButton>
-                  ))}
+                  {manageItems.map(({ text, icon, path }) => {
+                    const selected = location.pathname === path;
+                    return (
+                      <ListItemButton
+                        key={text}
+                        onClick={() => navigate(path)}
+                        selected={selected}
+                        sx={{
+                          pl: open ? 6 : 2.5,
+                          color: '#212121',
+                          '&:hover': {
+                            backgroundColor: '#FFBE02',
+                            color: '#212121',
+                          },
+                          '&.Mui-selected': {
+                            backgroundColor: '#FF6400',
+                            color: '#FAFAFA',
+                            '& .MuiListItemIcon-root': {
+                              color: '#FAFAFA',
+                            },
+                          },
+                        }}
+                      >
+                        <ListItemIcon
+                          sx={{
+                            minWidth: 0,
+                            mr: 2,
+                            color: '#FF6400',
+                          }}
+                        >
+                          {icon}
+                        </ListItemIcon>
+                        <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                      </ListItemButton>
+                    );
+                  })}
                 </List>
               </Collapse>
             </>

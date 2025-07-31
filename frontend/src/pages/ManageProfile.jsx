@@ -65,24 +65,24 @@ export default function ManageProfile() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-let requiredFields = [];
+        let requiredFields = [];
 
-switch (role) {
-  case 'Cliente':
-    requiredFields = ['firstName', 'lastName', 'phone', 'birthDate'];
-    break;
-  case 'Empleado':
-    requiredFields = ['firstName', 'lastName'];
-    break;
-  case 'Administrador':
-    requiredFields = ['firstName', 'lastName', 'birthDate'];
-    break;
-  case 'Distribuidor':
-    requiredFields = []; // No validación
-    break;
-  default:
-    requiredFields = [];
-}
+        switch (role) {
+            case 'Cliente':
+                requiredFields = ['firstName', 'lastName', 'phone', 'birthDate'];
+                break;
+            case 'Empleado':
+                requiredFields = ['firstName', 'lastName'];
+                break;
+            case 'Administrador':
+                requiredFields = ['firstName', 'lastName', 'birthDate'];
+                break;
+            case 'Distribuidor':
+                requiredFields = []; // No validación
+                break;
+            default:
+                requiredFields = [];
+        }
 
         const friendlyNames = {
             email: 'Email',
@@ -399,7 +399,7 @@ switch (role) {
                                         onChange={handleChange}
                                         fullWidth
                                         margin="normal"
-                                        disabled={!editMode}
+                                        disabled
                                     />
                                     <TextField
                                         label="Last Name"
@@ -408,7 +408,7 @@ switch (role) {
                                         onChange={handleChange}
                                         fullWidth
                                         margin="normal"
-                                        disabled={!editMode}
+                                        disabled
                                     />
 
 
@@ -425,7 +425,7 @@ switch (role) {
                             />
 
 
-                            {!editMode ? (
+                            {!editMode && role !== 'Empleado' && (
                                 <Button
                                     type="button"
                                     onClick={activateEdit}
@@ -441,55 +441,63 @@ switch (role) {
                                 >
                                     Edit Profile
                                 </Button>
-                            )
-                                : (
+                            )}
 
-                                    <Box display="flex" gap={2} mb={2}>
+                            {/* Mostrar botones Save y Cancel solo si está editando y NO es Empleado */}
+                            {editMode && role !== 'Empleado' && (
+                                <Box display="flex" gap={2} mb={2}>
+                                    <Button
+                                        onClick={cancelEdit}
+                                        variant="outlined"
+                                        color="inherit"
+                                        sx={{
+                                            mt: 3,
+                                            mb: 2,
+                                            borderRadius: 30,
+                                        }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        sx={{
+                                            bgcolor: '#ff6f00',
+                                            borderRadius: 30,
+                                            mt: 3,
+                                            mb: 2,
+                                            '&:hover': { bgcolor: '#ffc107', color: '#212121' }
+                                        }}
+                                    >
+                                        Save Changes
+                                    </Button>
+                                </Box>
+                            )}
 
+                            {/* Mostrar botón de eliminar solo si NO es Empleado */}
+                            {role !== 'Empleado' && (
+                                <>
+                                    <Box display="flex" justifyContent="center" mt={2} mb={1}>
                                         <Button
-                                            onClick={cancelEdit}
-                                            variant="outlined"
-                                            color="inherit"
-                                            sx={{
-                                                mt: 3,
-                                                mb: 2,
-                                            }}
-                                        >
-                                            Cancel
-                                        </Button>
-                                        <Button
-                                            type="submit"
                                             variant="contained"
+                                            color="error"
                                             sx={{
-                                                bgcolor: '#ff6f00',
+                                                backgroundColor: "#f04507ff",
                                                 borderRadius: 30,
-                                                mt: 3,
-                                                mb: 2,
-                                                '&:hover': { bgcolor: '#ffc107', color: '#212121' }
+                                                ":hover": {
+                                                    backgroundColor: "#FFBE02",
+                                                },
                                             }}
+                                            onClick={handleOpenDialog}
                                         >
-                                            Save Changes
+                                            DELETE ACCOUNT
                                         </Button>
                                     </Box>
-                                )}
-                            <Box display="flex" justifyContent="center" mt={2} mb={1}>
-                                <Button
-                                    variant="contained"
-                                    color="error"
-                                    sx={{
-                                        backgroundColor: "#f04507ff",
-                                        ":hover": {
-                                            backgroundColor: "#FFBE02",
-                                        },
-                                    }}
-                                    onClick={handleOpenDialog}
-                                >
-                                    DELETE ACCOUNT
-                                </Button>
-                            </Box>
-                            <Typography variant="caption" color="textSecondary" align="center" sx={{ mt: 1 }}>
-                                Deleting your account is irreversible.
-                            </Typography>
+                                    <Typography variant="caption" color="textSecondary" align="center" sx={{ mt: 1 }}>
+                                        Deleting your account is irreversible.
+                                    </Typography>
+                                </>
+                            )}
                         </Box>
 
                     </Paper>
