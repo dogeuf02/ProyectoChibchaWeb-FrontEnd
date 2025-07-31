@@ -20,8 +20,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 export default function NavbarMUI() {
+  const {t} = useTranslation();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -36,10 +38,10 @@ export default function NavbarMUI() {
 };
 
   const navItems = [
-    { label: 'Chibchaweb', to: '#Home' },
-    { label: 'Domains', to: '#Domains' },
-    { label: 'Hosting plan', to: '#Plans' },
-    { label: 'Distributor', to: '#Distributor' },
+    { label: t('title'), to: '#Home' },
+    { label: t('domains.domainsTitle'), to: '#Domains' },
+    { label: t('hosting.hostingTitle'), to: '#Plans' },
+    { label: t('distributor.title'), to: '#Distributor' },
   ];
 
   const handleNavigateToSection = (hash) => {
@@ -136,7 +138,7 @@ export default function NavbarMUI() {
               variant="contained"
               sx={{ backgroundColor: '#FF6300' }}
             >
-              Login
+              {t('login.button')}
             </Button>
           ) : (
             <>

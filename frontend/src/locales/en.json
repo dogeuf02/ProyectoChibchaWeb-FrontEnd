@@ -1,0 +1,64 @@
+{
+    "title": "CHIBCHAWEB",
+    "home": {
+        "title": "Top web hosting company in Colombia",
+        "menu": {
+            "domains": "Domains",
+            "hosting": "Hosting plans",
+            "distributor": "Distributor"
+        },
+        "features": {
+            "flexiblePlans": "Flexible plans for clients",
+            "agreements": "Commercial agreements for distributors",
+            "support": "Technical support device",
+            "registrators": "Direct agreements with registrators"
+        }
+    },
+    "login": {
+        "button": "Login"
+    },
+    "domains": {
+        "domainsTitle": "Domains",
+        "domainInfo": {
+            "com": {
+                "title": "Domain .com",
+                "description": "Brief description of the first service."
+            },
+            "net": {
+                "title": "Domain .net",
+                "description": "Brief description of the second service."
+            },
+            "org": {
+                "title": "Domain .org",
+                "description": "Brief description of the third service."
+            }
+        },
+        "moreInfo": "More information"
+    },
+    "hosting": {
+        "hostingTitle": "Hosting Plans",
+        "hostingPlans": {
+            "gold": {
+                "title": "CHIBCHAGOLD",
+                "description": "Brief description of Gold plan"
+            },
+            "silver": {
+                "title": "CHIBCHASILVER",
+                "description": "Brief description of Silver plan."
+            },
+            "platinum": {
+                "title": "CHIBCHAPLATINUM",
+                "description": "Brief description of Platinum plan."
+            }
+        },
+        "hostingButton": "GET THE PLAN"
+    },
+    "distributor": {
+        "title": "Distributor",
+        "description": "As a distributor you will be able to receive commission depending on your sales in Chibchaweb!",
+        "applyLink": "Apply as a distributor ->"
+    },
+    "footer": {
+        "copyright": "© 2025 ChibchaWeb. All rights reserved."
+    }
+}

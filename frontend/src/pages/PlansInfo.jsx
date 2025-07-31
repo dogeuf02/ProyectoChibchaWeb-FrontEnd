@@ -9,26 +9,29 @@ import {
   Button,
   CardActions,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
-const cardData = [
-  {
-    title: 'CHIBCHAORO',
-    description: 'Descripción breve del servicio número 1.',
-    color: '#B59709',
-  },
-  {
-    title: 'CHIBCHAPLATA',
-    description: 'Descripción breve del servicio número 2.',
-    color: '#696460',
-  },
-  {
-    title: 'CHIBCHAPLATINO',
-    description: 'Descripción breve del servicio número 3.',
-    color: '#A3775C',
-  },
-];
 
 export default function PlansInfo() {
+  const { t } = useTranslation();
+  const cardData = [
+    {
+      title: t('hosting.hostingPlans.gold.title'),
+      description: t('hosting.hostingPlans.gold.description'),
+      color: '#B59709',
+    },
+    {
+      title: t('hosting.hostingPlans.silver.title'),
+      description: t('hosting.hostingPlans.silver.description'),
+      color: '#696460',
+    },
+    {
+      title: t('hosting.hostingPlans.platinum.title'),
+      description: t('hosting.hostingPlans.platinum.description'),
+      color: '#A3775C',
+    },
+  ];
+
   return (
     <Box id='Plans' sx={{ bgcolor: '#f5f5f5', py: 8 }}>
       <Container>
@@ -54,7 +57,7 @@ export default function PlansInfo() {
                 </CardContent>
                 <CardActions sx={{ mt: 'auto' }}>
                   <Button size="small" color="primary">
-                    Get the plan
+                    {t('hosting.hostingButton')}
                   </Button>
                 </CardActions>
               </Card>

@@ -6,14 +6,19 @@ import {
   Link,
 } from '@mui/material';
 
+import { useTranslation } from 'react-i18next';
+
 export default function DistributorInfo() {
+
+  const {t} = useTranslation();
+
   return (
     <Box id='Distributor' sx={{ bgcolor: '#f5f5f5', py: 8 }}>
       <Container>
 
         {/* Título */}
         <Typography variant="h2" align="center" gutterBottom>
-          Distributor
+          {t('distributor.title')}
         </Typography>
 
         {/* Texto descriptivo */}
@@ -24,7 +29,7 @@ export default function DistributorInfo() {
             color="textSecondary"
             sx={{ maxWidth: 800, mx: 'auto', lineHeight: 1.8 }}
           >
-            As a distributor you will be able to receive commission depending on your sales in Chibchaweb!
+           {t('distributor.description')}
           </Typography>
         </Box>
 
@@ -43,7 +48,7 @@ export default function DistributorInfo() {
                 },
               }}
             >
-              Apply as a distributor →
+              {t('distributor.applyLink')}
             </Link>
           </Typography>
         </Box>
