@@ -134,7 +134,11 @@ export default function NavbarMUI() {
             <Button
               onClick={() => navigate('/login')}
               variant="contained"
-              sx={{ backgroundColor: '#FF6300' }}
+              sx={{
+                backgroundColor: '#FF6300',
+                borderRadius: 30,
+                '&:hover': { bgcolor: '#ffc107', color: '#212121' }
+              }}
             >
               Login
             </Button>

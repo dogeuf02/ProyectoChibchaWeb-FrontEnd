@@ -28,21 +28,6 @@ const cardData = [
     description: 'Descripción breve del servicio número 3.',
     image: '/org.png',
   },
-  {
-    title: 'Dominio .info',
-    description: 'Descripción breve del servicio número 4.',
-    image: 'https://imagedelivery.net/LqiWLm-3MGbYHtFuUbcBtA/d2bfee89-bac1-4c62-d3c4-7a30d3aa5300/public',
-  },
-  {
-    title: 'Dominio .es',
-    description: 'Descripción breve del servicio número 5.',
-    image: 'es.png',
-  },
-  {
-    title: 'Dominio .shop',
-    description: 'Descripción breve del servicio número 5.',
-    image: 'https://imagedelivery.net/LqiWLm-3MGbYHtFuUbcBtA/b7f32082-3539-4c9b-fc40-168308e1c200/public',
-  },
 ];
 
 export default function DomainsInfo() {

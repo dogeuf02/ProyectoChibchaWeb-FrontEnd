@@ -8,23 +8,64 @@ import {
   Typography,
   Button,
   CardActions,
+  List,
+  ListItem,
 } from '@mui/material';
 
-const cardData = [
-  {
-    title: 'CHIBCHAORO',
-    description: 'Descripción breve del servicio número 1.',
-    color: '#B59709',
-  },
+const plans = [
   {
     title: 'CHIBCHAPLATA',
-    description: 'Descripción breve del servicio número 2.',
     color: '#696460',
+    price: {
+      monthly: '5 US',
+      semiAnnual: '25 US',
+      annual: '45 US',
+    },
+    features: [
+      '2 websites',
+      '20 databases',
+      '20 GB NVMe SSD storage',
+      '20 email accounts',
+      'Website builder',
+      '2 SSL Certificates, https',
+      'Email Marketing',
+    ],
   },
   {
     title: 'CHIBCHAPLATINO',
-    description: 'Descripción breve del servicio número 3.',
     color: '#A3775C',
+    price: {
+      monthly: '8 US',
+      semiAnnual: '40 US',
+      annual: '72 US',
+    },
+    features: [
+      '3 websites',
+      '40 databases',
+      '40 GB NVMe SSD storage',
+      '40 email accounts',
+      'Website builder',
+      '3 SSL Certificates, https',
+      'Email Marketing',
+    ],
+  },
+  {
+    title: 'CHIBCHAORO',
+    color: '#B59709',
+    price: {
+      monthly: '11 US',
+      semiAnnual: '55 US',
+      annual: '99 US',
+    },
+    features: [
+      '5 websites',
+      'Unlimited databases',
+      '60 GB NVMe SSD storage',
+      '60 email accounts',
+      'Website builder',
+      '5 SSL Certificates, https',
+      'Email Marketing',
+    ],
   },
 ];
 
@@ -36,7 +77,7 @@ export default function PlansInfo() {
           Hosting Plans
         </Typography>
         <Grid container spacing={4} justifyContent="center">
-          {cardData.map((card, index) => (
+          {plans.map((plan, index) => (
             <Grid item key={index} xs={12} sm={6} md={4}>
               <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <CardContent>
@@ -44,13 +85,30 @@ export default function PlansInfo() {
                     gutterBottom
                     variant="h4"
                     component="div"
-                    sx={{ color: card.color }}
+                    sx={{ color: plan.color }}
                   >
-                    {card.title}
+                    {plan.title}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {card.description}
+
+                  <Typography variant="body1" sx={{ mt: 1 }}>
+                    Monthly price: {plan.price.monthly}
                   </Typography>
+                  <Typography variant="body1">
+                    Semi-annual price: {plan.price.semiAnnual}
+                  </Typography>
+                  <Typography variant="body1" gutterBottom>
+                    Annual price: {plan.price.annual}
+                  </Typography>
+
+                  <List dense>
+                    {plan.features.map((feature, i) => (
+                      <ListItem key={i} sx={{ py: 0 }}>
+                        <Typography variant="body2" color="text.secondary">
+                          {feature}
+                        </Typography>
+                      </ListItem>
+                    ))}
+                  </List>
                 </CardContent>
                 <CardActions sx={{ mt: 'auto' }}>
                   <Button size="small" color="primary">
