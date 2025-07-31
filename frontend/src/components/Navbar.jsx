@@ -21,6 +21,7 @@ import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function NavbarMUI() {
   const {t} = useTranslation();
@@ -128,10 +129,10 @@ export default function NavbarMUI() {
               ))
             )}
           </Box>
-
+            <LanguageSwitcher/>
           {/* Botón Login */}
           {/* Autenticado: menú, no autenticado: login */}
-          {console.log(authenticated + "is")}
+
           {!authenticated ? (
             <Button
               onClick={() => navigate('/login')}

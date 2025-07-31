@@ -59,6 +59,24 @@
         "applyLink": "Apply as a distributor ->"
     },
     "footer": {
-        "copyright": "© 2025 ChibchaWeb. All rights reserved."
+        "copyright": "© {{year}} ChibchaWeb. All rights reserved."
+    },
+    "loginPage":{
+        "signInTitle":"Sign In",
+        "emailField":"Email",
+        "passwordField":"Password",
+        "signInButton":"SIGN IN",
+        "accountLabel":"Don't have an account?",
+        "createAccountLink":"Create account",
+        "distributorLabel":"Do you want to work with as a distributor?",
+        "distributorLink":"Click here"
+    },
+    "alert": {
+        "success": {
+            "login": "Logged in succesful."
+        },
+        "error": {
+            "login": "Verify your credentials."
+        }
     }
 }

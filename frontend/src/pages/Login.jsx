@@ -13,8 +13,10 @@ import useScrollToTop from '../hooks/useScrollToTop';
 import { useGlobalAlert } from "../context/AlertContext";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from 'react-i18next';
 
 export default function Login() {
+    const { t } = useTranslation();
     const { showAlert } = useGlobalAlert();
     const { login } = useAuth();
 
@@ -31,21 +33,20 @@ export default function Login() {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-  const result = await login(form.email, form.password); // ✅ esto llama al login del context
-    console.log(result);
-    
-  if (result.success) {
-    showAlert("Login successful", "success");
-    console.log("logeates");
-    navigate("/");
-  } else {
-    console.log("no logeates");
-    showAlert(result.message || "Verify your credentials", "error");
-  }
-};
+        const result = await login(form.email, form.password);
+
+        console.log("res" + result);
+
+        if (result.success) {
+            showAlert(t('alert.success.login'), "success");
+            navigate("/");
+        } else {
+            showAlert(result.message || t("alert.error.login"), "error");
+        }
+    };
 
 
     return (
@@ -60,12 +61,12 @@ const handleSubmit = async (e) => {
                             fontFamily: 'Poppins, sans-serif',
                         }}
                     >
-                        Sign In
+                        {t('loginPage.signInTitle')}
                     </Typography>
 
                     <Box component="form" onSubmit={handleSubmit} noValidate>
                         <TextField
-                            label="Email"
+                            label={t('loginPage.emailField')}
                             name="email"
                             type="email"
                             value={form.email}
@@ -84,7 +85,7 @@ const handleSubmit = async (e) => {
                         />
 
                         <TextField
-                            label="Password"
+                            label={t('loginPage.passwordField')}
                             name="password"
                             value={form.password}
                             onChange={handleChange}
@@ -113,11 +114,11 @@ const handleSubmit = async (e) => {
                                 '&:hover': { bgcolor: '#ffc107', color: '#212121' }
                             }}
                         >
-                            Sign In
+                            {t('loginPage.signInButton')}
                         </Button>
 
                         <Typography variant="body2" sx={{ mt: 2 }}>
-                            Don't have an account?{' '}
+                            {t('loginPage.accountLabel')}{' '}
                             <Link
                                 href="/RegisterAccount"
                                 underline="hover"
@@ -126,12 +127,12 @@ const handleSubmit = async (e) => {
                                     '&:hover': { color: '#ffc107' }
                                 }}
                             >
-                                Create account
+                                {t('loginPage.createAccountLink')}
                             </Link>
                         </Typography>
 
                         <Typography variant="body2" sx={{ mt: 2 }}>
-                            Do you want to work with us as a distribuitor?{' '}
+                            {t('loginPage.distributorLabel')}{' '}
                             <Link
                                 href="/RegisterDistributor"
                                 underline="hover"
@@ -140,7 +141,7 @@ const handleSubmit = async (e) => {
                                     '&:hover': { color: '#ffc107' }
                                 }}
                             >
-                                Click here
+                                {t('loginPage.distributorLink')}
                             </Link>
                         </Typography>
                     </Box>
