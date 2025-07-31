@@ -23,6 +23,7 @@ import DistributorInfo from './pages/DistributorInfo.jsx'
 import DomainsInfo from './pages/DomainsInfo.jsx'
 import PlansInfo from './pages/PlansInfo.jsx'
 import DomainRequest from './pages/DomainRequest.jsx'
+import EmployeeManageTickets from './pages/EmployeeManageTickets.jsx'
 
 function App() {
   return (
@@ -40,6 +41,12 @@ function App() {
         <Route path="/registerAccount" element={
           <MainLayout>
             <RegisterAccount />
+          </MainLayout>
+        } />
+
+        <Route path="/EmployeeManageTickets" element={
+          <MainLayout>
+            <EmployeeManageTickets />
           </MainLayout>
         } />
 
@@ -98,9 +105,11 @@ function App() {
           <Route path="DomainRequest" element={<DomainRequest />} />
         </Route>
 
+        {/* Employee Dashboard */}
         <Route path="/employee" element={<DashboardLayout />}>
           <Route index element={<ManageProfile />} />
           <Route path="ManageProfile" element={<ManageProfile />} />
+          <Route path="ManageTickets" element={<EmployeeManageTickets />} />
  
         </Route>
       </Routes>
