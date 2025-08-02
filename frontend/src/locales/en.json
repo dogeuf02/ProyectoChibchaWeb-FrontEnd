@@ -109,9 +109,9 @@
             "email": "Email",
             "status": "Status",
             "details": "Client Details",
-            "id": "Client ID:",
-            "phone": "Phone:",
-            "birthdate": "Birth Date:",
+            "id": "Client ID",
+            "phone": "Phone",
+            "birthdate": "Birth Date",
             "searchField": "Search by ID"
         }
     },

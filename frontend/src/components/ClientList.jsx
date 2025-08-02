@@ -49,9 +49,9 @@ function Row({ client, onRequestDelete }) {
               <Typography variant="subtitle1" gutterBottom color="text.primary">
                 {t('clientManagement.list.details')}
               </Typography>
-              <Typography variant="body2">{t('clientManagement.list.id')} {client.id_cliente}</Typography>
-              <Typography variant="body2">{t('clientManagement.list.phone')} {client.telefono}</Typography>
-              <Typography variant="body2">{t('clientManagement.list.birthdate')} {client.fechaNacimientoCliente}</Typography>
+              <Typography variant="body2">{t('clientManagement.list.id')}: {client.id_cliente}</Typography>
+              <Typography variant="body2">{t('clientManagement.list.phone')}: {client.telefono}</Typography>
+              <Typography variant="body2">{t('clientManagement.list.birthdate')}: {client.fechaNacimientoCliente}</Typography>
 
               {onRequestDelete && client.estado === "ACTIVO" && (
                 <Button
