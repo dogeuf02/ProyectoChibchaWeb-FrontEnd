@@ -24,19 +24,14 @@ import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './LanguageSwitcher';
 
 export default function NavbarMUI() {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const { authenticated, role, logout } = useAuth();
-  const rolePathMap = {
-  Administrador: '/admin/ManageProfile',
-  Cliente: '/client/ManageProfile',
-  Distribuidor: '/distributor/ManageProfile',
-  Empleado: '/employee/ManageProfile'
-};
+
 
   const navItems = [
     { label: t('title'), to: '#Home' },
@@ -85,8 +80,8 @@ export default function NavbarMUI() {
     }
   };
 
-  const checkRole = (role) =>{
-    switch(role){
+  const checkRole = (role) => {
+    switch (role) {
       case "Administrador":
         return "Administrator"
       case "Cliente":
@@ -94,7 +89,7 @@ export default function NavbarMUI() {
       case "Empleado":
         return "Employee"
       case "Distribuidor":
-        return "Distributor" 
+        return "Distributor"
     }
   }
 
@@ -129,7 +124,7 @@ export default function NavbarMUI() {
               ))
             )}
           </Box>
-            <LanguageSwitcher/>
+          <LanguageSwitcher />
           {/* Botón Login */}
           {/* Autenticado: menú, no autenticado: login */}
 

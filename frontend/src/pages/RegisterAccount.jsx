@@ -15,10 +15,12 @@ import { useGlobalAlert } from "../context/AlertContext";
 import { createClient } from '../api/clientApi';
 import { ConstructionOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function RegisterAccount() {
-
+  const { t } = useTranslation();
   useScrollToTop();
+
   const navigate = useNavigate();
   const { showAlert } = useGlobalAlert();
   const [form, setForm] = useState({
@@ -84,9 +86,9 @@ export default function RegisterAccount() {
     const res = await createClient(client)
     if (res.exito) {
       showAlert('Register success', 'success');
-       setTimeout(() => {
-    navigate('/login');
-  }, 500); // espera .5 segundos antes de redirigir
+      setTimeout(() => {
+        navigate('/login');
+      }, 500); // espera .5 segundos antes de redirigir
 
     } else {
       //console.log('Registrando usuario:', form);
@@ -103,12 +105,12 @@ export default function RegisterAccount() {
             color: '#212121',
             fontFamily: 'Poppins, sans-serif',
           }}>
-            Create Account
+            {t('registerAccount.title')}
           </Typography>
 
           <Box component="form" onSubmit={handleSubmit} noValidate>
             <TextField
-              label="First Name"
+              label={t('registerAccount.firstNameField')}
               name="firstName"
               value={form.firstName}
               onChange={handleChange}
@@ -126,7 +128,7 @@ export default function RegisterAccount() {
             />
 
             <TextField
-              label="Last Name"
+              label={t('registerAccount.lastnameField')}
               name="lastName"
               value={form.lastName}
               onChange={handleChange}
@@ -143,7 +145,7 @@ export default function RegisterAccount() {
               }}
             />
             <TextField
-              label="Email"
+              label={t('registerAccount.emailField')}
               name="email"
               type="email"
               value={form.email}
@@ -161,7 +163,7 @@ export default function RegisterAccount() {
               }}
             />
             <TextField
-              label="Phone number"
+              label={t('registerAccount.phoneNumberField')}
               name="phone"
               value={form.phone}
               onChange={handleChange}
@@ -179,7 +181,7 @@ export default function RegisterAccount() {
               }}
             />
             <TextField
-              label="Birth Date"
+              label={t('registerAccount.birthDateField')}
               name="birthDate"
               type="date"
               value={form.birthDate}
@@ -199,7 +201,7 @@ export default function RegisterAccount() {
             />
 
             <TextField
-              label="Password"
+              label={t('registerAccount.passwordField')}
               name="password"
               value={form.password}
               onChange={handleChange}
@@ -217,7 +219,7 @@ export default function RegisterAccount() {
               }}
             />
             <TextField
-              label="Confirm Password"
+              label={t('registerAccount.confirmPasswordfield')}
               name="confirmPassword"
               value={form.confirmPassword}
               onChange={handleChange}
@@ -245,10 +247,10 @@ export default function RegisterAccount() {
                 '&:hover': { bgcolor: '#ffc107', color: '#212121' }
               }}
             >
-              Register
+              {t('registerAccount.registerButton')}
             </Button>
             <Typography variant="body2" sx={{ mt: 2 }}>
-              Have an account?{' '}
+              {t('registerAccount.accountLabel')}{' '}
               <Link
                 href="/login"
                 underline="hover"
@@ -257,11 +259,11 @@ export default function RegisterAccount() {
                   '&:hover': { color: '#ffc107' }
                 }}
               >
-                Sign in
+                {t('registerAccount.accountLink')}
               </Link>
             </Typography>
             <Typography variant="body2" sx={{ mt: 2 }}>
-              Do you want to work with us as a distribuitor?{' '}
+              {t('registerAccount.distributorLabel')}{' '}
               <Link
                 href="/RegisterDistributor"
                 underline="hover"
@@ -270,7 +272,7 @@ export default function RegisterAccount() {
                   '&:hover': { color: '#ffc107' }
                 }}
               >
-                Click here
+                {t('registerAccount.distributorLink')}
               </Link>
             </Typography>
           </Box>

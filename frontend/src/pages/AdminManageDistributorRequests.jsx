@@ -7,9 +7,11 @@ import { useGlobalAlert } from "../context/AlertContext";
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Stack, MenuItem } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { getPendingDistributors, updateState } from "../api/distributorApi"; // ajusta la ruta si es necesario
+import { useTranslation } from "react-i18next";
 
 export default function AdminManageDistributorRequests() {
   useScrollToTop();
+  const { t } = useTranslation();
   const { showAlert } = useGlobalAlert();
 
   const [distributors, setDistributors] = useState([]);
@@ -21,7 +23,7 @@ export default function AdminManageDistributorRequests() {
     const fetchPendingDistributors = async () => {
       try {
         const result = await getPendingDistributors();
-   
+
         setDistributors(result.distribuidores);
       } catch (error) {
         showAlert("Error fetching distributor requests", "error");
@@ -36,32 +38,32 @@ export default function AdminManageDistributorRequests() {
   const handleRequestAccept = async (id) => {
     setSelectedId(id);
     const distributor = distributors.find(dist => dist.distributor_id === id);
-        console.log(selectedId)
-        if (!distributor) {
-          showAlert("Distributor not found.", "error");
-          setOpenDialog(false);
-          return;
+    console.log(selectedId)
+    if (!distributor) {
+      showAlert("Distributor not found.", "error");
+      setOpenDialog(false);
+      return;
+    }
+
+    try {
+      const result = await updateState(distributor.email, "ACTIVO");
+
+      if (result.exito) {
+        showAlert("Distribuitor disabled succesfully.", "success");
+        const updated = await getPendingDistributors();
+        if (updated.exito) {
+          console.log("sexito")
+          setDistributors(updated.distribuidores);
         }
-    
-        try {
-          const result = await updateState(distributor.email, "ACTIVO");
-    
-          if (result.exito) {
-            showAlert("Distribuitor disabled succesfully.", "success");
-            const updated = await getPendingDistributors();
-            if (updated.exito) {
-              console.log("sexito")
-              setDistributors(updated.distribuidores);
-            }
-          } else {
-            showAlert(result.mensaje || "Error disabling distributor", "error");
-          }
-        } catch (error) {
-          showAlert("Server error trying to disable a distributor", "error");
-        } finally {
-          setOpenDialog(false);
-          setSelectedId(null);
-        }
+      } else {
+        showAlert(result.mensaje || "Error disabling distributor", "error");
+      }
+    } catch (error) {
+      showAlert("Server error trying to disable a distributor", "error");
+    } finally {
+      setOpenDialog(false);
+      setSelectedId(null);
+    }
   };
 
   const handleRequestDeny = (id) => {
@@ -84,8 +86,7 @@ export default function AdminManageDistributorRequests() {
     <Box sx={{ maxWidth: 1000, mx: "auto", mt: 10 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 6 }}>
         <Typography variant="h4" sx={{ fontWeight: "bold", color: "#212121" }}>
-          Apply as Distributor requests
-        </Typography>
+          {t('distributorRequestsManagement.title')} </Typography>
       </Box>
 
       <RegisterDistributorRequestsList
@@ -99,9 +100,9 @@ export default function AdminManageDistributorRequests() {
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         onConfirm={handleConfirmDeny}
-        title="Deny Registration Request"
-        message="Are you sure you want to deny this registration request? This action cannot be undone."
-        confirmText="Confirm Denial"
+        title={t('domainRequestsManagement.denyRequestDialog.title')}
+        message={t('domainRequestsManagement.denyRequestDialog.message')}
+        confirmText={t('domainRequestsManagement.denyRequestDialog.confirmText')}
       />
     </Box>
   );

@@ -61,15 +61,160 @@
     "footer": {
         "copyright": "© {{year}} ChibchaWeb. All rights reserved."
     },
-    "loginPage":{
-        "signInTitle":"Sign In",
-        "emailField":"Email",
-        "passwordField":"Password",
-        "signInButton":"SIGN IN",
-        "accountLabel":"Don't have an account?",
-        "createAccountLink":"Create account",
-        "distributorLabel":"Do you want to work with as a distributor?",
-        "distributorLink":"Click here"
+    "loginPage": {
+        "signInTitle": "Sign In",
+        "emailField": "Email",
+        "passwordField": "Password",
+        "signInButton": "SIGN IN",
+        "accountLabel": "Don't have an account?",
+        "createAccountLink": "Create account",
+        "distributorLabel": "Do you want to work with us a distributor?",
+        "distributorLink": "Click here"
+    },
+    "registerAccount": {
+        "title": "Register account",
+        "firstNameField": "First Name",
+        "lastnameField": "Last Name",
+        "emailField": "Email",
+        "phoneNumberField": "Phone number",
+        "birthDateField": "Birth date",
+        "passwordField": "Password",
+        "confirmPasswordfield": "Confirm password",
+        "registerButton": "REGISTER",
+        "accountLabel": "Already have an account?",
+        "accountLink": "Sign in",
+        "distributorLabel": "Do you want to work with us as a distributor?",
+        "distributorLink": "Click here"
+    },
+    "clientManagement": {
+        "title": "Client Management",
+        "addClientButton": "Add client",
+        "addClientDialog": {
+            "title": "Add New Client",
+            "firstNameField": "First Name",
+            "lastnameField": "Last Name",
+            "emailField": "Email",
+            "phoneNumberField": "Phone number",
+            "birthDateField": "Birth date",
+            "cancelButton": "CANCEL",
+            "saveButton": "SAVE"
+        },
+        "deleteDialog": {
+            "title": "Delete Client",
+            "message": "Are you sure you want to delete this client? This action cannot be undone.",
+            "confirmText": "Confirm Delete"
+        },
+        "list": {
+            "fullName": "Full Name",
+            "email": "Email",
+            "status": "Status",
+            "details": "Client Details",
+            "id": "Client ID:",
+            "phone": "Phone:",
+            "birthdate": "Birth Date:",
+            "searchField": "Search by ID"
+        }
+    },
+    "distributorManagement": {
+        "title": "Distributor Management",
+        "addDistributorButton": "Add Distributor",
+        "addDistributorDialog": {
+            "title": "Add New Distributor",
+            "emailField": "Email",
+            "docTypeField": "Document Type",
+            "docNumberField": "Document Number",
+            "companyNameField": "Company Name",
+            "companyAddressField": "Company Address",
+            "cancelButton": "CANCEL",
+            "saveButton": "SAVE"
+        },
+        "deleteDialog": {
+            "title": "Delete Distributor",
+            "message": "Are you sure you want to delete this distributor? This action cannot be undone.",
+            "confirmText": "Confirm Delete"
+        },
+        "list": {
+            "companyName": "Full Name",
+            "email": "Email",
+            "status": "Status",
+            "role": "Role",
+            "searchField": "Search by ID",
+            "details": "Distributor Details",
+            "id": "Distributor ID",
+            "docType": "Document Type",
+            "docNumber": "Document Number",
+            "companyAddress": "Company Address"
+        }
+    },
+    "employeeManagement": {
+        "title": "Employee Management",
+        "addEmployeeButton": "ADD EMPLOYEE",
+        "addEmployeeDialog": {
+            "title": "Add New Employee",
+            "firstNameField": "First Name",
+            "lastnameField": "Last Name",
+            "emailField": "Email",
+            "phoneNumberField": "Phone number",
+            "positionField": "Position",
+            "cancelButton": "CANCEL",
+            "saveButton": "SAVE"
+        },
+        "deleteDialog": {
+            "title": "Delete Employee",
+            "message": "Are you sure you want to delete this employee? This action cannot be undone.",
+            "confirmText": "Confirm Delete"
+        },
+        "list": {
+            "fullName": "Full Name",
+            "position": "Position",
+            "email": "Email",
+            "status": "Status",
+            "details": "Employee Details",
+            "id": "Employee ID",
+            "searchField": "Search by ID"
+        }
+    },
+    "domainRequestsManagement": {
+        "title": "Domain Registration Requests",
+        "denyRequestDialog":{
+            "title":"Deny Registration Request",
+            "message":"Are you sure you want to deny this registration request? This action cannot be undone.",
+            "confirmText":"Confirm Denial"
+        },
+        "list": {
+            "domain":"domain",
+            "fullDomain": "Full Domain",
+            "applicant": "Applicant",
+            "applicantInfo": "Applicant Info",
+            "applicantName": "Name",
+            "applicantRole": "Role",
+            "email": "Email",
+            "requestStatus": "Request Status",
+            "domainStatus": "Domain Status",
+            "details": "Request Details",
+            "id": "Request ID",
+            "reviewedBy":"Reviewed By",
+            "searchField": "Search by Domain or ID",
+            "accept": "Accept",
+            "reject": "Reject"
+        }
+    },
+    "distributorRequestsManagement": {
+        "title": "Apply as Distributor requests",
+        "list": {
+            "details":"Distributor Request Details",
+            "id":"Distributor ID",
+            "docType":"Document Type",
+            "docNumber":"Document Number",
+            "companyAddress":"Company Address",
+            "accept":"Accept",
+            "deny":"Deny",
+            "searchField":"Search by ID",
+            "companyName":"Company Name",
+            "email":"Email",
+            "status":"Status",
+            "role":"Role"
+        }
     },
     "alert": {
         "success": {

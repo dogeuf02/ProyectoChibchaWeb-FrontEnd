@@ -19,8 +19,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { useTranslation } from "react-i18next";
 
 function Row({ client, onRequestDelete }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   return (
@@ -45,11 +47,11 @@ function Row({ client, onRequestDelete }) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ p: 2 }}>
               <Typography variant="subtitle1" gutterBottom color="text.primary">
-                Client Details
+                {t('clientManagement.list.details')}
               </Typography>
-              <Typography variant="body2">Client ID: {client.id_cliente}</Typography>
-              <Typography variant="body2">Phone: {client.telefono}</Typography>
-              <Typography variant="body2">Birth Date: {client.fechaNacimientoCliente}</Typography>
+              <Typography variant="body2">{t('clientManagement.list.id')} {client.id_cliente}</Typography>
+              <Typography variant="body2">{t('clientManagement.list.phone')} {client.telefono}</Typography>
+              <Typography variant="body2">{t('clientManagement.list.birthdate')} {client.fechaNacimientoCliente}</Typography>
 
               {onRequestDelete && client.estado === "ACTIVO" && (
                 <Button
@@ -58,7 +60,7 @@ function Row({ client, onRequestDelete }) {
                   sx={{ mt: 2 }}
                   onClick={() => onRequestDelete(client.id_cliente)}
                 >
-                  Delete client
+                  {t('clientManagement.deleteDialog.title')}
                 </Button>
               )}
             </Box>
@@ -71,14 +73,14 @@ function Row({ client, onRequestDelete }) {
 
 export default function ClientList({ clients, onRequestDelete }) {
   const [searchId, setSearchId] = useState('');
-
+  const { t } = useTranslation();
   return (
     <>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
         <TextField
           variant="outlined"
           size="small"
-          placeholder="Search by ID"
+          placeholder={t('clientManagement.list.searchField')}
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
           InputProps={{
@@ -97,9 +99,9 @@ export default function ClientList({ clients, onRequestDelete }) {
           <TableHead>
             <TableRow sx={{ bgcolor: '#fff3e0' }}>
               <TableCell />
-              <TableCell sx={{ fontWeight: 'bold' }}>Full Name</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t('clientManagement.list.fullName')}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t('clientManagement.list.email')}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t('clientManagement.list.status')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

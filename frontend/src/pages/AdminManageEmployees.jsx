@@ -7,10 +7,11 @@ import { useGlobalAlert } from "../context/AlertContext";
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { createEmployee, getEmployees, deactivateUser } from '../api/employeeApi';
-
+import { useTranslation } from "react-i18next";
 
 export default function AdminManageEmployees() {
   useScrollToTop();
+  const { t } = useTranslation();
   const { showAlert } = useGlobalAlert();
   const [employees, setEmployees] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -149,7 +150,7 @@ export default function AdminManageEmployees() {
 
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 6 }}>
         <Typography variant="h4" sx={{ fontWeight: "bold", color: "#212121" }}>
-          Employee Management
+          {t('employeeManagement.title')}
         </Typography>
 
         <Button
@@ -164,10 +165,9 @@ export default function AdminManageEmployees() {
             },
           }}
         >
-          Add Employee
+          {t('employeeManagement.addEmployeeButton')}
         </Button>
       </Box>
-
 
       <EmployeeList
         employees={employees}
@@ -178,42 +178,42 @@ export default function AdminManageEmployees() {
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         onConfirm={handleConfirmDelete}
-        title="Delete Employee"
-        message="Are you sure you want to delete this employee? This action cannot be undone."
-        confirmText="Confirm Delete"
+        title={t('employeeManagement.deleteDialog.title')}
+        message={t('employeeManagement.deleteDialog.message')}
+        confirmText={t('employeeManagement.deleteDialog.confirmText')}
       />
 
       <Dialog open={openForm} onClose={() => setOpenForm(false)} fullWidth>
-        <DialogTitle>Add New Employee</DialogTitle>
+        <DialogTitle>{t('employeeManagement.addEmployeeDialog.title')}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} mt={1}>
 
             <TextField
-              label="First Name"
+              label={t('employeeManagement.addEmployeeDialog.firstNameField')}
               value={newEmployee.firstName}
               onChange={(e) => setNewEmployee({ ...newEmployee, firstName: e.target.value })}
               fullWidth
             />
             <TextField
-              label="Last Name"
+              label={t('employeeManagement.addEmployeeDialog.lastnameField')}
               value={newEmployee.lastName}
               onChange={(e) => setNewEmployee({ ...newEmployee, lastName: e.target.value })}
               fullWidth
             />
             <TextField
-              label="Position"
+              label={t('employeeManagement.addEmployeeDialog.positionField')}
               value={newEmployee.position}
               onChange={(e) => setNewEmployee({ ...newEmployee, position: e.target.value })}
               fullWidth
             />
             <TextField
-              label="Phone"
+              label={t('employeeManagement.addEmployeeDialog.phoneNumberField')}
               value={newEmployee.phone}
               onChange={(e) => setNewEmployee({ ...newEmployee, phone: e.target.value })}
               fullWidth
             />
             <TextField
-              label="Email"
+              label={t('employeeManagement.addEmployeeDialog.emailField')}
               value={newEmployee.email}
               onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })}
               fullWidth
@@ -225,14 +225,14 @@ export default function AdminManageEmployees() {
             onClick={() => setOpenForm(false)}
             sx={{ color: "#212121" }}
           >
-            Cancel
+            {t('employeeManagement.addEmployeeDialog.cancelButton')}
           </Button>
           <Button
             onClick={handleAddEmployee}
             variant="contained"
             sx={{ backgroundColor: "#FF6300", color: "#FAFAFA", "&:hover": { backgroundColor: "#e65c00" } }}
           >
-            Save
+            {t('employeeManagement.addEmployeeDialog.saveButton')}
           </Button>
         </DialogActions>
       </Dialog>

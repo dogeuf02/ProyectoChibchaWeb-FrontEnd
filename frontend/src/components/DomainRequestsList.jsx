@@ -19,8 +19,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { useTranslation } from "react-i18next";
 
 function Row({ request, onAccept, onReject }) {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const fullDomain = `${request.nombreDominio}${request.tld}`;
 
@@ -45,16 +47,16 @@ function Row({ request, onAccept, onReject }) {
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box sx={{ p: 2 }}>
                             <Typography variant="subtitle1" gutterBottom color="text.primary">
-                                Request Details
+                                {t('domainRequestsManagement.list.details')}
                             </Typography>
-                            <Typography variant="body2">Request ID: {request.idSolicitud}</Typography>
-                            <Typography variant="body2">Full Domain: {fullDomain}</Typography>
-                            <Typography variant="body2">Domain Status: {request.estado}</Typography>
-                            <Typography variant="body2">Request Status: {request.estado}</Typography>
+                            <Typography variant="body2">{t('domainRequestsManagement.list.id')}: {request.idSolicitud}</Typography>
+                            <Typography variant="body2">{t('domainRequestsManagement.list.fullDomain')}: {fullDomain}</Typography>
+                            <Typography variant="body2">{t('domainRequestsManagement.list.domainStatus')}: {request.estado}</Typography>
+                            <Typography variant="body2">{t('domainRequestsManagement.list.requestStatus')}: {request.estado}</Typography>
 
-                            <Typography variant="subtitle2" sx={{ mt: 2 }}>Applicant Info</Typography>
-                            <Typography variant="body2">Name: {request.nombreUsuario || "-"}</Typography>
-                            <Typography variant="body2">Role: {request.rolUsuario || "-"}</Typography>
+                            <Typography variant="subtitle2" sx={{ mt: 2 }}>{t('domainRequestsManagement.list.applicantInfo')}</Typography>
+                            <Typography variant="body2">{t('domainRequestsManagement.list.applicantName')}: {request.nombreUsuario || "-"}</Typography>
+                            <Typography variant="body2">{t('domainRequestsManagement.list.applicantRole')}: {request.rolUsuario || "-"}</Typography>
 
                             {request.estado === 'pending' && (
                                 <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
@@ -63,14 +65,14 @@ function Row({ request, onAccept, onReject }) {
                                         color="success"
                                         onClick={() => onAccept(request.idSolicitud)}
                                     >
-                                        Accept
+                                        {t('domainRequestsManagement.list.accept')}
                                     </Button>
                                     <Button
                                         variant="contained"
                                         color="error"
                                         onClick={() => onReject(request.idSolicitud)}
                                     >
-                                        Reject
+                                        {t('domainRequestsManagement.list.reject')}
                                     </Button>
                                 </Box>
                             )}
@@ -83,6 +85,7 @@ function Row({ request, onAccept, onReject }) {
 }
 
 export default function DomainRequestsList({ domainRequests, onAccept, onReject }) {
+    const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState('');
 
     return (
@@ -91,7 +94,7 @@ export default function DomainRequestsList({ domainRequests, onAccept, onReject 
                 <TextField
                     variant="outlined"
                     size="small"
-                    placeholder="Search by Domain or ID"
+                    placeholder={t('domainRequestsManagement.list.searchField')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     InputProps={{
@@ -110,12 +113,12 @@ export default function DomainRequestsList({ domainRequests, onAccept, onReject 
                     <TableHead>
                         <TableRow sx={{ bgcolor: '#fff3e0' }}>
                             <TableCell />
-                            <TableCell><b>Domain</b></TableCell>
-                            <TableCell><b>Domain Status</b></TableCell>
-                            <TableCell><b>Request Status</b></TableCell>
-                            <TableCell><b>Applicant</b></TableCell>
-                            <TableCell><b>Role</b></TableCell>
-                            <TableCell><b>Reviewed By</b></TableCell>
+                            <TableCell><b>{t('domainRequestsManagement.list.domain')}</b></TableCell>
+                            <TableCell><b>{t('domainRequestsManagement.list.domainStatus')}</b></TableCell>
+                            <TableCell><b>{t('domainRequestsManagement.list.requestStatus')}</b></TableCell>
+                            <TableCell><b>{t('domainRequestsManagement.list.applicant')}</b></TableCell>
+                            <TableCell><b>{t('domainRequestsManagement.list.applicantRole')}</b></TableCell>
+                            <TableCell><b>{t('domainRequestsManagement.list.reviewedBy')}</b></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
