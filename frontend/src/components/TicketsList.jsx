@@ -13,47 +13,73 @@ import {
   Button,
   TextField,
   InputAdornment,
-  Chip,
-  Select,
   MenuItem,
+  Select,
   FormControl,
+  InputLabel,
+  Chip,
+  Stack
 } from "@mui/material";
 
-import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
+import SearchIcon from "@mui/icons-material/Search";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 function getStatusColor(status) {
-  switch (status) {
-    case "Pending":
-      return "warning";
-    case "In Progress":
+  switch (status.toLowerCase()) {
+    case "open":
       return "info";
-    case "Resolved":
-      return "success";
-    case "Closed":
-      return "default";
-    default:
-      return "default";
-  }
-}
-
-function getPriorityColor(priority) {
-  switch (priority) {
-    case "High":
-      return "error";
-    case "Medium":
+    case "in progress":
       return "warning";
-    case "Low":
+    case "escalated":
+      return "error";
+    case "closed":
       return "success";
     default:
       return "default";
   }
 }
 
-function Row({ ticket, onStatusChange, onPriorityChange, onCloseTicket }) {
+function getLevelColor(level) {
+  switch (level) {
+    case "Level 1":
+      return "success";
+    case "Level 2":
+      return "warning";
+    case "Level 3":
+      return "error";
+    default:
+      return "default";
+  }
+}
+
+function Row({
+  ticket,
+  role,
+  onStatusChange,
+  onLevelChange,
+  onAssignTech,
+  onAddComment,
+  onCloseTicket,
+  availableTechnicians
+}) {
   const [open, setOpen] = useState(false);
+  const [assignedTech, setAssignedTech] = useState(ticket.assigned_to || "");
+  const [comment, setComment] = useState("");
+
+  const handleAssign = () => {
+    if (assignedTech) {
+      onAssignTech(ticket.ticket_id, assignedTech);
+    }
+  };
+
+  const handleAddComment = () => {
+    if (comment.trim()) {
+      onAddComment(ticket.ticket_id, comment);
+      setComment("");
+    }
+  };
 
   return (
     <>
@@ -70,60 +96,105 @@ function Row({ ticket, onStatusChange, onPriorityChange, onCloseTicket }) {
           <Chip label={ticket.status} color={getStatusColor(ticket.status)} size="small" />
         </TableCell>
         <TableCell>
-          <Chip label={ticket.priority} color={getPriorityColor(ticket.priority)} size="small" />
+          <Chip label={ticket.level} color={getLevelColor(ticket.level)} size="small" />
         </TableCell>
-        <TableCell>{ticket.status === "Closed" ? "—" : "Active"}</TableCell>
+        {role === "coordinator" && (
+          <TableCell>{ticket.assigned_to || "-"}</TableCell>
+        )}
       </TableRow>
 
       <TableRow>
-        <TableCell colSpan={7} sx={{ bgcolor: "#fafafa", p: 0 }}>
+        <TableCell colSpan={role === "coordinator" ? 7 : 6} sx={{ bgcolor: "#fafafa", p: 0 }}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ p: 2 }}>
               <Typography variant="subtitle1" gutterBottom color="text.primary">
                 Ticket Details
               </Typography>
-              <Typography variant="body2">Ticket ID: {ticket.ticket_id}</Typography>
-              <Typography variant="body2">Client ID: {ticket.client_id}</Typography>
-              <Typography variant="body2">Subject: {ticket.subject}</Typography>
-              <Typography variant="body2" sx={{ mb: 2 }}>
-                Description: {ticket.description}
-              </Typography>
+              <Typography variant="body2">Description: {ticket.description}</Typography>
 
-              <Box sx={{ display: "flex", gap: 2, mt: 2, flexWrap: "wrap" }}>
+              {/* Cambiar estado */}
+              <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
                 <FormControl size="small" sx={{ minWidth: 150 }}>
+                  <InputLabel>Change Status</InputLabel>
                   <Select
                     value={ticket.status}
+                    label="Change Status"
                     onChange={(e) => onStatusChange(ticket.ticket_id, e.target.value)}
                   >
-                    {["Pending", "In Progress", "Resolved"].map((status) => (
-                      <MenuItem key={status} value={status}>
-                        {status}
-                      </MenuItem>
-                    ))}
+                    <MenuItem value="Open">Open</MenuItem>
+                    <MenuItem value="In Progress">In Progress</MenuItem>
+                    <MenuItem value="Escalated">Escalated</MenuItem>
+                    <MenuItem value="Closed">Closed</MenuItem>
                   </Select>
                 </FormControl>
 
-                <FormControl size="small" sx={{ minWidth: 150 }}>
-                  <Select
-                    value={ticket.priority}
-                    onChange={(e) => onPriorityChange(ticket.ticket_id, e.target.value)}
-                  >
-                    {["Low", "Medium", "High"].map((priority) => (
-                      <MenuItem key={priority} value={priority}>
-                        {priority}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                {role === "coordinator" && (
+                  <FormControl size="small" sx={{ minWidth: 150 }}>
+                    <InputLabel>Change Level</InputLabel>
+                    <Select
+                      value={ticket.level}
+                      label="Change Level"
+                      onChange={(e) => onLevelChange(ticket.ticket_id, e.target.value)}
+                    >
+                      <MenuItem value="Level 1">Level 1</MenuItem>
+                      <MenuItem value="Level 2">Level 2</MenuItem>
+                      <MenuItem value="Level 3">Level 3</MenuItem>
+                    </Select>
+                  </FormControl>
+                )}
+              </Box>
 
-                <Button
-                  variant="contained"
-                  color="error"
-                  onClick={() => onCloseTicket(ticket.ticket_id)}
-                >
-                  Close Ticket
+              {/* Comentarios */}
+              <Box sx={{ mt: 2, display: "flex", gap: 1 }}>
+                <TextField
+                  label="Add Comment"
+                  size="small"
+                  fullWidth
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                />
+                <Button variant="contained" onClick={handleAddComment}>
+                  Add
                 </Button>
               </Box>
+
+              {/* Asignación solo coordinador */}
+              {role === "coordinator" && (
+                <Box sx={{ mt: 2 }}>
+                  <FormControl size="small" sx={{ minWidth: 200, mr: 2 }}>
+                    <InputLabel>Assign Technician</InputLabel>
+                    <Select
+                      value={assignedTech}
+                      label="Assign Technician"
+                      onChange={(e) => setAssignedTech(e.target.value)}
+                    >
+                      {availableTechnicians.map((tech) => (
+                        <MenuItem key={tech} value={tech}>
+                          {tech}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleAssign}
+                    disabled={!assignedTech}
+                  >
+                    Assign
+                  </Button>
+                </Box>
+              )}
+
+              {/* Cerrar ticket */}
+              {ticket.status !== "Closed" && (
+                <Box sx={{ mt: 2 }}>
+                  <Button variant="contained" color="error" onClick={() => onCloseTicket(ticket.ticket_id)}>
+                    Close Ticket
+                  </Button>
+                </Box>
+              )}
             </Box>
           </Collapse>
         </TableCell>
@@ -134,11 +205,15 @@ function Row({ ticket, onStatusChange, onPriorityChange, onCloseTicket }) {
 
 export default function TicketsList({
   tickets,
+  role,
   onStatusChange,
-  onPriorityChange,
-  onCloseTicket,
+  onLevelChange,
+  onAssignTech,
+  onAddComment,
+  onCloseTicket
 }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const availableTechnicians = ["Alice Tech", "Bob Tech", "Charlie Tech"];
 
   return (
     <>
@@ -146,7 +221,7 @@ export default function TicketsList({
         <TextField
           variant="outlined"
           size="small"
-          placeholder="Search by Ticket ID or Client ID"
+          placeholder="Search by Ticket or Client ID"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
@@ -169,12 +244,12 @@ export default function TicketsList({
               <TableCell><b>Client ID</b></TableCell>
               <TableCell><b>Subject</b></TableCell>
               <TableCell><b>Status</b></TableCell>
-              <TableCell><b>Priority</b></TableCell>
-              <TableCell><b>Activity</b></TableCell>
+              <TableCell><b>Level</b></TableCell>
+              {role === "coordinator" && <TableCell><b>Assigned To</b></TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
-            {tickets
+            {(tickets || [])
               .filter(
                 (t) =>
                   t.ticket_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -184,9 +259,13 @@ export default function TicketsList({
                 <Row
                   key={ticket.ticket_id}
                   ticket={ticket}
+                  role={role}
                   onStatusChange={onStatusChange}
-                  onPriorityChange={onPriorityChange}
+                  onLevelChange={onLevelChange}
+                  onAssignTech={onAssignTech}
+                  onAddComment={onAddComment}
                   onCloseTicket={onCloseTicket}
+                  availableTechnicians={availableTechnicians}
                 />
               ))}
           </TableBody>
