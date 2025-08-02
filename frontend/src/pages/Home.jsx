@@ -33,7 +33,7 @@ export default function Home() {
         >
           <Typography
             variant="h2"
-            sx={{ color: '#FFBE02', lineHeight: 2 }}
+            sx={{ color: '#FFBE02', lineHeight: 2, fontWeight: 'bold'}}
           >
             CHIBCHAWEB
           </Typography>

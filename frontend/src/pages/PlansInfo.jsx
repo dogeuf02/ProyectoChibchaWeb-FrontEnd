@@ -74,10 +74,19 @@ export default function PlansInfo() {
   return (
     <Box id="Plans" sx={{ bgcolor: '#FAFAFA', py: 8 }}>
       <Container maxWidth="lg">
-        <Typography variant="h3" align="center" gutterBottom sx={{ color: '#212121', fontWeight: 'bold' }}>
+        <Typography
+          variant="h3"
+          align="center"
+          gutterBottom
+          sx={{ color: '#212121', fontWeight: 'bold' }}
+        >
           Choose the Right Hosting Plan
         </Typography>
-        <Typography variant="subtitle1" align="center" sx={{ color: '#BDBDBD', mb: 4 }}>
+        <Typography
+          variant="subtitle1"
+          align="center"
+          sx={{ color: '#BDBDBD', mb: 4 }}
+        >
           Flexible prices to grow with your business
         </Typography>
 
@@ -93,10 +102,19 @@ export default function PlansInfo() {
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   bgcolor: '#fff',
+                  transition: 'transform 0.3s, box-shadow 0.3s',
+                  '&:hover': {
+                    transform: 'translateY(-6px)',
+                    boxShadow: '0 12px 32px rgba(0,0,0,0.15)',
+                  },
                 }}
               >
                 <CardContent>
-                  <Typography variant="h5" align="center" sx={{ color: plan.color, fontWeight: 'bold', mb: 2 }}>
+                  <Typography
+                    variant="h5"
+                    align="center"
+                    sx={{ color: plan.color, fontWeight: 'bold', mb: 2 }}
+                  >
                     {plan.title}
                   </Typography>
 

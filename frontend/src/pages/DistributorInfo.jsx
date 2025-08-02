@@ -3,51 +3,71 @@ import {
   Box,
   Container,
   Typography,
-  Link,
+  Button,
+  Card,
+  CardContent,
 } from '@mui/material';
 
 export default function DistributorInfo() {
   return (
-    <Box id='Distributor' sx={{ bgcolor: '#f5f5f5', py: 8 }}>
-      <Container>
+    <Box id="Distributor" sx={{ bgcolor: '#FAFAFA', py: 8 }}>
+      <Container maxWidth="md">
+        <Card
+          sx={{
+            borderRadius: '30px',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+            overflow: 'hidden',
+            textAlign: 'center',
+            bgcolor: '#fff',
+          }}
+        >
+          <CardContent sx={{ py: 6, px: 4 }}>
+            {/* Título */}
+            <Typography
+              variant="h3"
+              gutterBottom
+              sx={{ color: '#212121', fontWeight: 'bold' }}
+            >
+              Become a Distributor
+            </Typography>
 
-        {/* Título */}
-        <Typography variant="h2" align="center" gutterBottom>
-          Distributor
-        </Typography>
-
-        {/* Texto descriptivo */}
-        <Box sx={{ mt: 4 }}>
-          <Typography
-            variant="h6"
-            align="center"
-            color="textSecondary"
-            sx={{ maxWidth: 800, mx: 'auto', lineHeight: 1.8 }}
-          >
-            As a distributor you will be able to receive commission depending on your sales in Chibchaweb!
-          </Typography>
-        </Box>
-
-        {/* Enlace para aplicar */}
-        <Box sx={{ mt: 4 }}>
-          <Typography align="center">
-            <Link
-              href="/RegisterDistributor"
-              underline="hover"
+            {/* Descripción */}
+            <Typography
+              variant="h6"
               sx={{
+                color: '#9E9E9E',
+                maxWidth: 600,
+                mx: 'auto',
+                lineHeight: 1.8,
+                mb: 4,
+              }}
+            >
+              As a distributor, you can earn commissions based on your sales in
+              <strong> Chibchaweb</strong>!  
+              Join our program and start growing your business with us.
+            </Typography>
+
+            {/* Botón de acción */}
+            <Button
+              href="/RegisterDistributor"
+              variant="contained"
+              size="large"
+              sx={{
+                bgcolor: '#FF6300',
+                borderRadius: '30px',
+                px: 5,
                 fontWeight: 'bold',
-                fontSize: '1.2rem',
-                color: '#FF6300',
+                fontSize: '1rem',
+                textTransform: 'none',
                 '&:hover': {
-                  color: '#e55a00',
+                  bgcolor: '#e55a00',
                 },
               }}
             >
-              Apply as a distributor →
-            </Link>
-          </Typography>
-        </Box>
-
+              Apply as a Distributor →
+            </Button>
+          </CardContent>
+        </Card>
       </Container>
     </Box>
   );

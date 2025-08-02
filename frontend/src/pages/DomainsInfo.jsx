@@ -1,113 +1,139 @@
-// pages/DomainsSelect.jsx
-import * as React from "react";
+import React from 'react';
 import {
   Box,
+  Container,
+  Grid,
   Card,
   CardContent,
-  Typography,
-  CardActionArea,
   CardMedia,
-} from "@mui/material";
+  Typography,
+  Button,
+  CardActions,
+  Divider,
+} from '@mui/material';
 
-const domains = [
+const cardData = [
   {
-    id: 1,
-    title: "Commercial",
+    title: 'Commercial',
     description:
-      "The most globally recognized and trusted domain, ideal for businesses, online stores, and professional websites seeking a worldwide audience.",
-    image: "/com.png",
+      'Dominio .com',
+    image: '/com.png',
+    color: '#FF6400',
   },
   {
-    id: 2,
-    title: "Network",
+    title: 'Network',
     description:
-      "A professional domain often linked to technology and internet services, suitable for startups, software platforms, and hosting providers.",
+      'Dominio .net',
     image:
-      "https://imagedelivery.net/LqiWLm-3MGbYHtFuUbcBtA/06b15861-1a43-4706-3825-cb2cd043c400/public",
+      'https://imagedelivery.net/LqiWLm-3MGbYHtFuUbcBtA/06b15861-1a43-4706-3825-cb2cd043c400/public',
+    color: '#6C63FF',
   },
   {
-    id: 3,
-    title: "Organization",
+    title: 'Organization',
     description:
-      "A credible and trustworthy domain commonly used by non-profits, foundations, and community or educational projects.",
-    image: "/org.png",
+      'Dominio .org',
+    image: '/org.png',
+    color: '#FF6400',
   },
 ];
 
-export default function DomainsSelect() {
-  const [selectedCard, setSelectedCard] = React.useState(null);
-
+export default function DomainsInfo() {
   return (
-    <Box
-      sx={{
-        width: "100%",
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-        gap: 3,
-        justifyItems: "center", // centra las cards en la grilla
-        p: 4,
-      }}
-    >
-      {domains.map((domain) => (
-        <Card
-          key={domain.id}
-          sx={{
-            width: 250,
-            borderRadius: 3,
-            boxShadow: 3,
-            textAlign: "center",
-            display: "flex",
-            flexDirection: "column",
-            "&:hover": {
-              transform: "translateY(-4px)",
-              transition: "0.3s",
-            },
-          }}
+    <Box id="Domains" sx={{ bgcolor: '#FAFAFA', py: 8 }}>
+      <Container maxWidth="lg">
+        <Typography
+          variant="h3"
+          align="center"
+          gutterBottom
+          sx={{ color: '#212121', fontWeight: 'bold' }}
         >
-          <CardActionArea
-            onClick={() => setSelectedCard(domain.id)}
-            data-active={selectedCard === domain.id ? "" : undefined}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              "&[data-active]": {
-                backgroundColor: "action.selected",
-                "&:hover": {
-                  backgroundColor: "action.selectedHover",
-                },
-              },
-            }}
-          >
-            <CardMedia
-              component="img"
-              image={domain.image}
-              alt={domain.title}
-              sx={{
-                height: 120,
-                objectFit: "contain",
-                bgcolor: "#fff",
-                borderTopLeftRadius: 12,
-                borderTopRightRadius: 12,
-              }}
-            />
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                {domain.title}
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
+          Choose Your Domain
+        </Typography>
+        <Typography
+          variant="subtitle1"
+          align="center"
+          sx={{ color: '#BDBDBD', mb: 4 }}
+        >
+          Select the perfect domain for your website
+        </Typography>
+
+        <Grid container spacing={4} justifyContent="center">
+          {cardData.map((card, index) => (
+            <Grid item key={index} xs={12} sm={6} md={4}>
+              <Card
                 sx={{
-                  whiteSpace: "normal",
-                  wordWrap: "break-word",
+                  height: '100%',
+                  borderRadius: '30px',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  bgcolor: '#fff',
+                  transition: '0.3s',
+                  '&:hover': {
+                    transform: 'translateY(-5px)',
+                  },
                 }}
               >
-                {domain.description}
-              </Typography>
-            </CardContent>
-          </CardActionArea>
-        </Card>
-      ))}
+                <CardMedia
+                  component="img"
+                  image={card.image}
+                  alt={card.title}
+                  sx={{
+                    height: 150,
+                    objectFit: 'contain',
+                    mt: 2,
+                  }}
+                />
+
+                <CardContent>
+                  <Typography
+                    variant="h6"
+                    align="center"
+                    sx={{ fontWeight: 'bold', color: card.color, mb: 1 }}
+                  >
+                    {card.title}
+                  </Typography>
+
+                  <Divider sx={{ mb: 2 }} />
+
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    align="center"
+                    sx={{
+                      px: 1,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 4,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {card.description}
+                  </Typography>
+                </CardContent>
+
+                <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    sx={{
+                      bgcolor: '#FF6400',
+                      borderRadius: '30px',
+                      px: 4,
+                      '&:hover': {
+                        bgcolor: '#e25a00',
+                      },
+                    }}
+                  >
+                    Más información
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
     </Box>
   );
 }
