@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Zoom from '@mui/material/Zoom';
 import {
     Container,
@@ -13,14 +13,22 @@ import useScrollToTop from '../hooks/useScrollToTop';
 import { useGlobalAlert } from "../context/AlertContext";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../context/AuthContext";
+import { useLocation } from "react-router-dom";
 
 export default function Login() {
+    useScrollToTop();
     const { showAlert } = useGlobalAlert();
     const { login } = useAuth();
 
     const navigate = useNavigate();
+    const location = useLocation();
 
-    useScrollToTop();
+    useEffect(() => {
+        if (location.state?.alert) {
+            const { type, message } = location.state.alert;
+            showAlert(`[${type.toUpperCase()}] ${message}`);
+        }
+    }, [location]);
 
     const [form, setForm] = useState({
         email: '',
@@ -31,21 +39,19 @@ export default function Login() {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-  const result = await login(form.email, form.password); // ✅ esto llama al login del context
-    console.log(result);
-    
-  if (result.success) {
-    showAlert("Login successful", "success");
-    console.log("logeates");
-    navigate("/");
-  } else {
-    console.log("no logeates");
-    showAlert(result.message || "Verify your credentials", "error");
-  }
-};
+        const result = await login(form.email, form.password); // ✅ esto llama al login del context
+        console.log(result);
+
+        if (result.success) {
+            showAlert("Login successful", "success");
+            navigate("/");
+        } else {
+            showAlert(result.message || "Verify your credentials", "error");
+        }
+    };
 
 
     return (

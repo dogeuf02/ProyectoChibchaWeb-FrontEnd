@@ -24,6 +24,7 @@ import DomainsInfo from './pages/DomainsInfo.jsx'
 import PlansInfo from './pages/PlansInfo.jsx'
 import DomainRequest from './pages/DomainRequest.jsx'
 import EmployeeManageTickets from './pages/EmployeeManageTickets.jsx'
+import VerifyEmail from './components/VerifyEmail.jsx'
 
 function App() {
   return (
@@ -74,6 +75,11 @@ function App() {
           </MainLayout>
         } />
 
+        <Route path="/verify-email" element={
+          <VerifyEmail />
+        } />
+
+
         {/* Admin Dashboard */}
         <Route path="/admin" element={<DashboardLayout />}>
           <Route index element={<ManageProfile />} />
@@ -110,11 +116,11 @@ function App() {
           <Route index element={<ManageProfile />} />
           <Route path="ManageProfile" element={<ManageProfile />} />
           <Route path="ManageTickets" element={<EmployeeManageTickets />} />
- 
+
         </Route>
       </Routes>
 
-      
+
 
       <GlobalAlert />
     </>
