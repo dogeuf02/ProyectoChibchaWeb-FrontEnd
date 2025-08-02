@@ -5,7 +5,7 @@ import ConfirmDialog from "../components/ConfirmDialog";
 import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
 
-export default function EmployeeManageTickets({ role = "technician" }) {
+export default function EmployeeManageTickets({ role = "coordinator" }) {
   useScrollToTop();
   const { showAlert } = useGlobalAlert();
 

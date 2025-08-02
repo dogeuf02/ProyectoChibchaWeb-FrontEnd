@@ -45,12 +45,6 @@ function App() {
           </MainLayout>
         } />
 
-        <Route path="/EmployeeManageTickets" element={
-          <MainLayout>
-            <EmployeeManageTickets />
-          </MainLayout>
-        } />
-
         <Route path="/registerDistributor" element={
           <MainLayout>
             <RegisterDistributor />
@@ -116,7 +110,6 @@ function App() {
           <Route index element={<ManageProfile />} />
           <Route path="ManageProfile" element={<ManageProfile />} />
           <Route path="ManageTickets" element={<EmployeeManageTickets />} />
-
         </Route>
       </Routes>
 

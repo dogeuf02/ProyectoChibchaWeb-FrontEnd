@@ -10,12 +10,13 @@ import {
   CardActions,
   List,
   ListItem,
+  Divider
 } from '@mui/material';
 
 const plans = [
   {
     title: 'CHIBCHAPLATA',
-    color: '#696460',
+    color: '#C0C0C0',
     price: {
       monthly: '5 US',
       semiAnnual: '25 US',
@@ -33,7 +34,7 @@ const plans = [
   },
   {
     title: 'CHIBCHAPLATINO',
-    color: '#A3775C',
+    color: '#CD7F32',
     price: {
       monthly: '8 US',
       semiAnnual: '40 US',
@@ -51,7 +52,7 @@ const plans = [
   },
   {
     title: 'CHIBCHAORO',
-    color: '#B59709',
+    color: '#FFD700',
     price: {
       monthly: '11 US',
       semiAnnual: '55 US',
@@ -71,48 +72,68 @@ const plans = [
 
 export default function PlansInfo() {
   return (
-    <Box id='Plans' sx={{ bgcolor: '#f5f5f5', py: 8 }}>
-      <Container>
-        <Typography variant="h2" align="center" gutterBottom>
-          Hosting Plans
+    <Box id="Plans" sx={{ bgcolor: '#FAFAFA', py: 8 }}>
+      <Container maxWidth="lg">
+        <Typography variant="h3" align="center" gutterBottom sx={{ color: '#212121', fontWeight: 'bold' }}>
+          Choose the Right Hosting Plan
         </Typography>
+        <Typography variant="subtitle1" align="center" sx={{ color: '#BDBDBD', mb: 4 }}>
+          Flexible prices to grow with your business
+        </Typography>
+
         <Grid container spacing={4} justifyContent="center">
           {plans.map((plan, index) => (
             <Grid item key={index} xs={12} sm={6} md={4}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <Card
+                sx={{
+                  height: '100%',
+                  borderRadius: '30px',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  bgcolor: '#fff',
+                }}
+              >
                 <CardContent>
-                  <Typography
-                    gutterBottom
-                    variant="h4"
-                    component="div"
-                    sx={{ color: plan.color }}
-                  >
+                  <Typography variant="h5" align="center" sx={{ color: plan.color, fontWeight: 'bold', mb: 2 }}>
                     {plan.title}
                   </Typography>
 
-                  <Typography variant="body1" sx={{ mt: 1 }}>
-                    Monthly price: {plan.price.monthly}
-                  </Typography>
-                  <Typography variant="body1">
-                    Semi-annual price: {plan.price.semiAnnual}
-                  </Typography>
-                  <Typography variant="body1" gutterBottom>
-                    Annual price: {plan.price.annual}
-                  </Typography>
+                  <Divider sx={{ mb: 2 }} />
+
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="body1"><strong>Monthly:</strong> {plan.price.monthly}</Typography>
+                    <Typography variant="body1"><strong>Semi-Annual:</strong> {plan.price.semiAnnual}</Typography>
+                    <Typography variant="body1"><strong>Annual:</strong> {plan.price.annual}</Typography>
+                  </Box>
+
+                  <Divider sx={{ mb: 2 }} />
 
                   <List dense>
                     {plan.features.map((feature, i) => (
-                      <ListItem key={i} sx={{ py: 0 }}>
-                        <Typography variant="body2" color="text.secondary">
-                          {feature}
+                      <ListItem key={i} sx={{ py: 0.5 }}>
+                        <Typography variant="body2" sx={{ color: '#212121' }}>
+                          • {feature}
                         </Typography>
                       </ListItem>
                     ))}
                   </List>
                 </CardContent>
-                <CardActions sx={{ mt: 'auto' }}>
-                  <Button size="small" color="primary">
-                    Get the plan
+                <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    sx={{
+                      bgcolor: '#FF6400',
+                      borderRadius: '30px',
+                      px: 4,
+                      '&:hover': {
+                        bgcolor: '#e25a00',
+                      },
+                    }}
+                  >
+                    Get the Plan
                   </Button>
                 </CardActions>
               </Card>
