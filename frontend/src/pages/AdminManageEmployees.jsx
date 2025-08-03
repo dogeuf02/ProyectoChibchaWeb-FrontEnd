@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography } from "@mui/material";
 import EmployeeList from "../components/EmployeeList";
 import ConfirmDialog from "../components/ConfirmDialog";
 import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Stack } from "@mui/material";
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Stack, Box, Typography, MenuItem } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { createEmployee, getEmployees, deactivateUser } from '../api/employeeApi';
 import { updateEmployeeProfile } from "../api/userApi";
@@ -27,6 +26,15 @@ export default function AdminManageEmployees() {
     { name: "position", label: "Position" },
     { name: "email", label: "Email" }
   ];
+  const positionOptions = [
+    "Tecnico nv 1",
+    "Tecnico nv 2",
+    "Tecnico nv 3",
+    "Coordinador nv 1",
+    "Coordinador nv 2",
+    "Coordinador nv 3"
+  ];
+
 
 
   useEffect(() => {
@@ -91,7 +99,7 @@ export default function AdminManageEmployees() {
       email: 'Email',
     };
 
-    
+
 
     // Validación de campos
     for (const field of requiredFields) {
@@ -159,25 +167,25 @@ export default function AdminManageEmployees() {
   };
 
   const handleSaveEdit = async () => {
-      if (!editEmployee) return;
+    if (!editEmployee) return;
 
-      const res = await updateEmployeeProfile(editEmployee.id, {
-        nombreEmpleado: editEmployee.firstName,
-        apellidoEmpleado: editEmployee.lastName,
-        cargoEmpleado: editEmployee.position,
-      });
+    const res = await updateEmployeeProfile(editEmployee.id, {
+      nombreEmpleado: editEmployee.firstName,
+      apellidoEmpleado: editEmployee.lastName,
+      cargoEmpleado: editEmployee.position,
+    });
 
-      if (res?.status === 200 || res?.exito) {
-        showAlert("Employee updated successfully", "success");
-        const updated = await getEmployees();
-        if (updated.exito) {
-          setEmployees(updated.empleados);
-        }
-        setEditEmployee(null);
-      } else {
-        showAlert("Failed to update employee", "error");
+    if (res?.status === 200 || res?.exito) {
+      showAlert("Employee updated successfully", "success");
+      const updated = await getEmployees();
+      if (updated.exito) {
+        setEmployees(updated.empleados);
       }
-    };
+      setEditEmployee(null);
+    } else {
+      showAlert("Failed to update employee", "error");
+    }
+  };
 
 
   const [openForm, setOpenForm] = useState(false);
@@ -249,11 +257,18 @@ export default function AdminManageEmployees() {
               fullWidth
             />
             <TextField
+              select
               label={t('employeeManagement.addEmployeeDialog.positionField')}
               value={newEmployee.position}
               onChange={(e) => setNewEmployee({ ...newEmployee, position: e.target.value })}
               fullWidth
-            />
+            >
+              {positionOptions.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
             <TextField
               label={t('employeeManagement.addEmployeeDialog.emailField')}
               value={newEmployee.email}
@@ -285,6 +300,8 @@ export default function AdminManageEmployees() {
         userData={editEmployee || {}}
         onChange={handleEditChange}
         fields={employeeFields}
+        extraOptions={{ positionOptions }}
+        isEditMode={true}
       />
 
 

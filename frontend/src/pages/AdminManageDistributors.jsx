@@ -9,6 +9,8 @@ import AddIcon from "@mui/icons-material/Add";
 import { updateClientProfile, updateEmployeeProfile, updateDistributorProfile, updateAdminProfile } from "../api/userApi";
 import { getDistributors, createDistributor, updateState } from "../api/distributorApi";
 import EditUserDialog from "../components/EditUserDialog";
+import { getDocumentTypes } from '../api/documentTypeApi';
+
 
 
 import { useTranslation } from "react-i18next";
@@ -33,9 +35,7 @@ export default function AdminManageDistributors() {
     company_address: "",
   });
 
-  const documentTypes = [
-    "NIT", "RUC", "CUIT", "RIF", "CPF_CNPJ", "TIN", "PASSPORT", "BUSINESS_ID", "OTHER"
-  ];
+  const [documentTypes, setDocumentTypes] = useState([]);
 
   const distributorFields = [
     { name: "email", label: "Email" },
@@ -47,7 +47,10 @@ export default function AdminManageDistributors() {
 
 
   useEffect(() => {
-    const fetchDistributors = async () => {
+    const fetchInitialData = async () => {
+      const tipos = await getDocumentTypes();
+      setDocumentTypes(tipos || []);
+
       const result = await getDistributors();
       if (result.exito) {
         setDistributors(result.distribuidores);
@@ -56,7 +59,7 @@ export default function AdminManageDistributors() {
       }
     };
 
-    fetchDistributors();
+    fetchInitialData();
   }, []);
 
 
@@ -267,8 +270,8 @@ export default function AdminManageDistributors() {
               }}
             >
               {documentTypes.map((type) => (
-                <MenuItem key={type} value={type}>
-                  {type}
+                <MenuItem key={type.nombreTipoDoc} value={type.nombreTipoDoc}>
+                  {type.nombreTipoDoc}
                 </MenuItem>
               ))}
             </TextField>
@@ -313,6 +316,7 @@ export default function AdminManageDistributors() {
         onChange={handleEditChange}
         fields={distributorFields}
         isEditMode={!!editDistributor}
+        documentTypes={documentTypes}
       />
 
     </Box>
