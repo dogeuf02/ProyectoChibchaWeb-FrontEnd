@@ -10,11 +10,13 @@ import { updateClientProfile, updateEmployeeProfile, updateDistributorProfile, u
 import { getDistributors, createDistributor, updateState } from "../api/distributorApi";
 import EditUserDialog from "../components/EditUserDialog";
 
-
+import { useTranslation } from "react-i18next";
 export default function AdminManageDistributors() {
+
   useScrollToTop();
 
   const [editDistributor, setEditDistributor] = useState(null);
+  const { t } = useTranslation();
   const { showAlert } = useGlobalAlert();
   const [distributors, setDistributors] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -204,7 +206,7 @@ const handleSaveEdit = async () => {
     <Box sx={{ maxWidth: 1000, mx: "auto", mt: 10 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 6 }}>
         <Typography variant="h4" sx={{ fontWeight: "bold", color: "#212121" }}>
-          Distributor Management
+          {t('distributorManagement.title')}
         </Typography>
 
         <Button
@@ -214,7 +216,7 @@ const handleSaveEdit = async () => {
           sx={{ backgroundColor: "#FF6300", color: "#FAFAFA", borderRadius:30,
             "&:hover": { backgroundColor: "#e65c00" } }}
         >
-          Add Distributor
+          {t('distributorManagement.addDistributorButton')}
         </Button>
       </Box>
 
@@ -230,24 +232,24 @@ const handleSaveEdit = async () => {
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         onConfirm={handleConfirmDelete}
-        title="Delete Distributor"
-        message="Are you sure you want to delete this distributor? This action cannot be undone."
-        confirmText="Confirm Delete"
+        title={t('distributorManagement.deleteDialog.title')}
+        message={t('clientManagement.deleteDialog.message')}
+        confirmText={t('clientManagement.deleteDialog.confirmText')}
       />
 
       <Dialog open={openForm} onClose={() => setOpenForm(false)} fullWidth>
-        <DialogTitle>Add New Distributor</DialogTitle>
+        <DialogTitle>{t('distributorManagement.addDistributorDialog.title')}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} mt={1}>
             <TextField
-              label="Email"
+              label={t('distributorManagement.addDistributorDialog.emailField')}
               value={newDistributor.email}
               onChange={(e) => setNewDistributor({ ...newDistributor, email: e.target.value })}
               fullWidth
             />
             <TextField
               select
-              label="Document Type"
+              label={t('distributorManagement.addDistributorDialog.docTypeField')}
               name="company_document_type"
               value={newDistributor.company_document_type || ''}
               onChange={(e) => setNewDistributor({ ...newDistributor, company_document_type: e.target.value })}
@@ -269,19 +271,19 @@ const handleSaveEdit = async () => {
               ))}
             </TextField>
             <TextField
-              label="Document Number"
+              label={t('distributorManagement.addDistributorDialog.docNumberField')}
               value={newDistributor.company_document_number}
               onChange={(e) => setNewDistributor({ ...newDistributor, company_document_number: e.target.value })}
               fullWidth
             />
             <TextField
-              label="Company Name"
+              label={t('distributorManagement.addDistributorDialog.companyNameField')}
               value={newDistributor.company_name}
               onChange={(e) => setNewDistributor({ ...newDistributor, company_name: e.target.value })}
               fullWidth
             />
             <TextField
-              label="Company Address"
+              label={t('distributorManagement.addDistributorDialog.companyAddressField')}
               value={newDistributor.company_address}
               onChange={(e) => setNewDistributor({ ...newDistributor, company_address: e.target.value })}
               fullWidth
@@ -290,14 +292,14 @@ const handleSaveEdit = async () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenForm(false)} sx={{ color: "#212121" }}>
-            Cancel
+            {t('distributorManagement.addDistributorDialog.cancelButton')}
           </Button>
           <Button
             onClick={handleAddDistributor}
             variant="contained"
             sx={{ backgroundColor: "#FF6300", color: "#FAFAFA", borderRadius: 30, "&:hover": { backgroundColor: "#e65c00" } }}
           >
-            Save
+           {t('distributorManagement.addDistributorDialog.saveButton')}
           </Button>
         </DialogActions>
       </Dialog>

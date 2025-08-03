@@ -1,0 +1,29 @@
+{
+  "home": {
+    "title": "Empresa líder de hosting web en Colombia",
+    "menu": {
+      "domains": "Dominios",
+      "hosting": "Planes de hosting",
+      "distributor": "Distribuidor"
+    },
+    "features": {
+      "flexiblePlans": "Planes flexibles para clientes",
+      "agreements": "Acuerdos comerciales para distribuidores",
+      "support": "Soporte técnico especializado",
+      "registrators": "Acuerdos directos con registradores"
+    }
+  },
+  "login": {
+    "button": "Iniciar sesión"
+  },
+  "distributor": {
+    "description": "¡Com distribuidor podrás recibir comisiones dependiendo de tus ventas en Chibchaweb!",
+    "applyLink": "Aplicar como distribuidor ->"
+  },
+  "domains":{
+
+  },
+  "footer": {
+    "copyright": "© 2025 ChibchaWeb. Todos los derechos reservados."
+  }
+}

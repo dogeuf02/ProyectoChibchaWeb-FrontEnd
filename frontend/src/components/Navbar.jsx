@@ -20,26 +20,24 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function NavbarMUI() {
+  const { t } = useTranslation();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const { authenticated, role, logout } = useAuth();
-  const rolePathMap = {
-  Administrador: '/admin/ManageProfile',
-  Cliente: '/client/ManageProfile',
-  Distribuidor: '/distributor/ManageProfile',
-  Empleado: '/employee/ManageProfile'
-};
+
 
   const navItems = [
-    { label: 'Chibchaweb', to: '#Home' },
-    { label: 'Domains', to: '#Domains' },
-    { label: 'Hosting plan', to: '#Plans' },
-    { label: 'Distributor', to: '#Distributor' },
+    { label: t('title'), to: '#Home' },
+    { label: t('domains.domainsTitle'), to: '#Domains' },
+    { label: t('hosting.hostingTitle'), to: '#Plans' },
+    { label: t('distributor.title'), to: '#Distributor' },
   ];
 
   const handleNavigateToSection = (hash) => {
@@ -82,8 +80,8 @@ export default function NavbarMUI() {
     }
   };
 
-  const checkRole = (role) =>{
-    switch(role){
+  const checkRole = (role) => {
+    switch (role) {
       case "Administrador":
         return "Administrator"
       case "Cliente":
@@ -91,7 +89,7 @@ export default function NavbarMUI() {
       case "Empleado":
         return "Employee"
       case "Distribuidor":
-        return "Distributor" 
+        return "Distributor"
     }
   }
 
@@ -126,10 +124,10 @@ export default function NavbarMUI() {
               ))
             )}
           </Box>
-
+          <LanguageSwitcher />
           {/* Botón Login */}
           {/* Autenticado: menú, no autenticado: login */}
-          {console.log(authenticated + "is")}
+
           {!authenticated ? (
             <Button
               onClick={() => navigate('/login')}
@@ -140,7 +138,7 @@ export default function NavbarMUI() {
                 '&:hover': { bgcolor: '#ffc107', color: '#212121' }
               }}
             >
-              Login
+              {t('login.button')}
             </Button>
           ) : (
             <>

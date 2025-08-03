@@ -19,8 +19,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { useTranslation } from "react-i18next";
 
 function Row({ distributorRequest, onRequestAccept, onRequestDeny }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   return (
@@ -46,12 +48,11 @@ function Row({ distributorRequest, onRequestAccept, onRequestDeny }) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ p: 2 }}>
               <Typography variant="subtitle1" gutterBottom color="text.primary">
-                Request Details
-              </Typography>
-              <Typography variant="body2">Distributor ID: {distributorRequest.distributor_id}</Typography>
-              <Typography variant="body2">Document Type: {distributorRequest.company_document_type}</Typography>
-              <Typography variant="body2">Document Number: {distributorRequest.company_document_number}</Typography>
-              <Typography variant="body2">Company Address: {distributorRequest.company_address}</Typography>
+                t('domainRequestsManagement.list.details') </Typography>
+              <Typography variant="body2">{t('distributorRequestsManagement.list.id')}  {distributorRequest.distributor_id}</Typography>
+              <Typography variant="body2">{t('distributorRequestsManagement.list.docType')} {distributorRequest.company_document_type}</Typography>
+              <Typography variant="body2">{t('distributorRequestsManagement.list.docNumber')} {distributorRequest.company_document_number}</Typography>
+              <Typography variant="body2">{t('distributorRequestsManagement.list.companyAddress')} {distributorRequest.company_address}</Typography>
 
               <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                 <Button
@@ -59,16 +60,14 @@ function Row({ distributorRequest, onRequestAccept, onRequestDeny }) {
                   color="success"
                   onClick={() => onRequestAccept(distributorRequest.distributor_id)}
                 >
-                  Accept
-                </Button>
+                  {t('distributorRequestsManagement.list.accept')} </Button>
 
                 <Button
                   variant="contained"
                   color="error"
                   onClick={() => onRequestDeny(distributorRequest.distributor_id)}
                 >
-                  Deny
-                </Button>
+                  {t('distributorRequestsManagement.list.deny')} </Button>
               </Box>
             </Box>
           </Collapse>
@@ -79,6 +78,7 @@ function Row({ distributorRequest, onRequestAccept, onRequestDeny }) {
 }
 
 export default function RegisterDistributorRequestsList({ requests, onRequestAccept, onRequestDeny }) {
+  const { t } = useTranslation(); 
   const [searchId, setSearchId] = useState('');
 
   return (
@@ -87,7 +87,7 @@ export default function RegisterDistributorRequestsList({ requests, onRequestAcc
         <TextField
           variant="outlined"
           size="small"
-          placeholder="Search by ID"
+          placeholder={t('distributorRequestsManagement.list.searchField')}
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
           InputProps={{
@@ -106,10 +106,10 @@ export default function RegisterDistributorRequestsList({ requests, onRequestAcc
           <TableHead>
             <TableRow sx={{ bgcolor: '#fff3e0' }}>
               <TableCell />
-              <TableCell sx={{ fontWeight: 'bold' }}>Company Name</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Role</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t('distributorRequestsManagement.list.companyName')}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t('domainRequestsManagement.list.email')}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t('distributorRequestsManagement.list.status')}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t('domainRequestsManagement.list.applicantRole')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

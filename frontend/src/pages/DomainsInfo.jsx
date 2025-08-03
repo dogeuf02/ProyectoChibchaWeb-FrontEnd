@@ -37,7 +37,31 @@ const cardData = [
   },
 ];
 
+
+import { useTranslation } from 'react-i18next';
+
 export default function DomainsInfo() {
+
+  const { t } = useTranslation();
+
+  const domains = [
+    {
+      title: t('domains.domainInfo.com.title'),
+      description: t('domains.domainInfo.com.description'),
+      image: "/com.png"
+    },
+    {
+      title: t('domains.domainInfo.net.title'),
+      description: t('domains.domainInfo.net.description'),
+      image: "/net.png"
+    },
+    {
+      title: t('domains.domainInfo.org.title'),
+      description: t('domains.domainInfo.org.description'),
+      image: "/org.png"
+    },
+  ];
+  console.log(domains)
   return (
     <Box id="Domains" sx={{ bgcolor: '#FAFAFA', py: 8 }}>
       <Container maxWidth="lg">
@@ -58,7 +82,7 @@ export default function DomainsInfo() {
         </Typography>
 
         <Grid container spacing={4} justifyContent="center">
-          {cardData.map((card, index) => (
+          {domains.map((card, index) => (
             <Grid item key={index} xs={12} sm={6} md={4}>
               <Card
                 sx={{

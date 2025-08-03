@@ -19,10 +19,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { useTranslation } from "react-i18next";
 
 function Row({ employee, onRequestDelete, onRequestEdit }) {
 
-
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   return (
@@ -49,7 +50,7 @@ function Row({ employee, onRequestDelete, onRequestEdit }) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ p: 2 }}>
               <Typography variant="subtitle1" gutterBottom color="text.primary">
-                Details
+                {t('employeeManagement.list.details')}
               </Typography>
 
               <Typography variant="body2">ID: {employee.id}</Typography>
@@ -74,7 +75,7 @@ function Row({ employee, onRequestDelete, onRequestEdit }) {
                   sx={{ borderRadius: 30 }}
                   onClick={() => onRequestDelete(employee.id)}
                 >
-                  Delete Employee
+                  {t('employeeManagement.deleteDialog.title')}
                 </Button>
               </Box>
             </Box>
@@ -87,6 +88,7 @@ function Row({ employee, onRequestDelete, onRequestEdit }) {
 }
 
 export default function EmployeeList({ employees, onRequestDelete, onRequestEdit }) {
+  const { t } = useTranslation();
   const [searchId, setSearchId] = useState('');
 
   return (
@@ -95,7 +97,7 @@ export default function EmployeeList({ employees, onRequestDelete, onRequestEdit
         <TextField
           variant="outlined"
           size="small"
-          placeholder="Search by ID"
+          placeholder={t('employeeManagement.list.searchField')}
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
           InputProps={{
@@ -114,10 +116,10 @@ export default function EmployeeList({ employees, onRequestDelete, onRequestEdit
           <TableHead>
             <TableRow sx={{ bgcolor: '#fff3e0' }}>
               <TableCell />
-              <TableCell sx={{ fontWeight: 'bold' }}>Full Name</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Position</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t('employeeManagement.list.fullName')}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t('employeeManagement.list.position')}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t('employeeManagement.list.email')}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t('employeeManagement.list.status')}</TableCell>
             </TableRow>
           </TableHead>
 

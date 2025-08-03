@@ -14,9 +14,11 @@ import { useGlobalAlert } from "../context/AlertContext";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../context/AuthContext";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 export default function Login() {
     useScrollToTop();
+    const { t } = useTranslation();
     const { showAlert } = useGlobalAlert();
     const { login } = useAuth();
 
@@ -41,15 +43,18 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-        const result = await login(form.email, form.password); // ✅ esto llama al login del context
-        console.log(result);
+        const result = await login(form.email, form.password);
+
+        console.log("res" + result);
 
         if (result.success) {
-            showAlert("Login successful", "success");
+            showAlert(t('alert.success.login'), "success");
             navigate("/");
         } else {
-            showAlert(result.message || "Verify your credentials", "error");
+            showAlert(result.message || t("alert.error.login"), "error");
         }
     };
 
@@ -66,12 +71,12 @@ export default function Login() {
                             fontFamily: 'Poppins, sans-serif',
                         }}
                     >
-                        Sign In
+                        {t('loginPage.signInTitle')}
                     </Typography>
 
                     <Box component="form" onSubmit={handleSubmit} noValidate>
                         <TextField
-                            label="Email"
+                            label={t('loginPage.emailField')}
                             name="email"
                             type="email"
                             value={form.email}
@@ -90,7 +95,7 @@ export default function Login() {
                         />
 
                         <TextField
-                            label="Password"
+                            label={t('loginPage.passwordField')}
                             name="password"
                             value={form.password}
                             onChange={handleChange}
@@ -119,11 +124,11 @@ export default function Login() {
                                 '&:hover': { bgcolor: '#ffc107', color: '#212121' }
                             }}
                         >
-                            Sign In
+                            {t('loginPage.signInButton')}
                         </Button>
 
                         <Typography variant="body2" sx={{ mt: 2 }}>
-                            Don't have an account?{' '}
+                            {t('loginPage.accountLabel')}{' '}
                             <Link
                                 href="/RegisterAccount"
                                 underline="hover"
@@ -132,12 +137,12 @@ export default function Login() {
                                     '&:hover': { color: '#ffc107' }
                                 }}
                             >
-                                Create account
+                                {t('loginPage.createAccountLink')}
                             </Link>
                         </Typography>
 
                         <Typography variant="body2" sx={{ mt: 2 }}>
-                            Do you want to work with us as a distribuitor?{' '}
+                            {t('loginPage.distributorLabel')}{' '}
                             <Link
                                 href="/RegisterDistributor"
                                 underline="hover"
@@ -146,7 +151,7 @@ export default function Login() {
                                     '&:hover': { color: '#ffc107' }
                                 }}
                             >
-                                Click here
+                                {t('loginPage.distributorLink')}
                             </Link>
                         </Typography>
                     </Box>

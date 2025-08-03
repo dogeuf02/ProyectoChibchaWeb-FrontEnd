@@ -4,9 +4,11 @@ import DomainRequestsList from "../components/DomainRequestsList";
 import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
 import { getDomainRequests } from "../api/domainRequestApi";
+import { useTranslation } from "react-i18next";
 
 export default function AdminManageDomainRequests() {
   useScrollToTop();
+  const { t } = useTranslation();
   const { showAlert } = useGlobalAlert();
 
   // Simulated current admin
@@ -69,7 +71,7 @@ export default function AdminManageDomainRequests() {
   return (
     <Box sx={{ maxWidth: 1000, mx: "auto", mt: 10 }}>
       <Typography variant="h4" sx={{ fontWeight: "bold", color: "#212121", mb: 4 }}>
-        Domain Registration Requests
+        {t('domainRequestsManagement.title')}
       </Typography>
 
       <DomainRequestsList

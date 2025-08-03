@@ -8,7 +8,12 @@ import {
   CardContent,
 } from '@mui/material';
 
+import { useTranslation } from 'react-i18next';
+
 export default function DistributorInfo() {
+
+  const {t} = useTranslation();
+
   return (
     <Box id="Distributor" sx={{ bgcolor: '#FAFAFA', py: 8 }}>
       <Container maxWidth="md">
@@ -28,7 +33,7 @@ export default function DistributorInfo() {
               gutterBottom
               sx={{ color: '#212121', fontWeight: 'bold' }}
             >
-              Become a Distributor
+               {t('distributor.title')}
             </Typography>
 
             {/* Descripción */}
@@ -42,7 +47,7 @@ export default function DistributorInfo() {
                 mb: 4,
               }}
             >
-              As a distributor, you can earn commissions based on your sales in
+              {t('distributor.description')}
               <strong> Chibchaweb</strong>!  
               Join our program and start growing your business with us.
             </Typography>
@@ -64,7 +69,7 @@ export default function DistributorInfo() {
                 },
               }}
             >
-              Apply as a Distributor →
+              {t('Distributor.applyLink')}
             </Button>
           </CardContent>
         </Card>

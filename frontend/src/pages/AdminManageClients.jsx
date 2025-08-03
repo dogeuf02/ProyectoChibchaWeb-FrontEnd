@@ -13,8 +13,10 @@ import { updateClientProfile } from "../api/userApi";
 import EditUserDialog from "../components/EditUserDialog";
 
 
+import { useTranslation } from "react-i18next";
 
 export default function AdminManageClients() {
+  const { t } = useTranslation();
   useScrollToTop();
   const { showAlert } = useGlobalAlert();
 
@@ -203,7 +205,7 @@ const handleEditChange = (field, value) => {
     <Box sx={{ maxWidth: 1000, mx: "auto", mt: 10 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 6 }}>
         <Typography variant="h4" sx={{ fontWeight: "bold", color: "#212121" }}>
-          Client Management
+          {t('clientManagement.title')}
         </Typography>
 
         <Button
@@ -219,7 +221,7 @@ const handleEditChange = (field, value) => {
             },
           }}
         >
-          Add Client
+          {t('clientManagement.addClientButton')}
         </Button>
       </Box>
 
@@ -234,39 +236,43 @@ const handleEditChange = (field, value) => {
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         onConfirm={handleConfirmDelete}
-        title="Delete Client"
-        message="Are you sure you want to delete this client? This action cannot be undone."
-        confirmText="Confirm Delete"
+        title={t('clientManagement.deleteDialog.title')}
+        message={t('clientManagement.deleteDialog.message')}
+        confirmText={t('clientManagement.deleteDialog.confirmText')}
       />
 
       <Dialog open={openForm} onClose={() => setOpenForm(false)} fullWidth>
-        <DialogTitle>Add New Client</DialogTitle>
+        <DialogTitle>{t('clientManagement.addClientButton')}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} mt={1}>
-            <TextField label="First Name" value={newClient.nombre}
+            <TextField label={t('clientManagement.addClientDialog.firstNameField')}
+              value={newClient.nombre}
               onChange={(e) => setNewClient({ ...newClient, nombre: e.target.value })} fullWidth />
-            <TextField label="Last Name" value={newClient.apellido}
+            <TextField label={t('clientManagement.addClientDialog.lastnameField')}
+              value={newClient.apellido}
               onChange={(e) => setNewClient({ ...newClient, apellido: e.target.value })} fullWidth />
-            <TextField label="Email" value={newClient.correo}
+            <TextField label={t('clientManagement.addClientDialog.emailField')}
+              value={newClient.correo}
               onChange={(e) => setNewClient({ ...newClient, correo: e.target.value })} fullWidth />
-            <TextField label="Phone" value={newClient.telefono}
+            <TextField label={t('clientManagement.addClientDialog.phoneNumberField')}
+              value={newClient.telefono}
               onChange={(e) => setNewClient({ ...newClient, telefono: e.target.value })} fullWidth />
-            <TextField label="Birth Date" type="date" InputLabelProps={{ shrink: true }}
+            <TextField label={t('clientManagement.addClientDialog.birthDateField')}
+              type="date" InputLabelProps={{ shrink: true }}
               value={newClient.fechaNacimientoCliente}
               onChange={(e) => setNewClient({ ...newClient, fechaNacimientoCliente: e.target.value })} fullWidth />
-
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenForm(false)} sx={{ color: "#212121", borderRadius: 30 }}>
-            Cancel
+          <Button onClick={() => setOpenForm(false)} sx={{ color: "#212121" }}>
+            {t('clientManagement.addClientDialog.cancelButton')}
           </Button>
           <Button
             onClick={handleAddClient}
             variant="contained"
             sx={{ backgroundColor: "#FF6300", color: "#FAFAFA", borderRadius: 30, "&:hover": { backgroundColor: "#e65c00" } }}
           >
-            Save
+            {t('clientManagement.addClientDialog.saveButton')}
           </Button>
         </DialogActions>
       </Dialog>

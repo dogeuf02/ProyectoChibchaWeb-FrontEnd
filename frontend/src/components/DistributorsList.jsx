@@ -19,8 +19,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { useTranslation } from "react-i18next";
 
 function Row({ distributor, onRequestDelete, onRequestEdit }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   return (
@@ -46,12 +48,12 @@ function Row({ distributor, onRequestDelete, onRequestEdit }) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ p: 2 }}>
               <Typography variant="subtitle1" gutterBottom color="text.primary">
-                Details
+                {t('distributorManagement.list.details')}
               </Typography>
-              <Typography variant="body2">Distributor ID: {distributor.distributor_id}</Typography>
-              <Typography variant="body2">Document Type: {distributor.company_document_type}</Typography>
-              <Typography variant="body2">Document Number: {distributor.company_document_number}</Typography>
-              <Typography variant="body2">Company Address: {distributor.company_address}</Typography>
+              <Typography variant="body2">{t('distributorManagement.list.id')}: {distributor.distributor_id}</Typography>
+              <Typography variant="body2">{t('distributorManagement.list.docType')}: {distributor.company_document_type}</Typography>
+              <Typography variant="body2">{t('distributorManagement.list.docNumber')}: {distributor.company_document_number}</Typography>
+              <Typography variant="body2">{t('distributorManagement.list.companyAddress')}: {distributor.company_address}</Typography>
 
               {distributor.status === "ACTIVO" && (
                 <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
@@ -72,7 +74,7 @@ function Row({ distributor, onRequestDelete, onRequestEdit }) {
                     sx={{ borderRadius: 30 }}
                     onClick={() => onRequestDelete(distributor.distributor_id)}
                   >
-                    Delete distributor
+                    {t('distributorManagement.deleteDialog.title')}
                   </Button>
                 </Box>
               )}
@@ -85,7 +87,8 @@ function Row({ distributor, onRequestDelete, onRequestEdit }) {
   );
 }
 
-export default function DistributorsList({ distributors, onRequestDelete, onRequestEdit }) {
+export default function DistributorsList({ distributors, onRequestDelete }) {
+  const { t } = useTranslation();
   const [searchId, setSearchId] = useState('');
 
   return (
@@ -94,7 +97,7 @@ export default function DistributorsList({ distributors, onRequestDelete, onRequ
         <TextField
           variant="outlined"
           size="small"
-          placeholder="Search by ID"
+          placeholder={t('distributorManagement.list.searchField')}
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
           InputProps={{
@@ -113,10 +116,10 @@ export default function DistributorsList({ distributors, onRequestDelete, onRequ
           <TableHead>
             <TableRow sx={{ bgcolor: '#fff3e0' }}>
               <TableCell />
-              <TableCell sx={{ fontWeight: 'bold' }}>Company Name</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Role</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{ t('distributorManagement.list.companyName')}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{ t('distributorManagement.list.email')}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{ t('distributorManagement.list.status')}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{ t('distributorManagement.list.role')}</TableCell>
             </TableRow>
           </TableHead>
 <TableBody>

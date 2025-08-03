@@ -2,9 +2,12 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-
+import { useTranslation } from 'react-i18next';
 
 export default function Home() {
+
+  const { t } = useTranslation();
+
   return (
     <Box
       id="Home"
@@ -38,15 +41,12 @@ export default function Home() {
             CHIBCHAWEB
           </Typography>
 
-          <Typography
-            variant="h6"
-            sx={{ color: 'grey.400', lineHeight: 2 }}
-          >
-            Top web hosting company in Colombia.<br />
-            ✓ Flexible plans for clients.<br />
-            ✓ Commercial agreements for distributors.<br />
-            ✓ Technical support service<br />
-            ✓ Direct agreements with registrators
+          <Typography variant="h6" sx={{ color: 'grey.400', lineHeight: 2 }}>
+            {t('home.title')}<br />
+            ✓ {t('home.features.flexiblePlans')}<br />
+            ✓ {t('home.features.agreements')}<br />
+            ✓ {t('home.features.support')}<br />
+            ✓ {t('home.features.registrators')}
           </Typography>
         </Box>
 
@@ -60,7 +60,7 @@ export default function Home() {
             width: '100%',
             display: { xs: 'none', md: 'block' },
             width: '100%',
-            maxWidth: 600 ,
+            maxWidth: 600,
             objectFit: 'contain',
           }}
         />
