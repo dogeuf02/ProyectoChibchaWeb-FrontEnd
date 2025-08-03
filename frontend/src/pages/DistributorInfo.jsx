@@ -48,8 +48,7 @@ export default function DistributorInfo() {
               }}
             >
               {t('distributor.description')}
-              <strong> Chibchaweb</strong>!  
-              Join our program and start growing your business with us.
+              <strong> Chibchaweb!</strong> Join our program and start growing your business with us.
             </Typography>
 
             {/* Botón de acción */}
