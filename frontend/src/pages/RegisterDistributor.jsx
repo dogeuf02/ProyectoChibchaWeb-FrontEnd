@@ -13,11 +13,15 @@ import {
 import useScrollToTop from '../hooks/useScrollToTop';
 import { useGlobalAlert } from "../context/AlertContext";
 import { createDistributor } from '../api/distributorApi'; // ajusta la ruta si es diferente
+import { getDocumentTypes } from '../api/documentTypeApi';
+import React, { useEffect } from 'react';
 
 export default function RegisterDistributor() {
 
     useScrollToTop();
 
+
+    const [documentTypes, setDocumentTypes] = useState([]);
     const { showAlert } = useGlobalAlert();
     const [form, setForm] = useState({
 
@@ -26,21 +30,22 @@ export default function RegisterDistributor() {
         confirmPassword: '',
         companyNumber: '',
         companyAddress: '',
-        documentType: 'NIT',
+        documentType: '',
         companyName: '',
     });
 
-    const documentTypes = [
-        'NIT',         // Colombia
-        'RUC',         // Perú, Ecuador
-        'CUIT',        // Argentina
-        'RIF',         // Venezuela
-        'CPF_CNPJ',    // Brasil
-        'TIN',         // África
-        'PASSPORT',    // Internacional
-        'BUSINESS_ID', // Genérico
-        'OTHER',       // Fallback
-    ];
+
+    useEffect(() => {
+        const fetchDocumentTypes = async () => {
+            const types = await getDocumentTypes();
+            setDocumentTypes(types);
+            if (types.length > 0 && !form.documentType) {
+                setForm((prev) => ({ ...prev, documentType: types[0].nombreTipoDoc }));
+            }
+        };
+        fetchDocumentTypes();
+    }, []);
+
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -219,11 +224,12 @@ export default function RegisterDistributor() {
                                 }}
                             >
                                 {documentTypes.map((type) => (
-                                    <MenuItem key={type} value={type}>
-                                        {type}
+                                    <MenuItem key={type.nombreTipoDoc} value={type.nombreTipoDoc}>
+                                        {type.nombreTipoDoc}
                                     </MenuItem>
                                 ))}
                             </TextField>
+
 
                             <TextField
                                 label="Company number"
