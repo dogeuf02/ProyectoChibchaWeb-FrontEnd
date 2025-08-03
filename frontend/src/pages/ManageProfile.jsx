@@ -30,8 +30,7 @@ export default function ManageProfile() {
     useScrollToTop();
 
     const navigate = useNavigate();
-    const { role, logout } = useAuth();
-
+    const { role, logout, userId } = useAuth();
     const { showAlert } = useGlobalAlert();
     const [profile, setProfile] = useState({
         email: '',
@@ -187,7 +186,7 @@ export default function ManageProfile() {
 
     useEffect(() => {
         const fetchProfile = async () => {
-            const userId = localStorage.getItem("userId");
+            //const userId = specificId;
             const userRole = role; // desde useAuth()
 
             if (!userId || !userRole) return;

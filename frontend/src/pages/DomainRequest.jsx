@@ -12,6 +12,8 @@ import Zoom from '@mui/material/Zoom';
 import getTodayDate from '../utils/dateUtils';
 import { createDomainRequest } from '../api/domainRequestApi';
 import { AuthProvider } from '../context/AuthContext';
+import { ROLE } from '../enum/roleEnum';
+
 export default function DomainRequest() {
   const { showAlert } = useGlobalAlert();
   const [formData, setFormData] = useState({
@@ -21,16 +23,16 @@ export default function DomainRequest() {
   });
 
   const getCurrentUserId = () => {
-    const { role } = AuthProvider();
+    const { role, specificId } = AuthProvider();
     let clienId = null;
     let distributorId = null;
 
     switch (role) {
-      case "Cliente":
-        clienId = localStorage.getItem("roleId")
+      case ROLE.CLIENT:
+        clienId = specificId
         break;
-      case "Distribuidor":
-        distributorId = localStorage.getItem("roleId")
+      case ROLE.DISTRIBUTOR:
+        distributorId = specificId
     }
     return [clienId, distributorId];
   }

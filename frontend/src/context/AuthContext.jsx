@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       saveToken(token);
       const decoded = decodeToken(token);
+      console.log(decoded)
       if (decoded) {
         setUserData(decoded);
         setUserId(decoded.idUsuario);
