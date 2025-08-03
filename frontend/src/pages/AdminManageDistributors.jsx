@@ -10,6 +10,7 @@ import { updateClientProfile, updateEmployeeProfile, updateDistributorProfile, u
 import { getDistributors, createDistributor, updateState } from "../api/distributorApi";
 import EditUserDialog from "../components/EditUserDialog";
 
+
 import { useTranslation } from "react-i18next";
 export default function AdminManageDistributors() {
 
@@ -37,26 +38,26 @@ export default function AdminManageDistributors() {
   ];
 
   const distributorFields = [
-  { name: "email", label: "Email" },
-  { name: "company_document_type", label: "Document Type" },
-  { name: "company_document_number", label: "Document Number" },
-  { name: "company_name", label: "Company Name" },
-  { name: "company_address", label: "Company Address" }
-];
+    { name: "email", label: "Email" },
+    { name: "company_document_type", label: "Document Type" },
+    { name: "company_document_number", label: "Document Number" },
+    { name: "company_name", label: "Company Name" },
+    { name: "company_address", label: "Company Address" }
+  ];
 
 
-useEffect(() => {
-  const fetchDistributors = async () => {
-    const result = await getDistributors();
-    if (result.exito) {
-      setDistributors(result.distribuidores);
-    } else {
-      showAlert(result.mensaje || "Error loading distributors", "error");
-    }
-  };
+  useEffect(() => {
+    const fetchDistributors = async () => {
+      const result = await getDistributors();
+      if (result.exito) {
+        setDistributors(result.distribuidores);
+      } else {
+        showAlert(result.mensaje || "Error loading distributors", "error");
+      }
+    };
 
-  fetchDistributors();
-}, []);
+    fetchDistributors();
+  }, []);
 
 
 
@@ -67,7 +68,6 @@ useEffect(() => {
 
   const handleConfirmDelete = async () => {
     const distributor = distributors.find(dist => dist.distributor_id === selectedId);
-    console.log(distributor)
     if (!distributor) {
       showAlert("Distribuidor not found", "error");
       setOpenDialog(false);
@@ -129,7 +129,6 @@ useEffect(() => {
       direccionEmpresa: newDistributor.company_address
     };
 
-    console.log("Payload enviado al backend:", payload); // 🔍 Verifica el formato exacto
 
     try {
       const response = await createDistributor(payload);
@@ -137,7 +136,6 @@ useEffect(() => {
       if (response.exito) {
         showAlert("Distributor created seccessfully", "success");
         const updated = await getDistributors();
-        console.log("updated" + updated)
         if (updated.exito) {
           setDistributors(updated.distribuidores);
         }
@@ -164,41 +162,42 @@ useEffect(() => {
   };
 
   const handleRequestEdit = (distributor) => {
-  setEditDistributor({
-    id: distributor.distributor_id, // para usarlo en la API
-    email: distributor.email,
-    company_document_type: distributor.company_document_type || distributor.nombreTipoDoc,
-    company_document_number: distributor.company_document_number || distributor.numeroDocEmpresa,
-    company_name: distributor.company_name || distributor.nombreEmpresa,
-    company_address: distributor.company_address || distributor.direccionEmpresa,
-  });
-};
+    setEditDistributor({
+      id: distributor.distributor_id,
+      email: distributor.email || distributor.correoDistrbuidor || "",
+      company_document_type: distributor.company_document_type || distributor.nombreTipoDoc,
+      company_document_number: distributor.company_document_number || distributor.numeroDocEmpresa,
+      company_name: distributor.company_name || distributor.nombreEmpresa,
+      company_address: distributor.company_address || distributor.direccionEmpresa,
+    });
+  };
 
-const handleEditChange = (field, value) => {
-  setEditDistributor((prev) => ({ ...prev, [field]: value }));
-};
 
-const handleSaveEdit = async () => {
-  if (!editDistributor) return;
+  const handleEditChange = (field, value) => {
+    setEditDistributor((prev) => ({ ...prev, [field]: value }));
+  };
 
-  const res = await updateDistributorProfile(editDistributor.id, {
-    nombreTipoDoc: editDistributor.company_document_type,
-    numeroDocEmpresa: editDistributor.company_document_number,
-    nombreEmpresa: editDistributor.company_name,
-    direccionEmpresa: editDistributor.company_address
-  });
+  const handleSaveEdit = async () => {
+    if (!editDistributor) return;
 
-  if (res?.status === 200 || res?.exito) {
-    showAlert("Distributor updated successfully", "success");
-    const updated = await getDistributors();
-    if (updated.exito) {
-      setDistributors(updated.distribuidores);
+    const res = await updateDistributorProfile(editDistributor.id, {
+      nombreTipoDoc: editDistributor.company_document_type,
+      numeroDocEmpresa: editDistributor.company_document_number,
+      nombreEmpresa: editDistributor.company_name,
+      direccionEmpresa: editDistributor.company_address
+    });
+
+    if (res?.status === 200 || res?.exito) {
+      showAlert("Distributor updated successfully", "success");
+      const updated = await getDistributors();
+      if (updated.exito) {
+        setDistributors(updated.distribuidores);
+      }
+      setEditDistributor(null);
+    } else {
+      showAlert("Failed to update distributor", "error");
     }
-    setEditDistributor(null);
-  } else {
-    showAlert("Failed to update distributor", "error");
-  }
-};
+  };
 
 
 
@@ -213,18 +212,21 @@ const handleSaveEdit = async () => {
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => setOpenForm(true)}
-          sx={{ backgroundColor: "#FF6300", color: "#FAFAFA", borderRadius:30,
-            "&:hover": { backgroundColor: "#e65c00" } }}
+          sx={{
+            backgroundColor: "#FF6300", color: "#FAFAFA", borderRadius: 30,
+            "&:hover": { backgroundColor: "#e65c00" }
+          }}
         >
           {t('distributorManagement.addDistributorButton')}
         </Button>
       </Box>
 
-<DistributorList
-  distributors={distributors}
-  onRequestDelete={handleRequestDelete}
-  onRequestEdit={handleRequestEdit} // ✅ ESTA LÍNEA FALTABA
-/>
+      <DistributorList
+        distributors={distributors} // ✅ corregido
+        onRequestDelete={handleRequestDelete}
+        onRequestEdit={handleRequestEdit}
+      />
+
 
 
 
@@ -299,18 +301,19 @@ const handleSaveEdit = async () => {
             variant="contained"
             sx={{ backgroundColor: "#FF6300", color: "#FAFAFA", borderRadius: 30, "&:hover": { backgroundColor: "#e65c00" } }}
           >
-           {t('distributorManagement.addDistributorDialog.saveButton')}
+            {t('distributorManagement.addDistributorDialog.saveButton')}
           </Button>
         </DialogActions>
       </Dialog>
       <EditUserDialog
-  open={!!editDistributor}
-  onClose={() => setEditDistributor(null)}
-  onSave={handleSaveEdit}
-  userData={editDistributor || {}}
-  onChange={handleEditChange}
-  fields={distributorFields}
-/>
+        open={!!editDistributor}
+        onClose={() => setEditDistributor(null)}
+        onSave={handleSaveEdit}
+        userData={editDistributor || {}}
+        onChange={handleEditChange}
+        fields={distributorFields}
+        isEditMode={!!editDistributor}
+      />
 
     </Box>
   );

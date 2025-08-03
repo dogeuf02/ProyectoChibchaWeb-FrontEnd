@@ -63,6 +63,7 @@ function Row({ request, onAccept, onReject }) {
                                     <Button
                                         variant="contained"
                                         color="success"
+                                        sx={{ borderRadius: 30 }}
                                         onClick={() => onAccept(request.idSolicitud)}
                                     >
                                         {t('domainRequestsManagement.list.accept')}
@@ -70,6 +71,7 @@ function Row({ request, onAccept, onReject }) {
                                     <Button
                                         variant="contained"
                                         color="error"
+                                        sx={{ borderRadius: 30 }}
                                         onClick={() => onReject(request.idSolicitud)}
                                     >
                                         {t('domainRequestsManagement.list.reject')}

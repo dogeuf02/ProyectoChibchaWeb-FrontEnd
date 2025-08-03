@@ -48,16 +48,17 @@ function Row({ distributorRequest, onRequestAccept, onRequestDeny }) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ p: 2 }}>
               <Typography variant="subtitle1" gutterBottom color="text.primary">
-                t('domainRequestsManagement.list.details') </Typography>
+                {t('domainRequestsManagement.list.details') }</Typography>
               <Typography variant="body2">{t('distributorRequestsManagement.list.id')}  {distributorRequest.distributor_id}</Typography>
               <Typography variant="body2">{t('distributorRequestsManagement.list.docType')} {distributorRequest.company_document_type}</Typography>
               <Typography variant="body2">{t('distributorRequestsManagement.list.docNumber')} {distributorRequest.company_document_number}</Typography>
               <Typography variant="body2">{t('distributorRequestsManagement.list.companyAddress')} {distributorRequest.company_address}</Typography>
 
-              <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+              <Box sx={{ display: 'flex', gap: 2, mt: 2, }}>
                 <Button
                   variant="contained"
                   color="success"
+                  sx={{ borderRadius: 30 }}
                   onClick={() => onRequestAccept(distributorRequest.distributor_id)}
                 >
                   {t('distributorRequestsManagement.list.accept')} </Button>
@@ -65,6 +66,7 @@ function Row({ distributorRequest, onRequestAccept, onRequestDeny }) {
                 <Button
                   variant="contained"
                   color="error"
+                  sx={{ borderRadius: 30 }}
                   onClick={() => onRequestDeny(distributorRequest.distributor_id)}
                 >
                   {t('distributorRequestsManagement.list.deny')} </Button>

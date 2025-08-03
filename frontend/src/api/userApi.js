@@ -149,3 +149,17 @@ export const deactivateUser = async (correo) => {
     }
   }
 };
+
+export const changePassword = async (correo, nuevaContrasena) => {
+  try {
+    const res = await api.put(`/usuario/correo/${correo}`, {
+      contrasena: nuevaContrasena,
+      estado: 'ACTIVO'
+    });
+
+    return res;
+  } catch (err) {
+    console.error("Error al cambiar contraseña:", err);
+    throw err;
+  }
+};

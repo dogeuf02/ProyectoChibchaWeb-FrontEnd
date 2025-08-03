@@ -24,6 +24,9 @@ import {
 } from '../api/userApi';
 import { useNavigate } from 'react-router-dom';
 import { ROLE } from '../enum/roleEnum';
+import { auth } from '../api/authApi';
+import { changePassword } from '../api/userApi';
+
 
 export default function ManageProfile() {
 
@@ -31,6 +34,11 @@ export default function ManageProfile() {
 
     const navigate = useNavigate();
     const { role, logout, userId } = useAuth();
+    const [passwordData, setPasswordData] = useState({
+        currentPassword: '',
+        newPassword: ''
+    });
+
     const { showAlert } = useGlobalAlert();
     const [profile, setProfile] = useState({
         email: '',
@@ -94,423 +102,469 @@ export default function ManageProfile() {
         }
 
         try {
-            let updateFunction;
-            let id = profile.id;
+            const loginResult = await auth({
+                correo: profile.email,
+                contrasena: passwordData.currentPassword
+            });
 
-            const formattedData = {
-                nombreCliente: profile.firstName,
-                apellidoCliente: profile.lastName,
-                telefono: profile.phone,
-                fechaNacimientoCliente: profile.birthDate,
-            };
+            if (!loginResult.autenticado) {
+                showAlert("Current password is incorrect", "error");
+                return;
+            }
+            if (passwordData.newPassword) {
+                const passwordRes = await changePassword(profile.email, passwordData.newPassword);
 
-            switch (role) {
-                case ROLE.CLIENT:
-                    updateFunction = updateClientProfile;
-                    break;
-                case ROLE.EMPLOYEE:
-                    updateFunction = updateEmployeeProfile;
-                    formattedData.nombreEmpleado = profile.firstName;
-                    formattedData.apellidoEmpleado = profile.lastName;
-                    formattedData.fechaNacimientoEmpleado = profile.birthDate;
-                    delete formattedData.nombreCliente;
-                    delete formattedData.apellidoCliente;
-                    delete formattedData.fechaNacimientoCliente;
-                    break;
-                case ROLE.DISTRIBUTOR:
-                    updateFunction = updateDistributorProfile;
-                    // agrega los campos si vas a permitir edición para distribuidores
-                    break;
-                case ROLE.ADMIN:
-                    updateFunction = updateAdminProfile;
-                    formattedData.nombreAdmin = profile.firstName;
-                    formattedData.apellidoAdmin = profile.lastName;
-                    formattedData.fechaNacimientoAdmin = profile.birthDate;
-                    delete formattedData.nombreCliente;
-                    delete formattedData.apellidoCliente;
-                    delete formattedData.fechaNacimientoCliente;
-                    break;
-                default:
-                    showAlert("Not supported rol", "error");
+                if (!(passwordRes.status === 200 || passwordRes.data.exito)) {
+                    showAlert("Error updating password", "error");
                     return;
+                }
             }
 
-            const res = await updateFunction(id, formattedData);
+            try {
+                let updateFunction;
+                let id = profile.id;
 
-            if (res && res.status === 200) {
-                setEditMode(false);
-                showAlert("Profile updated successfully", "success");
-            } else {
-                showAlert("There was a problem updating the profile", "error");
-            }
+                const formattedData = {
+                    nombreCliente: profile.firstName,
+                    apellidoCliente: profile.lastName,
+                    telefono: profile.phone,
+                    fechaNacimientoCliente: profile.birthDate,
+                };
 
-        } catch (err) {
-            console.error("❌ Error actualizando perfil:", err);
-            showAlert("Error updating profile", "error");
-        }
-    };
+                switch (role) {
+                    case ROLE.CLIENT:
+                        updateFunction = updateClientProfile;
+                        break;
+                    case ROLE.EMPLOYEE:
+                        updateFunction = updateEmployeeProfile;
+                        formattedData.nombreEmpleado = profile.firstName;
+                        formattedData.apellidoEmpleado = profile.lastName;
+                        formattedData.fechaNacimientoEmpleado = profile.birthDate;
+                        delete formattedData.nombreCliente;
+                        delete formattedData.apellidoCliente;
+                        delete formattedData.fechaNacimientoCliente;
+                        break;
+                    case ROLE.DISTRIBUTOR:
+                        updateFunction = updateDistributorProfile;
+                        // agrega los campos si vas a permitir edición para distribuidores
+                        break;
+                    case ROLE.ADMIN:
+                        updateFunction = updateAdminProfile;
+                        formattedData.nombreAdmin = profile.firstName;
+                        formattedData.apellidoAdmin = profile.lastName;
+                        formattedData.fechaNacimientoAdmin = profile.birthDate;
+                        delete formattedData.nombreCliente;
+                        delete formattedData.apellidoCliente;
+                        delete formattedData.fechaNacimientoCliente;
+                        break;
+                    default:
+                        showAlert("Not supported rol", "error");
+                        return;
+                }
 
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
+                const res = await updateFunction(id, formattedData);
 
-    const handleSnackbarClose = (event, reason) => {
-        if (reason === 'clickaway') return;
-        setSnackbarOpen(false);
-    };
-    const [openDialog, setOpenDialog] = useState(false);
+                if (res && res.status === 200) {
+                    setEditMode(false);
+                    showAlert("Profile updated successfully", "success");
+                    setPasswordData({ currentPassword: '', newPassword: '' });
+                } else {
+                    showAlert("There was a problem updating the profile", "error");
+                }
+                
+            } catch (err) {
+                console.error("❌ Error actualizando perfil:", err);
+                showAlert("Error updating profile", "error");
+            }    } catch (err) {
+        console.error("❌ Error autenticando o cambiando contraseña:", err);
+        showAlert("Error updating profile", "error");
+    }
+};
+        
 
-    const handleOpenDialog = () => setOpenDialog(true);
-    const handleCloseDialog = () => setOpenDialog(false);
+        const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-    const handleConfirmDelete = async () => {
+        const handleSnackbarClose = (event, reason) => {
+            if (reason === 'clickaway') return;
+            setSnackbarOpen(false);
+        };
+        const [openDialog, setOpenDialog] = useState(false);
 
-        const res = await deactivateUserById(userId);
+        const handleOpenDialog = () => setOpenDialog(true);
+        const handleCloseDialog = () => setOpenDialog(false);
 
-        if (res.exito) {
-            showAlert("Account Succesfully Deleted", "success");
+        const handleConfirmDelete = async () => {
 
-            setOpenDialog(false);
-
-            logout();
-
-            setTimeout(() => {
-                navigate('/');
-            }, 500);
-        } else {
-            showAlert("Error Deleting Acount", "error");
-            setOpenDialog(false);
-        }
-    };
-
-
-
-    useEffect(() => {
-        const fetchProfile = async () => {
-            //const userId = specificId;
-            const userRole = role; // desde useAuth()
-
-            if (!userId || !userRole) return;
-
-            const res = await getUserProfile(userRole, userId);
-            console.log("Profile data:", res);
+            const res = await deactivateUserById(userId);
 
             if (res.exito) {
-                const data = res.data;
+                showAlert("Account Succesfully Deleted", "success");
 
-                setProfile({
-                    id: data.idCliente || data.idEmpleado || data.idDistribuidor || data.idAdmin || '',
-                    email: data.email || '',
-                    firstName: data.nombreEmpleado || data.nombreCliente || data.nombreAdmin || '',
-                    lastName: data.apellidoEmpleado || data.apellidoCliente || data.apellidoAdmin || '',
-                    phone: data.telefono || '',
-                    birthDate: data.fechaNacimientoEmpleado || data.fechaNacimientoCliente || data.fechaNacimientoAdmin || '',
-                    roleName: userRole,
-                    position: data.cargoEmpleado || '',
-                    documentType: data.nombreTipoDoc || '',
-                    companyName: data.nombreEmpresa || '',
-                    companyAddress: data.direccionEmpresa || '',
-                    companyNumber: data.numeroDocEmpresa || ''
-                });
+                setOpenDialog(false);
 
+                logout();
+
+                setTimeout(() => {
+                    navigate('/');
+                }, 500);
             } else {
-                showAlert(res.mensaje, "error");
+                showAlert("Error Deleting Acount", "error");
+                setOpenDialog(false);
             }
         };
 
-        fetchProfile();
-    }, []);
-
-    return (
-        <>
-            <Zoom in={true} timeout={800}>
-                <Container maxWidth="sm" sx={{ mt: 6 }}>
-                    <Paper elevation={3} sx={{ p: 4, bgcolor: '#fafafa' }}>
-                        <Typography variant="h5" gutterBottom sx={{ color: '#212121' }}>
-                            Manage Profile
-                        </Typography>
-
-                        <Box component="form" onSubmit={handleSubmit} noValidate >
-
-                            <TextField
-                                label="Email"
-                                name="email"
-                                value={profile.email}
-                                fullWidth
-                                margin="normal"
-                                disabled
-                            />
 
 
-                            {profile.roleName === ROLE.ADMIN && (
-                                <>
+        useEffect(() => {
+            const fetchProfile = async () => {
+                //const userId = specificId;
+                const userRole = role; // desde useAuth()
 
-                                    <TextField
-                                        label="First Name"
-                                        name="firstName"
-                                        value={profile.firstName}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled={!editMode}
-                                    />
-                                    <TextField
-                                        label="Last Name"
-                                        name="lastName"
-                                        value={profile.lastName}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled={!editMode}
-                                    />
+                if (!userId || !userRole) return;
 
-                                    <TextField
-                                        label="Birth Date"
-                                        name="birthDate"
-                                        type="date"
-                                        value={profile.birthDate}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        InputLabelProps={{ shrink: true }}
-                                        disabled={!editMode}
-                                    />
+                const res = await getUserProfile(userRole, userId);
+                console.log("Profile data:", res);
 
+                if (res.exito) {
+                    const data = res.data;
 
+                    setProfile({
+                        id: data.idCliente || data.idEmpleado || data.idDistribuidor || data.idAdmin || '',
+                        email: data.email || '',
+                        firstName: data.nombreEmpleado || data.nombreCliente || data.nombreAdmin || '',
+                        lastName: data.apellidoEmpleado || data.apellidoCliente || data.apellidoAdmin || '',
+                        phone: data.telefono || '',
+                        birthDate: data.fechaNacimientoEmpleado || data.fechaNacimientoCliente || data.fechaNacimientoAdmin || '',
+                        roleName: userRole,
+                        position: data.cargoEmpleado || '',
+                        documentType: data.nombreTipoDoc || '',
+                        companyName: data.nombreEmpresa || '',
+                        companyAddress: data.direccionEmpresa || '',
+                        companyNumber: data.numeroDocEmpresa || ''
+                    });
 
+                } else {
+                    showAlert(res.mensaje, "error");
+                }
+            };
 
+            fetchProfile();
+        }, []);
 
-                                </>)}
+        return (
+            <>
+                <Zoom in={true} timeout={800}>
+                    <Container maxWidth="sm" sx={{ mt: 6 }}>
+                        <Paper elevation={3} sx={{ p: 4, bgcolor: '#fafafa' }}>
+                            <Typography variant="h5" gutterBottom sx={{ color: '#212121' }}>
+                                Manage Profile
+                            </Typography>
 
-                            {profile.roleName === 'Distribuidor' && (
-                                <>
-                                    <TextField
+                            <Box component="form" onSubmit={handleSubmit} noValidate >
 
-                                        label="Document type"
-                                        name="documentType"
-                                        value={profile.documentType || ''}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled
-
-                                    />
-                                    <TextField
-                                        label="Company number"
-                                        name="companyNumber"
-                                        value={profile.companyNumber}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled
-                                    />
-                                    <TextField
-                                        label="Company name"
-                                        name="companyName"
-                                        value={profile.companyName}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled
-                                    />
-                                    <TextField
-                                        label="Company address"
-                                        name="companyAddress"
-                                        value={profile.companyAddress}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled
-                                    />
-
-
-
-
-
-
-
-                                </>
-
-                            )}
-
-
-                            {profile.roleName === 'Cliente' && (
-                                <>
-
-                                    <TextField
-                                        label="First Name"
-                                        name="firstName"
-                                        value={profile.firstName}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled={!editMode}
-                                    />
-                                    <TextField
-                                        label="Last Name"
-                                        name="lastName"
-                                        value={profile.lastName}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled={!editMode}
-                                    />
-                                    <TextField
-                                        label="Phone Number"
-                                        name="phone"
-                                        value={profile.phone}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled={!editMode}
-                                    />
-                                    <TextField
-                                        label="Birth Date"
-                                        name="birthDate"
-                                        type="date"
-                                        value={profile.birthDate}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        InputLabelProps={{ shrink: true }}
-                                        disabled={!editMode}
-                                    />
-
-
-
-
-
-
-
-                                </>)}
-
-                            {profile.roleName === 'Empleado' && (
-                                <>
-
-                                    <TextField
-                                        label="First Name"
-                                        name="firstName"
-                                        value={profile.firstName}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled
-                                    />
-                                    <TextField
-                                        label="Last Name"
-                                        name="lastName"
-                                        value={profile.lastName}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled
-                                    />
-
-
-                                </>)}
-
-
-                            <TextField
-                                label="Role"
-                                name="roleName"
-                                value={profile.roleName}
-                                fullWidth
-                                margin="normal"
-                                disabled
-                            />
-
-
-                            {!editMode && role !== ROLE.EMPLOYEE && (
-                                <Button
-                                    type="button"
-                                    onClick={activateEdit}
-                                    variant="contained"
+                                <TextField
+                                    label="Email"
+                                    name="email"
+                                    value={profile.email}
                                     fullWidth
-                                    sx={{
-                                        mt: 3,
-                                        mb: 2,
-                                        bgcolor: '#ff6f00',
-                                        borderRadius: 30,
-                                        '&:hover': { bgcolor: '#ffc107', color: '#212121' }
-                                    }}
-                                >
-                                    Edit Profile
-                                </Button>
-                            )}
+                                    margin="normal"
+                                    disabled
+                                />
 
-                            {/* Mostrar botones Save y Cancel solo si está editando y NO es Empleado */}
-                            {editMode && role !== ROLE.EMPLOYEE && (
-                                <Box display="flex" gap={2} mb={2}>
+
+                                {profile.roleName === ROLE.ADMIN && (
+                                    <>
+
+                                        <TextField
+                                            label="First Name"
+                                            name="firstName"
+                                            value={profile.firstName}
+                                            onChange={handleChange}
+                                            fullWidth
+                                            margin="normal"
+                                            disabled={!editMode}
+                                        />
+                                        <TextField
+                                            label="Last Name"
+                                            name="lastName"
+                                            value={profile.lastName}
+                                            onChange={handleChange}
+                                            fullWidth
+                                            margin="normal"
+                                            disabled={!editMode}
+                                        />
+
+                                        <TextField
+                                            label="Birth Date"
+                                            name="birthDate"
+                                            type="date"
+                                            value={profile.birthDate}
+                                            onChange={handleChange}
+                                            fullWidth
+                                            margin="normal"
+                                            InputLabelProps={{ shrink: true }}
+                                            disabled={!editMode}
+                                        />
+
+
+
+
+
+                                    </>)}
+
+                                {profile.roleName === 'Distribuidor' && (
+                                    <>
+                                        <TextField
+
+                                            label="Document type"
+                                            name="documentType"
+                                            value={profile.documentType || ''}
+                                            onChange={handleChange}
+                                            fullWidth
+                                            margin="normal"
+                                            disabled
+
+                                        />
+                                        <TextField
+                                            label="Company number"
+                                            name="companyNumber"
+                                            value={profile.companyNumber}
+                                            onChange={handleChange}
+                                            fullWidth
+                                            margin="normal"
+                                            disabled
+                                        />
+                                        <TextField
+                                            label="Company name"
+                                            name="companyName"
+                                            value={profile.companyName}
+                                            onChange={handleChange}
+                                            fullWidth
+                                            margin="normal"
+                                            disabled
+                                        />
+                                        <TextField
+                                            label="Company address"
+                                            name="companyAddress"
+                                            value={profile.companyAddress}
+                                            onChange={handleChange}
+                                            fullWidth
+                                            margin="normal"
+                                            disabled
+                                        />
+
+
+
+
+
+
+
+                                    </>
+
+                                )}
+
+
+                                {profile.roleName === 'Cliente' && (
+                                    <>
+
+                                        <TextField
+                                            label="First Name"
+                                            name="firstName"
+                                            value={profile.firstName}
+                                            onChange={handleChange}
+                                            fullWidth
+                                            margin="normal"
+                                            disabled={!editMode}
+                                        />
+                                        <TextField
+                                            label="Last Name"
+                                            name="lastName"
+                                            value={profile.lastName}
+                                            onChange={handleChange}
+                                            fullWidth
+                                            margin="normal"
+                                            disabled={!editMode}
+                                        />
+                                        <TextField
+                                            label="Phone Number"
+                                            name="phone"
+                                            value={profile.phone}
+                                            onChange={handleChange}
+                                            fullWidth
+                                            margin="normal"
+                                            disabled={!editMode}
+                                        />
+                                        <TextField
+                                            label="Birth Date"
+                                            name="birthDate"
+                                            type="date"
+                                            value={profile.birthDate}
+                                            onChange={handleChange}
+                                            fullWidth
+                                            margin="normal"
+                                            InputLabelProps={{ shrink: true }}
+                                            disabled={!editMode}
+                                        />
+
+
+
+
+
+
+
+                                    </>)}
+
+                                {profile.roleName === 'Empleado' && (
+                                    <>
+
+                                        <TextField
+                                            label="First Name"
+                                            name="firstName"
+                                            value={profile.firstName}
+                                            onChange={handleChange}
+                                            fullWidth
+                                            margin="normal"
+                                            disabled
+                                        />
+                                        <TextField
+                                            label="Last Name"
+                                            name="lastName"
+                                            value={profile.lastName}
+                                            onChange={handleChange}
+                                            fullWidth
+                                            margin="normal"
+                                            disabled
+                                        />
+
+
+                                    </>)}
+
+
+                                <TextField
+                                    label="Role"
+                                    name="roleName"
+                                    value={profile.roleName}
+                                    fullWidth
+                                    margin="normal"
+                                    disabled
+                                />
+
+                                <TextField
+                                    label="Current Password"
+                                    name="currentPassword"
+                                    type="password"
+                                    value={passwordData.currentPassword}
+                                    onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                                    fullWidth
+                                    margin="normal"
+                                    disabled={!editMode}
+                                />
+
+                                <TextField
+                                    label="New Password"
+                                    name="newPassword"
+                                    type="password"
+                                    value={passwordData.newPassword}
+                                    onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                                    fullWidth
+                                    margin="normal"
+                                    disabled={!editMode}
+                                />
+
+
+                                {!editMode && role !== ROLE.EMPLOYEE && (
                                     <Button
-                                        onClick={cancelEdit}
-                                        variant="outlined"
-                                        color="inherit"
+                                        type="button"
+                                        onClick={activateEdit}
+                                        variant="contained"
+                                        fullWidth
                                         sx={{
                                             mt: 3,
                                             mb: 2,
-                                            borderRadius: 30,
-                                        }}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        sx={{
                                             bgcolor: '#ff6f00',
                                             borderRadius: 30,
-                                            mt: 3,
-                                            mb: 2,
                                             '&:hover': { bgcolor: '#ffc107', color: '#212121' }
                                         }}
                                     >
-                                        Save Changes
+                                        Edit Profile
                                     </Button>
-                                </Box>
-                            )}
+                                )}
 
-                            {/* Mostrar botón de eliminar solo si NO es Empleado */}
-                            {role !== ROLE.EMPLOYEE && (
-                                <>
-                                    <Box display="flex" justifyContent="center" mt={2} mb={1}>
+                                {/* Mostrar botones Save y Cancel solo si está editando y NO es Empleado */}
+                                {editMode && role !== ROLE.EMPLOYEE && (
+                                    <Box display="flex" gap={2} mb={2}>
                                         <Button
-                                            variant="contained"
-                                            color="error"
+                                            onClick={cancelEdit}
+                                            variant="outlined"
+                                            color="inherit"
                                             sx={{
-                                                backgroundColor: "#f04507ff",
+                                                mt: 3,
+                                                mb: 2,
                                                 borderRadius: 30,
-                                                ":hover": {
-                                                    backgroundColor: "#FFBE02",
-                                                },
                                             }}
-                                            onClick={handleOpenDialog}
                                         >
-                                            DELETE ACCOUNT
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            type="submit"
+                                            variant="contained"
+                                            sx={{
+                                                bgcolor: '#ff6f00',
+                                                borderRadius: 30,
+                                                mt: 3,
+                                                mb: 2,
+                                                '&:hover': { bgcolor: '#ffc107', color: '#212121' }
+                                            }}
+                                        >
+                                            Save Changes
                                         </Button>
                                     </Box>
-                                    <Typography variant="caption" color="textSecondary" align="center" sx={{ mt: 1 }}>
-                                        Deleting your account is irreversible.
-                                    </Typography>
-                                </>
-                            )}
-                        </Box>
+                                )}
 
-                    </Paper>
-                    <ConfirmDialog
-                        open={openDialog}
-                        onClose={handleCloseDialog}
-                        onConfirm={handleConfirmDelete}
-                        title="Delete Account"
-                        message="Are you sure you want to delete your account? This action cannot be undone."
-                        confirmText="Confirm Delete"
-                    />
+                                {/* Mostrar botón de eliminar solo si NO es Empleado */}
+                                {role !== ROLE.EMPLOYEE && (
+                                    <>
+                                        <Box display="flex" justifyContent="center" mt={2} mb={1}>
+                                            <Button
+                                                variant="contained"
+                                                color="error"
+                                                sx={{
+                                                    backgroundColor: "#f04507ff",
+                                                    borderRadius: 30,
+                                                    ":hover": {
+                                                        backgroundColor: "#FFBE02",
+                                                    },
+                                                }}
+                                                onClick={handleOpenDialog}
+                                            >
+                                                DELETE ACCOUNT
+                                            </Button>
+                                        </Box>
+                                        <Typography variant="caption" color="textSecondary" align="center" sx={{ mt: 1 }}>
+                                            Deleting your account is irreversible.
+                                        </Typography>
+                                    </>
+                                )}
+                            </Box>
 
-                </Container>
+                        </Paper>
+                        <ConfirmDialog
+                            open={openDialog}
+                            onClose={handleCloseDialog}
+                            onConfirm={handleConfirmDelete}
+                            title="Delete Account"
+                            message="Are you sure you want to delete your account? This action cannot be undone."
+                            confirmText="Confirm Delete"
+                        />
 
-            </Zoom>
+                    </Container>
 
-        </>
+                </Zoom>
+
+            </>
 
 
-    );
+        );
 
 
-}
+    }

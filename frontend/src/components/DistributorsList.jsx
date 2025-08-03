@@ -87,7 +87,7 @@ function Row({ distributor, onRequestDelete, onRequestEdit }) {
   );
 }
 
-export default function DistributorsList({ distributors, onRequestDelete }) {
+export default function DistributorsList({ distributors, onRequestDelete, onRequestEdit }) {
   const { t } = useTranslation();
   const [searchId, setSearchId] = useState('');
 
