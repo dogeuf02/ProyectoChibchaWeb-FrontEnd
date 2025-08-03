@@ -23,19 +23,14 @@ import {
     deactivateUserById
 } from '../api/userApi';
 import { useNavigate } from 'react-router-dom';
-
-
+import { ROLE } from '../enum/roleEnum';
 
 export default function ManageProfile() {
-
 
     useScrollToTop();
 
     const navigate = useNavigate();
     const { role, logout } = useAuth();
-    const userId = localStorage.getItem("userId");
-
-
 
     const { showAlert } = useGlobalAlert();
     const [profile, setProfile] = useState({
@@ -68,16 +63,16 @@ export default function ManageProfile() {
         let requiredFields = [];
 
         switch (role) {
-            case 'Cliente':
+            case ROLE.CLIENT:
                 requiredFields = ['firstName', 'lastName', 'phone', 'birthDate'];
                 break;
-            case 'Empleado':
+            case ROLE.EMPLOYEE:
                 requiredFields = ['firstName', 'lastName'];
                 break;
-            case 'Administrador':
+            case ROLE.ADMIN:
                 requiredFields = ['firstName', 'lastName', 'birthDate'];
                 break;
-            case 'Distribuidor':
+            case ROLE.DISTRIBUTOR:
                 requiredFields = []; // No validación
                 break;
             default:
@@ -111,10 +106,10 @@ export default function ManageProfile() {
             };
 
             switch (role) {
-                case 'Cliente':
+                case ROLE.CLIENT:
                     updateFunction = updateClientProfile;
                     break;
-                case 'Empleado':
+                case ROLE.EMPLOYEE:
                     updateFunction = updateEmployeeProfile;
                     formattedData.nombreEmpleado = profile.firstName;
                     formattedData.apellidoEmpleado = profile.lastName;
@@ -123,11 +118,11 @@ export default function ManageProfile() {
                     delete formattedData.apellidoCliente;
                     delete formattedData.fechaNacimientoCliente;
                     break;
-                case 'Distribuidor':
+                case ROLE.DISTRIBUTOR:
                     updateFunction = updateDistributorProfile;
                     // agrega los campos si vas a permitir edición para distribuidores
                     break;
-                case 'Administrador':
+                case ROLE.ADMIN:
                     updateFunction = updateAdminProfile;
                     formattedData.nombreAdmin = profile.firstName;
                     formattedData.apellidoAdmin = profile.lastName;
@@ -425,7 +420,7 @@ export default function ManageProfile() {
                             />
 
 
-                            {!editMode && role !== 'Empleado' && (
+                            {!editMode && role !== ROLE.EMPLOYEE && (
                                 <Button
                                     type="button"
                                     onClick={activateEdit}
@@ -444,7 +439,7 @@ export default function ManageProfile() {
                             )}
 
                             {/* Mostrar botones Save y Cancel solo si está editando y NO es Empleado */}
-                            {editMode && role !== 'Empleado' && (
+                            {editMode && role !== ROLE.EMPLOYEE && (
                                 <Box display="flex" gap={2} mb={2}>
                                     <Button
                                         onClick={cancelEdit}
@@ -475,7 +470,7 @@ export default function ManageProfile() {
                             )}
 
                             {/* Mostrar botón de eliminar solo si NO es Empleado */}
-                            {role !== 'Empleado' && (
+                            {role !== ROLE.EMPLOYEE && (
                                 <>
                                     <Box display="flex" justifyContent="center" mt={2} mb={1}>
                                         <Button

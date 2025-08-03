@@ -27,13 +27,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
-
 import { useAuth } from '../context/AuthContext';
-
-
-
-
-
+import { ROLE } from '../enum/roleEnum'
 
 const drawerWidth = 240;
 
@@ -110,10 +105,10 @@ export default function MiniDrawer() {
 
   // Para rutas dinámicas por rol
   const getPath = (base) => {
-    if (role === 'Administrador') return `/admin/${base}`;
-    if (role === 'Cliente') return `/client/${base}`;
-    if (role === 'Distribuidor') return `/distributor/${base}`;
-    if (role === 'Empleado') return `/employee/${base}`;
+    if (role === ROLE.ADMIN) return `/admin/${base}`;
+    if (role === ROLE.CLIENT) return `/client/${base}`;
+    if (role === ROLE.DISTRIBUTOR) return `/distributor/${base}`;
+    if (role === ROLE.EMPLOYEE) return `/employee/${base}`;
     return '/';
   };
 
@@ -206,7 +201,7 @@ export default function MiniDrawer() {
           })}
 
           {/* client y distributor */}
-          {(role === 'Cliente' || role === 'Distribuidor') &&
+          {(role === ROLE.CLIENT|| role === ROLE.DISTRIBUTOR) &&
             clientDistributorItems.map(({ text, icon, basePath }) => {
               const path = getPath(basePath);
               const selected = location.pathname === path;
@@ -250,7 +245,7 @@ export default function MiniDrawer() {
             })}
 
           {/* Admin: Sección Manage */}
-          {role === 'Administrador' && (
+          {role === ROLE.ADMIN && (
             <>
               <ListItem disablePadding sx={{ display: 'block' }}>
                 <ListItemButton

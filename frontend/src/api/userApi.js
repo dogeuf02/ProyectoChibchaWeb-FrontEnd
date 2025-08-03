@@ -1,3 +1,4 @@
+import { ROLE } from '../enum/roleEnum';
 import api from './axiosInstance';
 
 export const getUserProfile = async (role, userId) => {
@@ -8,18 +9,26 @@ export const getUserProfile = async (role, userId) => {
     console.log(user)
     // 2. Determinar el ID relacionado según el rol
     let relatedId;
+    let endpoint = '';
+
     switch (role) {
-      case 'Cliente':
+      case ROLE.CLIENT:
         relatedId = user.cliente;
+        endpoint = `/clienteDirecto/${relatedId}`;
+
         break;
-      case 'Empleado':
+      case ROLE.EMPLOYEE:
         relatedId = user.empleado;
+        endpoint = `/empleado/${relatedId}`;
+
         break;
-      case 'Administrador':
+      case ROLE.ADMIN:
         relatedId = user.admin;
+        endpoint = `/administrador/${relatedId}`;
         break;
-      case 'Distribuidor':
+      case ROLE.DISTRIBUTOR:
         relatedId = user.distribuidor;
+        endpoint = `/distribuidor/${relatedId}`;
         break;
       default:
         console.warn("❌ Rol no válido:", role);
@@ -34,31 +43,12 @@ export const getUserProfile = async (role, userId) => {
       };
     }
 
-    // 3. Construir el endpoint correspondiente
-    let endpoint = '';
-    switch (role) {
-      case 'Cliente':
-        endpoint = `/clienteDirecto/${relatedId}`;
-        break;
-      case 'Empleado':
-        endpoint = `/empleado/${relatedId}`;
-        break;
-      case 'Administrador':
-        endpoint = `/administrador/${relatedId}`;
-        break;
-      case 'Distribuidor':
-        endpoint = `/distribuidor/${relatedId}`;
-        break;
-    }
-
-
-
     // 4. Obtener el perfil específico
     const profileRes = await api.get(endpoint);
     console.log("profile res")
     profileRes.data.email = user.correoUsuario; // Aseguramos que el email del usuario esté presente en el perfil
     console.log(profileRes.data)
-    
+
     return { exito: true, data: profileRes.data };
 
   } catch (error) {

@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { auth } from "../api/authApi";
 import { useGlobalAlert } from "../context/AlertContext";
-import { TOKEN_KEY, decodeToken } from "../utils/authToken";
+import { TOKEN_KEY, saveToken, decodeToken } from "../utils/authToken";
 
 const AuthContext = createContext();
 
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
   // Actualiza localStorage cada vez que el token cambie
   useEffect(() => {
     if (token) {
-      localStorage.setItem(TOKEN_KEY, token);
+      saveToken(token);
       const decoded = decodeToken(token);
       if (decoded) {
         setUserData(decoded);

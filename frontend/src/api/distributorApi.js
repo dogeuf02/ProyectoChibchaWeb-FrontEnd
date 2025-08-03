@@ -1,4 +1,5 @@
 import api from './axiosInstance';
+import { ROLE } from '../enum/roleEnum';
 
 export const createDistributor = async (distributor) => {
     try {
@@ -22,12 +23,11 @@ export const getDistributors = async () => {
 
         const data = response.data;
 
-        const filtered =  data.filter(d => d.estado === "ACTIVO" || d.estado === "INACTIVO")
-
+        const filtered = data.filter(d => d.estado === "ACTIVO" || d.estado === "INACTIVO")
 
         const adaptados = filtered.map((d) => ({
             distributor_id: d.idDistribuidor,
-            role: "Distribuidor",
+            role: ROLE.DISTRIBUTOR,
             email: d.correo,
             status: d.estado,
             company_document_type: d.nombreTipoDoc,
@@ -54,25 +54,25 @@ export const getDistributors = async () => {
 };
 
 export const updateState = async (email, state) => {
-  try {
-    const response = await api.put(`/usuario/correo/${email}`, {
-      estado: state
-    });
+    try {
+        const response = await api.put(`/usuario/correo/${email}`, {
+            estado: state
+        });
 
-    return { exito: true, data: response.data };
-  } catch (error) {
-    if (error.response && error.response.data) {
-      return {
-        exito: false,
-        mensaje: error.response.data.mensaje || "Error al desactivar el usuario"
-      };
-    } else {
-      return {
-        exito: false,
-        mensaje: "Error desconocido al desactivar el usuario"
-      };
+        return { exito: true, data: response.data };
+    } catch (error) {
+        if (error.response && error.response.data) {
+            return {
+                exito: false,
+                mensaje: error.response.data.mensaje || "Error al desactivar el usuario"
+            };
+        } else {
+            return {
+                exito: false,
+                mensaje: "Error desconocido al desactivar el usuario"
+            };
+        }
     }
-  }
 };
 
 export const getPendingDistributors = async () => {
@@ -84,7 +84,7 @@ export const getPendingDistributors = async () => {
 
         const adaptados = pendings.map((d) => ({
             distributor_id: d.idDistribuidor,
-            role: "Distribuidor",
+            role: ROLE.DISTRIBUTOR,
             email: d.correo,
             status: d.estado,
             company_document_type: d.nombreTipoDoc,

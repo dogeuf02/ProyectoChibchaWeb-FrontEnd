@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './LanguageSwitcher';
+import { ROLE } from '../enum/roleEnum';
 
 export default function NavbarMUI() {
   const { t } = useTranslation();
@@ -66,29 +67,29 @@ export default function NavbarMUI() {
   const handleGoToProfile = () => {
     handleMenuClose();
     switch (role) {
-      case "Administrador":
+      case ROLE.ADMIN:
         navigate('/admin/ManageProfile');
         break;
-      case "Cliente":
+      case ROLE.CLIENT:
         navigate('/client/ManageProfile');
         break;
-      case "Empleado":
+      case ROLE.EMPLOYEE:
         navigate('/employee/ManageProfile');
         break;
-      case "Distribuidor":
+      case ROLE.DISTRIBUTOR:
         navigate('/distributor/ManageProfile'); break;
     }
   };
 
   const checkRole = (role) => {
     switch (role) {
-      case "Administrador":
+      case ROLE.ADMIN:
         return "Administrator"
-      case "Cliente":
+      case ROLE.CLIENT:
         return "Client"
-      case "Empleado":
+      case ROLE.EMPLOYEE:
         return "Employee"
-      case "Distribuidor":
+      case ROLE.DISTRIBUTOR:
         return "Distributor"
     }
   }
@@ -161,31 +162,31 @@ export default function NavbarMUI() {
                   </Typography>
                 </MenuItem>
                 <MenuItem onClick={handleGoToProfile}>My profile</MenuItem>
-                {role === 'Administrador' && (
+                {role === ROLE.ADMIN && (
                   <MenuItem onClick={() => { navigate('/admin/ManageEmployees'); handleMenuClose(); }}>
                     Employees management
                   </MenuItem>
 
                 )}
-                {role === 'Administrador' && (
+                {role === ROLE.ADMIN && (
                   <MenuItem onClick={() => { navigate('/admin/ManageDistributors'); handleMenuClose(); }}>
                     Distributors management
                   </MenuItem>
 
                 )}
-                {role === 'Administrador' && (
+                {role === ROLE.ADMIN&& (
                   <MenuItem onClick={() => { navigate('/admin/ManageClients'); handleMenuClose(); }}>
                     Clients management
                   </MenuItem>
 
                 )}
-                {role === 'Administrador' && (
+                {role === ROLE.ADMIN && (
                   <MenuItem onClick={() => { navigate('/admin/ManageDistributorRequests'); handleMenuClose(); }}>
                     Manage distributor requests
                   </MenuItem>
 
                 )}
-                {role === 'Empleado' && (
+                {role === ROLE.ADMIN && (
                   <MenuItem onClick={() => { navigate('/'); handleMenuClose(); }}>
                     Employee panel
                   </MenuItem>

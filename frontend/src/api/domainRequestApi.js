@@ -1,7 +1,7 @@
 import api from './axiosInstance';
 import { getDistributorById } from './distributorApi';
 import { getClientById } from './clientApi';
-import { get } from 'react-scroll/modules/mixins/scroller';
+import { ROLE } from '../enum/roleEnum';
 
 export const createDomainRequest = async (domain) => {
   try {
@@ -33,7 +33,7 @@ export const getDomainRequests = async () => {
         } else if (request.distribuidor) {
           const distribuidorResult = await getDistributorById(request.distribuidor);
           if (distribuidorResult.exito && distribuidorResult.data.usuario) {
-            nombreUsuario = distribuidorResult.data.usuario.nombreEmpresa || 'Distribuidor';
+            nombreUsuario = distribuidorResult.data.usuario.nombreEmpresa || ROLE.DISTRIBUTOR;
           }
         }
 
@@ -44,7 +44,7 @@ export const getDomainRequests = async () => {
           estado: request.estadoSolicitud,
           fechaCreacion: request.fechaSolicitud,
           idUsuario: request.cliente || request.distribuidor,
-          rolUsuario: request.cliente ? 'Cliente' : 'Distribuidor',
+          rolUsuario: request.cliente ? ROLE.CLIENT : ROLE.DISTRIBUTOR,
           nombreUsuario,
         };
       })
