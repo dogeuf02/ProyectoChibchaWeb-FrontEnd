@@ -162,7 +162,6 @@ export default function ManageProfile() {
     const handleCloseDialog = () => setOpenDialog(false);
 
     const handleConfirmDelete = async () => {
-        const userId = localStorage.getItem("userId");
 
         const res = await deactivateUserById(userId);
 
@@ -241,7 +240,7 @@ export default function ManageProfile() {
                             />
 
 
-                            {profile.roleName === 'Administrador' && (
+                            {profile.roleName === ROLE.ADMIN && (
                                 <>
 
                                     <TextField

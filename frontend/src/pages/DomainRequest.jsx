@@ -11,11 +11,13 @@ import { useGlobalAlert } from '../context/AlertContext';
 import Zoom from '@mui/material/Zoom';
 import getTodayDate from '../utils/dateUtils';
 import { createDomainRequest } from '../api/domainRequestApi';
-import { AuthProvider } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { ROLE } from '../enum/roleEnum';
 
 export default function DomainRequest() {
   const { showAlert } = useGlobalAlert();
+  const { role, specificId } = useAuth();
+
   const [formData, setFormData] = useState({
     domainName: '',
     domainTld: '',
@@ -23,7 +25,6 @@ export default function DomainRequest() {
   });
 
   const getCurrentUserId = () => {
-    const { role, specificId } = AuthProvider();
     let clienId = null;
     let distributorId = null;
 
