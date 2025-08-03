@@ -24,12 +24,7 @@ import { useTranslation } from "react-i18next";
 import { getPlans } from "../api/planApi"
 import { useAuth } from "../context/AuthContext";
 import { ROLE } from "../enum/roleEnum";
-// Simulación de usuario
-const mockUser = {
-  isLoggedIn: true,       // Si está logIn
-  role: "client",
-  hasPaymentMethod: true  // Cambia a false para probar redirección
-};
+import { hasPayMethods } from "../api/payMethodApi";
 
 export default function PlansInfo() {
   const navigate = useNavigate();
@@ -41,53 +36,22 @@ export default function PlansInfo() {
   const [openBillingDialog, setOpenBillingDialog] = useState(false);
   const [billingCycle, setBillingCycle] = useState("monthly");
   const [plans, setPlans] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [hasPayMethod, setHasPayMethod] = useState(false);
 
-  // const plans = [
-  //   {
   //     title: t('hosting.hostingPlans.silver.title'),
   //     color: "#C0C0C0",
-  //     price: { monthly: 5, semiAnnual: 25, annual: 45 },
-  //     features: [
-  //       "2" + " " + t('hosting.hostingPlans.features.websites'),
-  //       "20" + " " + t('hosting.hostingPlans.features.databases'),
-  //       "20" + " " + t('hosting.hostingPlans.features.storage'),
-  //       "20" + " " + t('hosting.hostingPlans.features.emailAccounts'),
-  //       t('hosting.hostingPlans.features.builder'),
-  //       "2" + " " + t('hosting.hostingPlans.features.sslCertificates'),
-  //       t('hosting.hostingPlans.features.emailMarketing')
-  //     ]
-  //   },
-  //   {
+
   //     title: t('hosting.hostingPlans.platinum.title'),
   //     color: "#CD7F32",
-  //     price: { monthly: 8, semiAnnual: 40, annual: 72 },
-  //     features: [
-  //       "3" + " " + t('hosting.hostingPlans.features.websites'),
-  //       "40" + " " + t('hosting.hostingPlans.features.databases'),
-  //       "40" + " " + t('hosting.hostingPlans.features.storage'),
-  //       "40" + " " + t('hosting.hostingPlans.features.emailAccounts'),
-  //       t('hosting.hostingPlans.features.builder'),
-  //       "3" + " " + t('hosting.hostingPlans.features.sslCertificates'),
-  //       t('hosting.hostingPlans.features.emailMarketing')
-  //     ]
-  //   },
-  //   {
+
   //     title: t('hosting.hostingPlans.gold.title'),
   //     color: "#FFD700",
-  //     price: { monthly: 11, semiAnnual: 55, annual: 99 },
-  //     features: [
-  //       "5" + " " + t('hosting.hostingPlans.features.websites'),
-  //       t('hosting.hostingPlans.features.unlimitedDatabases'),
-  //       "60" + " " + t('hosting.hostingPlans.features.storage'),
-  //       "60" + " " + t('hosting.hostingPlans.features.emailAccounts'),
-  //       t('hosting.hostingPlans.features.builder'),
-  //       "5" + " " + t('hosting.hostingPlans.features.sslCertificates'),
-  //       t('hosting.hostingPlans.features.emailMarketing')
-  //     ]
-  //   }
-  // ];
+  const planColors = {
+    CHIBCHASILVER: "#C0C0C0",
+    CHIBCHAGOLD: "#FFD700",
+    CHIBCHAPLATINUM: "#CD7F32"
+  };
+
 
   const handleGetPlan = (plan) => {
     // Verificar login como cliente
@@ -97,7 +61,7 @@ export default function PlansInfo() {
     }
 
     // Verificar método de pago
-    if (!mockUser.hasPaymentMethod) {
+    if (!hasPayMethod) {
       showAlert("Please register a payment method first.", "warning");
       navigate("/client/payments");
       return;
@@ -143,23 +107,20 @@ export default function PlansInfo() {
         setPlans(response.data);
         console.log(response.data);
       } else {
-        setError(response.mensaje || "Failed to load plans.");
+        showAlert("Error loading plans", "error");
       }
-      setLoading(false);
     };
     fetchPlans();
   }, []);
 
-  const features = {
-    websites: t('hosting.hostingPlans.features.websites'),
-    databases: t('hosting.hostingPlans.features.databases'),
-    emailAccounts: t('hosting.hostingPlans.features.emailAccounts'),
-    builder: t('hosting.hostingPlans.features.builder'),
-    sslCertificates: t('hosting.hostingPlans.features.sslCertificates'),
-    emailMarketing: t('hosting.hostingPlans.features.emailMarketing'),
-    unlimitedDatabases: t('hosting.hostingPlans.features.unlimitedDatabases'),
-    storage: t('hosting.hostingPlans.features.storage')
-  }
+  useEffect(() => {
+    const checkHasPayMethods = async () => {
+      const hasMethods = await hasPayMethods();
+      setHasPayMethod(hasMethods);
+    };
+
+    checkHasPayMethods();
+  }, []);
 
 
   return (
@@ -214,7 +175,7 @@ export default function PlansInfo() {
                       <Typography
                         variant="h5"
                         align="center"
-                        sx={{ color: plan.color, fontWeight: "bold", mb: 2 }}
+                        sx={{ color: planColors[plan.nombrePlanCliente] || "#333", fontWeight: "bold", mb: 2 }}
                       >
                         {plan.nombrePlanCliente}
                       </Typography>
@@ -235,45 +196,33 @@ export default function PlansInfo() {
 
 
                       <Divider sx={{ mb: 2 }} />
-                      <Box sx={{ mb: 2 }}>
+                      <Box sx={{ mb: 2, textAlign: 'left', pl: 2 }}>
                         <Typography variant="body1">
-                          <strong>• {plan.nombrePlanCliente} </strong>
+                          <strong>• {plan.numeroBaseDatos} </strong>{t('hosting.hostingPlans.features.databases')}
                         </Typography>
                         <Typography variant="body1">
-                          <strong>• {plan.numeroBaseDatos}: </strong>{t('hosting.hostingPlans.features.databases')}
+                          <strong>• {plan.numeroWebs} </strong>{t('hosting.hostingPlans.features.websites')}
                         </Typography>
                         <Typography variant="body1">
-                          <strong>• {plan.numeroWebs}: </strong>{t('hosting.hostingPlans.features.websites')}
+                          <strong>• {plan.almacenamientoNvme} </strong>{t('hosting.hostingPlans.features.storage')}
                         </Typography>
                         <Typography variant="body1">
-                          <strong>• {plan.almacenamientoNvme}: </strong>{t('hosting.hostingPlans.features.storage')}
-                        </Typography>
-                        <Typography variant="body1">
-                          <strong>• {plan.numeroCuentasCorreo}: </strong>{t('hosting.hostingPlans.features.emailAccounts')}
+                          <strong>• {plan.numeroCuentasCorreo} </strong>{t('hosting.hostingPlans.features.emailAccounts')}
                         </Typography>
                         <Typography variant="body1">
                           <strong>{plan.creadorWeb && (
-                            "•" + t('hosting.hostingPlans.features.builder')
+                            "• " + t('hosting.hostingPlans.features.builder')
                           )}:</strong>
                         </Typography>
                         <Typography variant="body1">
-                          <strong>• {plan.numeroCertificadoSslHttps}: </strong>{t('hosting.hostingPlans.features.sslCertificates')}
+                          <strong>• {plan.numeroCertificadoSslHttps} </strong>{t('hosting.hostingPlans.features.sslCertificates')}
                         </Typography>
                         <Typography variant="body1">
                           <strong>{plan.emailMarketing && (
-                            "•" + t('hosting.hostingPlans.features.emailMarketing')
+                            "• " + t('hosting.hostingPlans.features.emailMarketing')
                           )}</strong>
                         </Typography>
                       </Box>
-                      {/* <List dense>
-                        {plan.features.map((feature, i) => (
-                          <ListItem key={i} sx={{ py: 0.5 }}>
-                            <Typography variant="body2" sx={{ color: "#212121" }}>
-                              • {feature}
-                            </Typography>
-                          </ListItem>
-                        ))}
-                      </List> */}
                     </CardContent>
                     <CardActions sx={{ justifyContent: "center", pb: 2 }}>
                       <Button
