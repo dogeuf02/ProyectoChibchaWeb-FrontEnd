@@ -14,8 +14,11 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisaIcon from '@mui/icons-material/Payment';
+import { useTranslation } from 'react-i18next';
 
 export default function PaymentInfo() {
+  const { t } = useTranslation(); // 👈 hook
+
   const [hasCard, setHasCard] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [paymentData, setPaymentData] = useState({
@@ -49,7 +52,7 @@ export default function PaymentInfo() {
     <Container maxWidth="sm" sx={{ mt: 6 }}>
       <Paper elevation={3} sx={{ p: 4, bgcolor: '#fafafa' }}>
         <Typography variant="h5" gutterBottom>
-          Información de Pago
+          {t('payment.title')}
         </Typography>
 
         {hasCard && !showForm ? (
@@ -73,7 +76,7 @@ export default function PaymentInfo() {
                 **** **** **** {paymentData.cardNumber.slice(-4)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Expira: {paymentData.expiryDate}
+                {t('payment.expires')}: {paymentData.expiryDate}
               </Typography>
             </Box>
             <IconButton onClick={handleDelete}>
@@ -84,7 +87,7 @@ export default function PaymentInfo() {
           <Box component="form" noValidate>
             <TextField
               select
-              label="Tipo de tarjeta"
+              label={t('payment.cardType')}
               name="cardType"
               value={paymentData.cardType}
               onChange={handleChange}
@@ -93,9 +96,7 @@ export default function PaymentInfo() {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    {
-                      cardTypes.find((type) => type.value === paymentData.cardType)?.icon
-                    }
+                    {cardTypes.find((type) => type.value === paymentData.cardType)?.icon}
                   </InputAdornment>
                 ),
               }}
@@ -108,7 +109,7 @@ export default function PaymentInfo() {
             </TextField>
 
             <TextField
-              label="Número de tarjeta"
+              label={t('payment.cardNumber')}
               name="cardNumber"
               value={paymentData.cardNumber}
               onChange={handleChange}
@@ -119,7 +120,7 @@ export default function PaymentInfo() {
 
             <Box display="flex" gap={2}>
               <TextField
-                label="CVC"
+                label={t('payment.cvc')}
                 name="cvc"
                 value={paymentData.cvc}
                 onChange={handleChange}
@@ -128,7 +129,7 @@ export default function PaymentInfo() {
                 inputProps={{ maxLength: 4 }}
               />
               <TextField
-                label="Fecha Exp. (MM/AA)"
+                label={t('payment.expiryDate')}
                 name="expiryDate"
                 type="month"
                 value={paymentData.expiryDate}
@@ -151,7 +152,7 @@ export default function PaymentInfo() {
               onClick={handleSave}
               disabled={!paymentData.cardNumber || !paymentData.cvc || !paymentData.expiryDate}
             >
-              GUARDAR MÉTODO DE PAGO
+              {t('payment.saveButton')}
             </Button>
           </Box>
         ) : (
@@ -163,7 +164,7 @@ export default function PaymentInfo() {
               <AddIcon />
             </IconButton>
             <Typography variant="body2" sx={{ mt: 1 }}>
-              Agregar método de pago
+              {t('payment.addMethod')}
             </Typography>
           </Box>
         )}

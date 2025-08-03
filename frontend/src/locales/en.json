@@ -195,13 +195,13 @@
     },
     "domainRequestsManagement": {
         "title": "Domain Registration Requests",
-        "denyRequestDialog":{
-            "title":"Deny Registration Request",
-            "message":"Are you sure you want to deny this registration request? This action cannot be undone.",
-            "confirmText":"Confirm Denial"
+        "denyRequestDialog": {
+            "title": "Deny Registration Request",
+            "message": "Are you sure you want to deny this registration request? This action cannot be undone.",
+            "confirmText": "Confirm Denial"
         },
         "list": {
-            "domain":"domain",
+            "domain": "domain",
             "fullDomain": "Full Domain",
             "applicant": "Applicant",
             "applicantInfo": "Applicant Info",
@@ -212,7 +212,7 @@
             "domainStatus": "Domain Status",
             "details": "Request Details",
             "id": "Request ID",
-            "reviewedBy":"Reviewed By",
+            "reviewedBy": "Reviewed By",
             "searchField": "Search by Domain or ID",
             "accept": "Accept",
             "reject": "Reject"
@@ -221,19 +221,30 @@
     "distributorRequestsManagement": {
         "title": "Apply as Distributor requests",
         "list": {
-            "details":"Distributor Request Details",
-            "id":"Distributor ID",
-            "docType":"Document Type",
-            "docNumber":"Document Number",
-            "companyAddress":"Company Address",
-            "accept":"Accept",
-            "deny":"Deny",
-            "searchField":"Search by ID",
-            "companyName":"Company Name",
-            "email":"Email",
-            "status":"Status",
-            "role":"Role"
+            "details": "Distributor Request Details",
+            "id": "Distributor ID",
+            "docType": "Document Type",
+            "docNumber": "Document Number",
+            "companyAddress": "Company Address",
+            "accept": "Accept",
+            "deny": "Deny",
+            "searchField": "Search by ID",
+            "companyName": "Company Name",
+            "email": "Email",
+            "status": "Status",
+            "role": "Role"
         }
+    },
+    "payment": {
+        "title": "Payment Information",
+        "cardType": "Card Type",
+        "cardNumber": "Card Number",
+        "cvc": "CVC",
+        "expiryDate": "Exp. Date (MM/YY)",
+        "saveButton": "SAVE PAYMENT METHOD",
+        "addMethod": "Add payment method",
+        "expires": "Expires",
+        "deleteCard": "Delete card"
     },
     "util":{
         "dolarCoin":"US"
