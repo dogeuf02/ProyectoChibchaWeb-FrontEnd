@@ -25,7 +25,7 @@ import { useGlobalAlert } from "../context/AlertContext";
 const mockUser = {
   isLoggedIn: true,       // Si está logIn
   role: "client",
-  hasPaymentMethod: false  // Cambia a false para probar redirección
+  hasPaymentMethod: true  // Cambia a false para probar redirección
 };
 
 const plans = [
@@ -260,7 +260,7 @@ export default function PlansInfo() {
             <Button onClick={() => setOpenBillingDialog(false)}>Cancel</Button>
             <Button
               variant="contained"
-              sx={{ bgcolor: "#FF6400", "&:hover": { bgcolor: "#e25a00" } }}
+              sx={{ bgcolor: "#FF6400", borderRadius: 30, "&:hover":{ bgcolor: "#e25a00" } }}
               onClick={handleConfirmPlan}
             >
               Confirm
