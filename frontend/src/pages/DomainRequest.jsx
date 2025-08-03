@@ -11,7 +11,7 @@ import { useGlobalAlert } from '../context/AlertContext';
 import Zoom from '@mui/material/Zoom';
 import getTodayDate from '../utils/dateUtils';
 import { createDomainRequest } from '../api/domainRequestApi';
-
+import { AuthProvider } from '../context/AuthContext';
 export default function DomainRequest() {
   const { showAlert } = useGlobalAlert();
   const [formData, setFormData] = useState({
@@ -21,7 +21,7 @@ export default function DomainRequest() {
   });
 
   const getCurrentUserId = () => {
-    const role = localStorage.getItem("userRole");
+    const { role } = AuthProvider();
     let clienId = null;
     let distributorId = null;
 

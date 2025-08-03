@@ -1,23 +1,36 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { auth } from '../api/authApi';
+import { auth } from "../api/authApi";
 import { useGlobalAlert } from "../context/AlertContext";
-import { TOKEN_KEY, isAuthenticated } from "../utils/authToken";
+import { TOKEN_KEY, decodeToken } from "../utils/authToken";
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const { showAlert } = useGlobalAlert();
 
-  const [token, setToken] = useState(() => {
-    return localStorage.getItem(TOKEN_KEY) || null;
-  })
+  const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY));
+  const [authenticated, setAuthenticated] = useState(() => localStorage.getItem("authenticated") === "true");
 
-  const [authenticated, setAuthenticated] = useState(() => {
-    return localStorage.getItem("authenticated") === "true";
-  });
+  const [userId, setUserId] = useState(null);
+  const [specificId, setSpecificId] = useState(null);
+  const [role, setRole] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [userData, setUserData] = useState(null);
 
+  // Actualiza localStorage cada vez que el token cambie
   useEffect(() => {
-    localStorage.setItem(TOKEN_KEY, token);
-  })
+    if (token) {
+      localStorage.setItem(TOKEN_KEY, token);
+      const decoded = decodeToken(token);
+      if (decoded) {
+        setUserData(decoded);
+        setUserId(decoded.idUsuario);
+        setSpecificId(decoded.idRelacionado);
+        setRole(decoded.rol);
+        setEmail(decoded.sub);
+      }
+    }
+  }, [token]);
 
   useEffect(() => {
     localStorage.setItem("authenticated", authenticated);
@@ -25,17 +38,11 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const credentials = {
-        correo: email,
-        contrasena: password
-      };
-
-      const response = await auth(credentials);
+      const response = await auth({ correo: email, contrasena: password });
 
       if (response.autenticado) {
         setToken(response.token);
-        setAuthenticated(isAuthenticated());
-
+        setAuthenticated(true); // ya se decodifica más arriba
         return { success: true };
       } else {
         return { success: false, message: response.mensaje };
@@ -46,18 +53,31 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-
   const logout = () => {
     setAuthenticated(false);
-    localStorage.clear()
-    localStorage.removeItem("token");
-    localStorage.removeItem("authenticated");
-    localStorage.removeItem("userRole");
-    showAlert("Logged out", "success")
+    setToken(null);
+    setUserId(null);
+    setSpecificId(null);
+    setRole(null);
+    setEmail(null);
+    setUserData(null);
+
+    localStorage.clear();
+    showAlert("Sesión cerrada", "success");
   };
 
   return (
-    <AuthContext.Provider value={{ authenticated, setToken, setAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{
+      authenticated,
+      token,
+      login,
+      logout,
+      userId,
+      specificId,
+      role,
+      email,
+      userData,
+    }}>
       {children}
     </AuthContext.Provider>
   );
