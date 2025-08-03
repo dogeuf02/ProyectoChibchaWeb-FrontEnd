@@ -14,7 +14,7 @@ import DashboardLayout from './layout/DashboardLayout.jsx'
 import AdminManageDistributors from './pages/AdminManageDistributors.jsx'
 import AdminManageAdmins from './pages/AdminManageAdmins.jsx'
 import AdminManageDistributorRequests from './pages/AdminManageDistributorRequests.jsx'
-import Payments from './pages/Payments.jsx'
+import PaymentManagement from './pages/PaymentManagement.jsx'
 import MyPlans from './pages/MyPlans.jsx'
 import AdminManageDomainRequests from './pages/AdminManageDomainRequests.jsx'
 import AdminManageClients from './pages/AdminManageClients.jsx'
@@ -25,6 +25,7 @@ import PlansInfo from './pages/PlansInfo.jsx'
 import DomainRequest from './pages/DomainRequest.jsx'
 import EmployeeManageTickets from './pages/EmployeeManageTickets.jsx'
 import VerifyEmail from './components/VerifyEmail.jsx'
+import Checkout from './pages/Checkout.jsx'
 
 function App() {
   return (
@@ -90,17 +91,18 @@ function App() {
         <Route path="/client" element={<DashboardLayout />}>
           <Route index element={<ManageProfile />} />
           <Route path="ManageProfile" element={<ManageProfile />} />
-          <Route path="Payments" element={<Payments />} />
+          <Route path="PaymentManagement" element={<PaymentManagement />} />
           <Route path="MyPlans" element={<MyPlans />} />
           <Route path="MyDomains" element={<MyDomains />} />
           <Route path="DomainRequest" element={<DomainRequest />} />
+          <Route path="Checkout" element={<Checkout />} />
         </Route>
 
         {/* Distributor Dashboard */}
         <Route path="/distributor" element={<DashboardLayout />}>
           <Route index element={<ManageProfile />} />
           <Route path="ManageProfile" element={<ManageProfile />} />
-          <Route path="Payments" element={<Payments />} />
+          <Route path="PaymentManagement" element={<PaymentManagement />} />
           <Route path="MyDomains" element={<MyDomains />} />
           <Route path="DomainRequest" element={<DomainRequest />} />
         </Route>
