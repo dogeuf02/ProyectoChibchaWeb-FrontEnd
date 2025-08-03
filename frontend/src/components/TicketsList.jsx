@@ -153,7 +153,7 @@ function Row({
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                 />
-                <Button variant="contained" onClick={handleAddComment}>
+                <Button variant="contained" onClick={handleAddComment} sx={{borderRadius: 30, bgcolor: '#e25a00'}}>
                   Add
                 </Button>
               </Box>
@@ -181,6 +181,7 @@ function Row({
                     color="primary"
                     onClick={handleAssign}
                     disabled={!assignedTech}
+                    sx={{borderRadius: 30, bgcolor: '#e25a00'}}
                   >
                     Assign
                   </Button>
@@ -190,7 +191,8 @@ function Row({
               {/* Cerrar ticket */}
               {ticket.status !== "Closed" && (
                 <Box sx={{ mt: 2 }}>
-                  <Button variant="contained" color="error" onClick={() => onCloseTicket(ticket.ticket_id)}>
+                  <Button variant="contained" color="error" onClick={() => onCloseTicket(ticket.ticket_id)}
+                    sx={{borderRadius: 30}}>
                     Close Ticket
                   </Button>
                 </Box>

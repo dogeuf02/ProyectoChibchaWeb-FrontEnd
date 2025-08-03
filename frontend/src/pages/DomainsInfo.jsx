@@ -52,7 +52,7 @@ export default function DomainsInfo() {
         <Typography
           variant="subtitle1"
           align="center"
-          sx={{ color: '#BDBDBD', mb: 4 }}
+          sx={{ color: '#616161ff', mb: 4 }}
         >
           Select the perfect domain for your website
         </Typography>

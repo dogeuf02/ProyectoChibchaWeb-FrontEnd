@@ -16,6 +16,7 @@ import ConfirmDialog from "../components/ConfirmDialog";
 import PlanList from "../components/PlanList";
 import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
+import { useNavigate } from "react-router-dom"; // 👈 Import para navegación
 
 // Planes base disponibles
 const availablePlans = [
@@ -60,12 +61,6 @@ const availablePlans = [
   },
 ];
 
-const billingOptions = [
-  { value: "monthly", label: "Monthly" },
-  { value: "semiAnnual", label: "Semi-Annual" },
-  { value: "annual", label: "Annual" },
-];
-
 export default function MyPlansPage() {
   useScrollToTop();
   const { showAlert } = useGlobalAlert();
@@ -76,9 +71,8 @@ export default function MyPlansPage() {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-  const [openForm, setOpenForm] = useState(false);
-  const [selectedPlanType, setSelectedPlanType] = useState("");
-  const [selectedBillingCycle, setSelectedBillingCycle] = useState("monthly");
+
+  const navigate = useNavigate(); // 👈 Hook para redirigir
 
   const handleRequestDelete = (id) => {
     setSelectedId(id);
@@ -90,25 +84,6 @@ export default function MyPlansPage() {
     setOpenDialog(false);
     setSelectedId(null);
     showAlert("Plan deleted successfully", "success");
-  };
-
-  const handleAddPlan = () => {
-    const planData = availablePlans.find((p) => p.type === selectedPlanType);
-    if (!planData) {
-      showAlert("Please select a plan type", "warning");
-      return;
-    }
-
-    const newId = `P${plans.length + 1}`;
-    setPlans((prev) => [
-      ...prev,
-      { ...planData, billingCycle: selectedBillingCycle, id: newId },
-    ]);
-
-    setSelectedPlanType("");
-    setSelectedBillingCycle("monthly");
-    setOpenForm(false);
-    showAlert("Plan added successfully", "success");
   };
 
   return (
@@ -128,10 +103,11 @@ export default function MyPlansPage() {
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={() => setOpenForm(true)}
+          onClick={() => navigate("/Plans")} // 👈 Redirige al hacer clic
           sx={{
             backgroundColor: "#FF6300",
             color: "#FAFAFA",
+            borderRadius: 30,
             "&:hover": {
               backgroundColor: "#e65c00",
             },
@@ -151,58 +127,6 @@ export default function MyPlansPage() {
         message="Are you sure you want to delete this plan?"
         confirmText="Confirm Delete"
       />
-
-      {/* Dialogo para agregar plan */}
-      <Dialog open={openForm} onClose={() => setOpenForm(false)} fullWidth>
-        <DialogTitle>Add New Plan</DialogTitle>
-        <DialogContent>
-          <Stack spacing={2} mt={1}>
-            <TextField
-              select
-              label="Plan Type"
-              value={selectedPlanType}
-              onChange={(e) => setSelectedPlanType(e.target.value)}
-              fullWidth
-            >
-              {availablePlans.map((plan) => (
-                <MenuItem key={plan.type} value={plan.type}>
-                  {plan.type}
-                </MenuItem>
-              ))}
-            </TextField>
-
-            <TextField
-              select
-              label="Billing Cycle"
-              value={selectedBillingCycle}
-              onChange={(e) => setSelectedBillingCycle(e.target.value)}
-              fullWidth
-            >
-              {billingOptions.map((opt) => (
-                <MenuItem key={opt.value} value={opt.value}>
-                  {opt.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenForm(false)} sx={{ color: "#212121" }}>
-            Cancel
-          </Button>
-          <Button
-            onClick={handleAddPlan}
-            variant="contained"
-            sx={{
-              backgroundColor: "#FF6300",
-              color: "#FAFAFA",
-              "&:hover": { backgroundColor: "#e65c00" },
-            }}
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 }

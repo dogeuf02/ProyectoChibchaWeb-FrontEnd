@@ -85,7 +85,7 @@ export default function PlansInfo() {
         <Typography
           variant="subtitle1"
           align="center"
-          sx={{ color: '#BDBDBD', mb: 4 }}
+          sx={{ color: '#616161ff', mb: 4 }}
         >
           Flexible prices to grow with your business
         </Typography>
