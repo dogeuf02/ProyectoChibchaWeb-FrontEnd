@@ -1,9 +1,28 @@
 import api from './axiosInstance';
 
 export const auth = async (credentials) => {
-  const response = await api.post('/auth/login', credentials);
-  return response.data;
-}
+  try {
+    const response = await api.post('/auth/login', credentials);
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      // Aunque axios lanza error para status >= 400, esto es una doble verificación.
+      return {
+        autenticado: false,
+        mensaje: 'Error inesperado en la autenticación.'
+      };
+    }
+  } catch (error) {
+    console.error("Error en auth:", error);
+    return {
+      autenticado: false,
+      mensaje: error?.response?.data?.mensaje || "Error en el servidor."
+    };
+  }
+};
+
+
 
 export const verifyEmailToken = async (token) => {
   try {
