@@ -2,7 +2,7 @@ import api from './axiosInstance';
 
 export const createPlan = async (plan) => {
   try {
-    const response = await api.post('/plan', plan);
+    const response = await api.post('/planCliente', plan);
     return { exito: true, data: response.data };
   } catch (error) {
     if (error.response && error.response.data) {
@@ -16,7 +16,7 @@ export const createPlan = async (plan) => {
 
 export const getPlans = async () => {
   try {
-    const response = await api.get('/plan');
+    const response = await api.get('/planCliente');
     return { exito: true, data: response.data };
   } catch (error) {
     if (error.response && error.response.data) {
