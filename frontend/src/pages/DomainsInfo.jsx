@@ -12,32 +12,6 @@ import {
   Divider,
 } from '@mui/material';
 
-const cardData = [
-  {
-    title: 'Commercial',
-    description:
-      'Dominio .com',
-    image: '/com.png',
-    color: '#FF6400',
-  },
-  {
-    title: 'Network',
-    description:
-      'Dominio .net',
-    image:
-      'https://imagedelivery.net/LqiWLm-3MGbYHtFuUbcBtA/06b15861-1a43-4706-3825-cb2cd043c400/public',
-    color: '#6C63FF',
-  },
-  {
-    title: 'Organization',
-    description:
-      'Dominio .org',
-    image: '/org.png',
-    color: '#FF6400',
-  },
-];
-
-
 import { useTranslation } from 'react-i18next';
 
 export default function DomainsInfo() {
@@ -71,15 +45,14 @@ export default function DomainsInfo() {
           gutterBottom
           sx={{ color: '#212121', fontWeight: 'bold' }}
         >
-          Choose Your Domain
+          {t('domains.domainInfo.title')}
         </Typography>
         <Typography
           variant="subtitle1"
           align="center"
           sx={{ color: '#616161ff', mb: 4 }}
         >
-          Select the perfect domain for your website
-        </Typography>
+          {t('domains.domainInfo.subtitle')} </Typography>
 
         <Grid container spacing={4} justifyContent="center">
           {domains.map((card, index) => (
@@ -150,8 +123,7 @@ export default function DomainsInfo() {
                       },
                     }}
                   >
-                    Más información
-                  </Button>
+                    {t('domains.moreInfo')} </Button>
                 </CardActions>
               </Card>
             </Grid>

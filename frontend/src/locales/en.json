@@ -20,6 +20,8 @@
     "domains": {
         "domainsTitle": "Domains",
         "domainInfo": {
+            "title":"Choose Your Domain",
+            "subtitle":"Select the perfect domain for your website",
             "com": {
                 "title": "Domain .com",
                 "description": "Brief description of the first service."
@@ -37,6 +39,13 @@
     },
     "hosting": {
         "hostingTitle": "Hosting Plans",
+        "sectionTitle":"Choose the Right Hosting Plan",
+        "subtitle":"Flexible prices to grow with your business",
+        "planPeriodicity":{
+            "monthly":"Monthly",
+            "semiAnnual":"Semi-Annual",
+            "annual":"Annual"
+        },
         "hostingPlans": {
             "gold": {
                 "title": "CHIBCHAGOLD",
@@ -49,13 +58,23 @@
             "platinum": {
                 "title": "CHIBCHAPLATINUM",
                 "description": "Brief description of Platinum plan."
+            },
+            "features":{
+                "websites":"Websites",
+                "databases":"Databases",
+                "emailAccounts":"Email accounts",
+                "builder":"Website builder",
+                "sslCertificates":"SSL certificates, https",
+                "emailMarketing":"Email marketing",
+                "unlimitedDatabases":"Unlimited databases",
+                "storage":"GB NVMe SSD storage"
             }
         },
         "hostingButton": "GET THE PLAN"
     },
     "distributor": {
         "title": "Distributor",
-        "description": "As a distributor you will be able to receive commission depending on your sales in Chibchaweb!",
+        "description": "As a distributor you will be able to receive commission depending on your sales in CHIBCHAWEB! Join our program and start growing your business with us.",
         "applyLink": "Apply as a distributor ->"
     },
     "footer": {
@@ -226,6 +245,9 @@
         "addMethod": "Add payment method",
         "expires": "Expires",
         "deleteCard": "Delete card"
+    },
+    "util":{
+        "dolarCoin":"US"
     },
     "alert": {
         "success": {

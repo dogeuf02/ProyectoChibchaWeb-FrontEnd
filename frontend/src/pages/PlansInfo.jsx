@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useGlobalAlert } from "../context/AlertContext";
-
+import { useTranslation } from "react-i18next";
 // Simulación de usuario
 const mockUser = {
   isLoggedIn: true,       // Si está logIn
@@ -28,58 +28,59 @@ const mockUser = {
   hasPaymentMethod: true  // Cambia a false para probar redirección
 };
 
-const plans = [
-  {
-    title: "CHIBCHAPLATA",
-    color: "#C0C0C0",
-    price: { monthly: 5, semiAnnual: 25, annual: 45 },
-    features: [
-      "2 websites",
-      "20 databases",
-      "20 GB NVMe SSD storage",
-      "20 email accounts",
-      "Website builder",
-      "2 SSL Certificates, https",
-      "Email Marketing"
-    ]
-  },
-  {
-    title: "CHIBCHAPLATINO",
-    color: "#CD7F32",
-    price: { monthly: 8, semiAnnual: 40, annual: 72 },
-    features: [
-      "3 websites",
-      "40 databases",
-      "40 GB NVMe SSD storage",
-      "40 email accounts",
-      "Website builder",
-      "3 SSL Certificates, https",
-      "Email Marketing"
-    ]
-  },
-  {
-    title: "CHIBCHAORO",
-    color: "#FFD700",
-    price: { monthly: 11, semiAnnual: 55, annual: 99 },
-    features: [
-      "5 websites",
-      "Unlimited databases",
-      "60 GB NVMe SSD storage",
-      "60 email accounts",
-      "Website builder",
-      "5 SSL Certificates, https",
-      "Email Marketing"
-    ]
-  }
-];
-
 export default function PlansInfo() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { showAlert } = useGlobalAlert();
 
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [openBillingDialog, setOpenBillingDialog] = useState(false);
   const [billingCycle, setBillingCycle] = useState("monthly");
+
+  const plans = [
+    {
+      title: t('hosting.hostingPlans.silver.title'),
+      color: "#C0C0C0",
+      price: { monthly: 5, semiAnnual: 25, annual: 45 },
+      features: [
+        "2" + " " + t('hosting.hostingPlans.features.websites'),
+        "20" + " " + t('hosting.hostingPlans.features.databases'),
+        "20" + " " + t('hosting.hostingPlans.features.storage'),
+        "20" + " " + t('hosting.hostingPlans.features.emailAccounts'),
+        t('hosting.hostingPlans.features.builder'),
+        "2" + " " + t('hosting.hostingPlans.features.sslCertificates'),
+        t('hosting.hostingPlans.features.emailMarketing')
+      ]
+    },
+    {
+      title: t('hosting.hostingPlans.platinum.title'),
+      color: "#CD7F32",
+      price: { monthly: 8, semiAnnual: 40, annual: 72 },
+      features: [
+        "3" + " " + t('hosting.hostingPlans.features.websites'),
+        "40" + " " + t('hosting.hostingPlans.features.databases'),
+        "40" + " " + t('hosting.hostingPlans.features.storage'),
+        "40" + " " + t('hosting.hostingPlans.features.emailAccounts'),
+        t('hosting.hostingPlans.features.builder'),
+        "3" + " " + t('hosting.hostingPlans.features.sslCertificates'),
+        t('hosting.hostingPlans.features.emailMarketing')
+      ]
+    },
+    {
+      title: t('hosting.hostingPlans.gold.title'),
+      color: "#FFD700",
+      price: { monthly: 11, semiAnnual: 55, annual: 99 },
+      features: [
+        "5" + " " + t('hosting.hostingPlans.features.websites'),
+        t('hosting.hostingPlans.features.unlimitedDatabases'),
+        "60" + " " + t('hosting.hostingPlans.features.storage'),
+        "60" + " " + t('hosting.hostingPlans.features.emailAccounts'),
+        t('hosting.hostingPlans.features.builder'),
+        "5" + " " + t('hosting.hostingPlans.features.sslCertificates'),
+        t('hosting.hostingPlans.features.emailMarketing')
+      ]
+    }
+  ];
 
   const handleGetPlan = (plan) => {
     // Verificar login como cliente
@@ -137,15 +138,13 @@ export default function PlansInfo() {
           gutterBottom
           sx={{ color: "#212121", fontWeight: "bold" }}
         >
-          Choose the Right Hosting Plan
-        </Typography>
+          {t('hosting.sectionTitle')} </Typography>
         <Typography
           variant="subtitle1"
           align="center"
           sx={{ color: "#616161ff", mb: 4 }}
         >
-          Flexible prices to grow with your business
-        </Typography>
+          {t('hosting.subtitle')} </Typography>
 
         <Grid container spacing={4} justifyContent="center">
           {plans.map((plan, index) => (
@@ -179,13 +178,13 @@ export default function PlansInfo() {
 
                   <Box sx={{ mb: 2 }}>
                     <Typography variant="body1">
-                      <strong>Monthly:</strong> {plan.price.monthly} US
+                      <strong>{t('hosting.planPeriodicity.monthly')}:</strong> {plan.price.monthly} {t('util.dolarCoin')}
                     </Typography>
                     <Typography variant="body1">
-                      <strong>Semi-Annual:</strong> {plan.price.semiAnnual} US
+                      <strong>{t('hosting.planPeriodicity.semiAnnual')}:</strong> {plan.price.semiAnnual} {t('util.dolarCoin')}
                     </Typography>
                     <Typography variant="body1">
-                      <strong>Annual:</strong> {plan.price.annual} US
+                      <strong>{t('hosting.planPeriodicity.annual')}:</strong> {plan.price.annual} {t('util.dolarCoin')}
                     </Typography>
                   </Box>
 
@@ -215,8 +214,7 @@ export default function PlansInfo() {
                       }
                     }}
                   >
-                    Get the Plan
-                  </Button>
+                    {t('hosting.hostingButton')} </Button>
                 </CardActions>
               </Card>
             </Grid>
@@ -260,7 +258,7 @@ export default function PlansInfo() {
             <Button onClick={() => setOpenBillingDialog(false)}>Cancel</Button>
             <Button
               variant="contained"
-              sx={{ bgcolor: "#FF6400", borderRadius: 30, "&:hover":{ bgcolor: "#e25a00" } }}
+              sx={{ bgcolor: "#FF6400", borderRadius: 30, "&:hover": { bgcolor: "#e25a00" } }}
               onClick={handleConfirmPlan}
             >
               Confirm
