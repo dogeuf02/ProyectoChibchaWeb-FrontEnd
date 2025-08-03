@@ -43,8 +43,6 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    const handleSubmit = async (e) => {
-        e.preventDefault();
 
         const result = await login(form.email, form.password);
 
