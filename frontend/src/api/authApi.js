@@ -9,14 +9,28 @@ export const verifyEmailToken = async (token) => {
   try {
     const response = await api.get('/auth/activar?token=' + token);
     console.log("Response from verifyEmailToken:", response);
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Error al verificar el correo');
+
+    if (response.status !== 200) {
+      throw new Error('Error al verificar el correo');
     }
 
-    const data = await response.json();
-    return { success: true, message: data.message };
+    const data = response.data;
+    return { success: true, message: data };
   } catch (error) {
-    return { success: false, message: error.message || 'Error de red al verificar el correo' };
+    console.error("verifyEmailToken error:", error);
+
+    // Verifica si es un error de Axios con respuesta del servidor
+    if (error.response) {
+      return {
+        success: false,
+        message: error.response.data || 'Error en la respuesta del servidor',
+      };
+    }
+
+    // Error normal o personalizado
+    return {
+      success: false,
+      message: error.message || 'Error de red al verificar el correo',
+    };
   }
 };

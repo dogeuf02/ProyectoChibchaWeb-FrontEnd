@@ -69,7 +69,7 @@ function App() {
           </MainLayout>
         } />
 
-        <Route path="/verify-email" element={
+        <Route path="/activate" element={
           <VerifyEmail />
         } />
 

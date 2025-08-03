@@ -1,38 +1,31 @@
-import { useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import { verifyEmailToken } from "../api/authApi"; // ajusta el path si es necesario
+import { useEffect, useRef } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { verifyEmailToken } from "../api/authApi"; // Asegúrate que esta sea la función correcta
+import { useGlobalAlert } from "../context/AlertContext";
 
 const VerifyEmail = () => {
+
+    const { showAlert } = useGlobalAlert();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const token = searchParams.get("token");
-    console.log("toke"+ token)
+    const hasRun = useRef(false); // <-- evita ejecutar el efecto dos veces
+
     useEffect(() => {
         const verify = async () => {
             if (token) {
                 const result = await verifyEmailToken(token);
+                console.log("result from comp:", result);
+                showAlert(result.message, result.success ? "success" : "error");
 
-                navigate('/login', {
-                    state: {
-                        alert: {
-                            type: result.success ? 'success' : 'error',
-                            message: result.message,
-                        },
-                    },
-                });
-            } else {
-                navigate('/login', {
-                    state: {
-                        alert: {
-                            type: 'error',
-                            message: 'Token no válido',
-                        },
-                    },
-                });
             }
+            navigate('/login');
         };
 
-        verify();
+        if (!hasRun.current) {
+            hasRun.current = true;
+            verify();
+        }
     }, [token, navigate]);
 
     return null;
