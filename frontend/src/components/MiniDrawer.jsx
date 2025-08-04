@@ -117,7 +117,7 @@ export default function MiniDrawer() {
   ];
 
   const clientDistributorItems = [
-    { text: 'Payments', icon: <CreditCardIcon />, basePath: 'payments' },
+    { text: 'Payments', icon: <CreditCardIcon />, basePath: 'PaymentManagement' },
     { text: 'MyDomains', icon: <DnsIcon />, basePath: 'mydomains' },
     { text: 'Domain Request', icon: <DnsIcon />, basePath: 'DomainRequest' },
   ];

@@ -139,7 +139,7 @@ const handleEditChange = (field, value) => {
 
     const client = {
       correoCliente: newClient.correo,
-      contrasenaCliente: "employee@123",
+      contrasenaCliente: "cliente@123",
       nombreCliente: newClient.nombre,
       apellidoCliente: newClient.apellido,
       telefono: newClient.telefono,

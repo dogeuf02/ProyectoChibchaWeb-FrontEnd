@@ -9,6 +9,7 @@ import {
 import PaymentMethodSelector from '../components/Payments/PaymentMethodSelector';
 import { createPlanAdquirido } from '../api/planAdquiridoApi';
 import { useGlobalAlert } from '../context/AlertContext';
+import { useGlobalLoading } from '../context/LoadingContext';
 
 export default function CheckoutPage() {
     // Mock plan
@@ -42,7 +43,7 @@ export default function CheckoutPage() {
     ]);
 
     const { showAlert } = useGlobalAlert();
-
+    const { showLoader, hideLoader } = useGlobalLoading();
 
     const [selectedMethodId, setSelectedMethodId] = useState(paymentMethods[0]?.id || null);
 
@@ -73,7 +74,7 @@ export default function CheckoutPage() {
         const payload = {
             idPlanAdquirido: 1,
             estadoPlan: 'ACTIVO',
-            fechaCompra, 
+            fechaCompra,
             fechaExpiracion: fechaExpStr,
             fechaActualizacion: new Date().toISOString(),
             precioPlanAdquirido: selectedPlan.price.toFixed(2),
@@ -85,13 +86,17 @@ export default function CheckoutPage() {
         console.log(payload);
 
         try {
+            showLoader();
+
+            await new Promise(resolve => setTimeout(resolve, 2000));
             const response = await createPlanAdquirido(payload);
             console.log('✅ Plan registered:', response.data);
             showAlert('Payment successful!', 'success');
-            // Opcional: redirigir o limpiar
         } catch (error) {
             console.error('❌ Error during payment:', error);
             showAlert('There was a problem processing your payment.', 'error');
+        } finally {
+            hideLoader();
         }
     };
 
