@@ -67,7 +67,7 @@ export default function DistributorInfo() {
                 },
               }}
             >
-              {t('Distributor.applyLink')}
+              {t('distributor.applyLink')}
             </Button>
           </CardContent>
         </Card>

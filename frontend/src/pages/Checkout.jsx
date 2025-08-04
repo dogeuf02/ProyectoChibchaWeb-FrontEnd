@@ -6,7 +6,7 @@ import {
     Button,
 } from '@mui/material';
 import PaymentMethodSelector from '../components/Payments/PaymentMethodSelector';
-import { createPlanAdquirido } from '../api/planAdquiridoApi';
+import { createPlanAdquirido } from '../api/purchasedPlanApi';
 import { useGlobalAlert } from '../context/AlertContext';
 import { useGlobalLoading } from '../context/LoadingContext';
 import { useEffect, useState } from 'react';
@@ -16,10 +16,10 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import { deletePayMethod } from '../api/payMethodApi';
 import { getBanks } from '../api/payMethodApi';
 
-
-
-
 export default function CheckoutPage() {
+
+    //Carga
+    const checkoutData = JSON.parse(localStorage.getItem('checkoutData'));
     // Mock plan
     const selectedPlan = {
         name: 'CHIBCHA-PLATINUM',
@@ -35,19 +35,14 @@ export default function CheckoutPage() {
     };
 
     const [bankOptions, setBankOptions] = useState([]);
-
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [selectedIdToDelete, setSelectedIdToDelete] = useState(null);
-
-
     const [paymentMethods, setPaymentMethods] = useState([]);
+    const [selectedMethodId, setSelectedMethodId] = useState(paymentMethods[0]?.id || null);
 
     const { role, specificId } = useAuth();
-
     const { showAlert } = useGlobalAlert();
     const { showLoader, hideLoader } = useGlobalLoading();
-
-    const [selectedMethodId, setSelectedMethodId] = useState(paymentMethods[0]?.id || null);
 
     useEffect(() => {
         const fetchPayments = async () => {
@@ -158,9 +153,6 @@ export default function CheckoutPage() {
             hideLoader();
         }
     };
-
-
-
 
     return (
         <Box sx={{ p: 4 }}>

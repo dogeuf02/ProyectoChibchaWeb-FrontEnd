@@ -25,6 +25,8 @@ import { getPlans } from "../api/planApi"
 import { useAuth } from "../context/AuthContext";
 import { ROLE } from "../enum/roleEnum";
 import { hasPayMethods } from "../api/payMethodApi";
+import { getPayBillings } from "../api/payBillingApi";
+import { getPlanPrices } from "../api/planPriceApi";
 
 export default function PlansInfo() {
   const navigate = useNavigate();
@@ -34,18 +36,12 @@ export default function PlansInfo() {
 
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [openBillingDialog, setOpenBillingDialog] = useState(false);
-  const [billingCycle, setBillingCycle] = useState("monthly");
+  const [billingCycles, setBillingCycles] = useState([]);
+  const [billingCycle, setBillingCycle] = useState("");
   const [plans, setPlans] = useState([]);
   const [hasPayMethod, setHasPayMethod] = useState(false);
+  const [planPrices, setPlanPrices] = useState([]);
 
-  //     title: t('hosting.hostingPlans.silver.title'),
-  //     color: "#C0C0C0",
-
-  //     title: t('hosting.hostingPlans.platinum.title'),
-  //     color: "#CD7F32",
-
-  //     title: t('hosting.hostingPlans.gold.title'),
-  //     color: "#FFD700",
   const planColors = {
     CHIBCHASILVER: "#C0C0C0",
     CHIBCHAGOLD: "#FFD700",
@@ -66,39 +62,43 @@ export default function PlansInfo() {
       navigate("/client/PaymentManagement");
       return;
     }
-
+    console.log("selected plan", plan);
     // Todo correcto → Abrir popup de selección de billing
     setSelectedPlan(plan);
     setOpenBillingDialog(true);
   };
 
   const handleConfirmPlan = () => {
-    if (!selectedPlan) return;
+    if (!selectedPlan || !billingCycle) return;
 
-    // Confirmación final
-    const confirmed = window.confirm(
-      `Are you sure you want to add ${selectedPlan.title} (${billingCycle}) to your plans?`
-    );
-
-    if (!confirmed) return;
-
-    // Guardar plan simulado en localStorage
-    const storedPlans = JSON.parse(localStorage.getItem("myPlans") || "[]");
-    const newPlan = {
-      id: `P${storedPlans.length + 1}`,
-      type: selectedPlan.title,
-      prices: selectedPlan.price,
-      features: selectedPlan.features,
-      billingCycle
-    };
-
-    localStorage.setItem("myPlans", JSON.stringify([...storedPlans, newPlan]));
-
-    showAlert(`${selectedPlan.title} added to My Plans!`, "success");
-
+    localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
     setOpenBillingDialog(false);
-    navigate("/client/myplans");
+    navigate('/client/Checkout');
+
   };
+
+  const checkoutData = planPrices
+    .filter((pp) => pp.planCliente === selectedPlan?.idPlanCliente)
+    .map((pp) => {
+      const cycle = billingCycles.find((bc) => bc.idPlanPago === pp.planPago);
+
+      return {
+        plan: pp,
+        intervaloPago: cycle?.intervaloPago,
+        planPrice: pp      // objeto completo del planPrecio
+      };
+    });
+
+  const billingOptions = planPrices
+    .filter((pp) => pp.planCliente === selectedPlan?.idPlanCliente)
+    .map((pp) => {
+      const cycle = billingCycles.find((bc) => bc.idPlanPago === pp.planPago);
+      console.log("PlanPrice:", pp, "Matched Cycle:", cycle);
+      return {
+        value: pp.planPago,
+        label: `${cycle?.intervaloPago} - $${pp.precio} USD`
+      };
+    });
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -114,6 +114,33 @@ export default function PlansInfo() {
   }, []);
 
   useEffect(() => {
+    const fetchBillingCycles = async () => {
+      const response = await getPayBillings();
+      if (response.exito) {
+        setBillingCycles(response.data);
+        console.log("BC:", response.data)
+      } else {
+        showAlert("Error loading billing cycles", "error")
+      }
+    }
+    fetchBillingCycles();
+  }, [])
+
+  useEffect(() => {
+    const fetchPlanPrices = async () => {
+      const response = await getPlanPrices();
+      if (response.exito && Array.isArray(response.data)) {
+        setPlanPrices(response.data);
+        console.log("Precios de planes:", response.data);
+      } else {
+        showAlert("Error al cargar precios de planes", "error");
+      }
+    };
+
+    fetchPlanPrices();
+  }, []);
+
+  useEffect(() => {
     if (!specificId) return; // evita ejecutar si aún no hay ID válido
 
     const checkHasPayMethods = async () => {
@@ -123,8 +150,6 @@ export default function PlansInfo() {
 
     checkHasPayMethods();
   }, [specificId]); // depende de specificId
-
-
 
   return (
     <Box id="Plans" sx={{ bgcolor: "#FAFAFA", py: 8 }}>
@@ -215,7 +240,7 @@ export default function PlansInfo() {
                         <Typography variant="body1">
                           <strong>{plan.creadorWeb && (
                             "• " + t('hosting.hostingPlans.features.builder')
-                          )}:</strong>
+                          )}</strong>
                         </Typography>
                         <Typography variant="body1">
                           <strong>• {plan.numeroCertificadoSslHttps} </strong>{t('hosting.hostingPlans.features.sslCertificates')}
@@ -258,7 +283,7 @@ export default function PlansInfo() {
             {selectedPlan && (
               <>
                 <Typography sx={{ mb: 2 }}>
-                  Selected Plan: <strong>{selectedPlan.title}</strong>
+                  Selected Plan: <strong>{selectedPlan.nombrePlanCliente}</strong>
                 </Typography>
                 <TextField
                   select
@@ -268,16 +293,22 @@ export default function PlansInfo() {
                   onChange={(e) => setBillingCycle(e.target.value)}
                   sx={{ mb: 2 }}
                 >
-                  <MenuItem value="monthly">
-                    Monthly - $1 US
-                  </MenuItem>
-                  <MenuItem value="semiAnnual">
-                    Semi-Annual - $2 US
-                  </MenuItem>
-                  <MenuItem value="annual">
-                    Annual - $3 US
-                  </MenuItem>
+                  {billingOptions.length > 0 ? (
+
+                    billingOptions.map((opt) => (
+                      <MenuItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </MenuItem>
+                    ))
+
+                  ) : (
+                    <MenuItem disabled value="">
+                      No billing options available
+                    </MenuItem>
+                  )}
                 </TextField>
+
+
               </>
             )}
           </DialogContent>
