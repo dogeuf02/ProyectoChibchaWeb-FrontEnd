@@ -7,7 +7,6 @@ export const auth = async (credentials) => {
     if (response.status === 200) {
       return response.data;
     } else {
-      // Aunque axios lanza error para status >= 400, esto es una doble verificación.
       return {
         autenticado: false,
         mensaje: 'Error inesperado en la autenticación.'
@@ -21,6 +20,7 @@ export const auth = async (credentials) => {
     };
   }
 };
+
 
 
 

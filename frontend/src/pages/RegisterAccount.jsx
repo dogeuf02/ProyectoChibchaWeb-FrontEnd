@@ -11,11 +11,10 @@ import {
 import useScrollToTop from '../hooks/useScrollToTop';
 import Zoom from '@mui/material/Zoom';
 import { useGlobalAlert } from "../context/AlertContext";
-
 import { createClient } from '../api/clientApi';
-import { ConstructionOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 export default function RegisterAccount() {
   const { t } = useTranslation();
@@ -23,6 +22,7 @@ export default function RegisterAccount() {
 
   const navigate = useNavigate();
   const { showAlert } = useGlobalAlert();
+
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -33,12 +33,23 @@ export default function RegisterAccount() {
     phone: '',
   });
 
+  const [captchaToken, setCaptchaToken] = useState(null);
+
+  const handleCaptchaChange = (value) => {
+    setCaptchaToken(value);
+  };
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!captchaToken) {
+      showAlert('Please complete the captcha', 'warning');
+      return;
+    }
 
     if (form.password !== form.confirmPassword) {
       showAlert('Passwords do not match', 'warning');
@@ -72,29 +83,26 @@ export default function RegisterAccount() {
       }
     }
 
-    //Descomentar para tomar los datos desde el form
     const client = {
       "correoCliente": form.email,
       "contrasenaCliente": form.password,
       "nombreCliente": form.firstName,
       "apellidoCliente": form.lastName,
       "telefono": form.phone,
-      "fechaNacimientoCliente": form.birthDate
+      "fechaNacimientoCliente": form.birthDate,
+      "captchaToken": captchaToken
     }
 
-
-    const res = await createClient(client)
+    const res = await createClient(client);
     if (res.exito) {
       showAlert('Register success', 'success');
       setTimeout(() => {
         navigate('/login');
-      }, 500); // espera .5 segundos antes de redirigir
-
+      }, 500);
     } else {
-      //console.log('Registrando usuario:', form);
       showAlert(res.mensaje, 'error');
+      setCaptchaToken(null);
     }
-
   };
 
   return (
@@ -126,7 +134,6 @@ export default function RegisterAccount() {
                 }
               }}
             />
-
             <TextField
               label={t('registerAccount.lastnameField')}
               name="lastName"
@@ -199,7 +206,6 @@ export default function RegisterAccount() {
                 }
               }}
             />
-
             <TextField
               label={t('registerAccount.passwordField')}
               name="password"
@@ -226,7 +232,7 @@ export default function RegisterAccount() {
               type="password"
               fullWidth
               margin="normal"
-              required
+              required 
               sx={{
                 '& label': { color: '#a5a5a5ff' },
                 '& .MuiOutlinedInput-root': {
@@ -236,6 +242,13 @@ export default function RegisterAccount() {
                 }
               }}
             />
+            <Box mt={3} display="flex" justifyContent="center">
+              <ReCAPTCHA
+                sitekey="6LePn5krAAAAAAnj4Tz_1s9K7dZEYLVsdUeFqwqB"
+                onChange={handleCaptchaChange}
+              />
+            </Box>
+
             <Button
               type="submit"
               variant="contained"
@@ -249,29 +262,16 @@ export default function RegisterAccount() {
             >
               {t('registerAccount.registerButton')}
             </Button>
+
             <Typography variant="body2" sx={{ mt: 2 }}>
               {t('registerAccount.accountLabel')}{' '}
-              <Link
-                href="/login"
-                underline="hover"
-                sx={{
-                  color: '#ff6f00',
-                  '&:hover': { color: '#ffc107' }
-                }}
-              >
+              <Link href="/login" underline="hover" sx={{ color: '#ff6f00', '&:hover': { color: '#ffc107' } }}>
                 {t('registerAccount.accountLink')}
               </Link>
             </Typography>
             <Typography variant="body2" sx={{ mt: 2 }}>
               {t('registerAccount.distributorLabel')}{' '}
-              <Link
-                href="/RegisterDistributor"
-                underline="hover"
-                sx={{
-                  color: '#ff6f00',
-                  '&:hover': { color: '#ffc107' }
-                }}
-              >
+              <Link href="/RegisterDistributor" underline="hover" sx={{ color: '#ff6f00', '&:hover': { color: '#ffc107' } }}>
                 {t('registerAccount.distributorLink')}
               </Link>
             </Typography>
