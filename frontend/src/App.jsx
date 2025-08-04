@@ -26,98 +26,102 @@ import DomainRequest from './pages/DomainRequest.jsx'
 import EmployeeManageTickets from './pages/EmployeeManageTickets.jsx'
 import VerifyEmail from './components/VerifyEmail.jsx'
 import Checkout from './pages/Checkout.jsx'
+import { LoadingProvider } from './context/LoadingContext';
+import GlobalLoader from './components/common/GlobalLoader';
 
 function App() {
   return (
     <>
-      <Routes>
-        <Route path="/" element={
-          <MainLayout>
-            <Home />
-            <DomainsInfo />
-            <PlansInfo />
-            <DistributorInfo />
-          </MainLayout>
-        } />
+      <LoadingProvider>
+        <Routes>
+          <Route path="/" element={
+            <MainLayout>
+              <Home />
+              <DomainsInfo />
+              <PlansInfo />
+              <DistributorInfo />
+            </MainLayout>
+          } />
 
-        <Route path="/registerAccount" element={
-          <MainLayout>
-            <RegisterAccount />
-          </MainLayout>
-        } />
+          <Route path="/registerAccount" element={
+            <MainLayout>
+              <RegisterAccount />
+            </MainLayout>
+          } />
 
-        <Route path="/registerDistributor" element={
-          <MainLayout>
-            <RegisterDistributor />
-          </MainLayout>
-        } />
+          <Route path="/registerDistributor" element={
+            <MainLayout>
+              <RegisterDistributor />
+            </MainLayout>
+          } />
 
-        <Route path="/Login" element={
-          <MainLayout>
-            <Login />
-          </MainLayout>
-        } />
+          <Route path="/Login" element={
+            <MainLayout>
+              <Login />
+            </MainLayout>
+          } />
 
-        <Route path="/Domains" element={
-          <MainLayout>
-            <Domains />
-          </MainLayout>
-        } />
+          <Route path="/Domains" element={
+            <MainLayout>
+              <Domains />
+            </MainLayout>
+          } />
 
-        <Route path="/Plans" element={
-          <MainLayout>
-            <Plans />
-          </MainLayout>
-        } />
+          <Route path="/Plans" element={
+            <MainLayout>
+              <Plans />
+            </MainLayout>
+          } />
 
-        <Route path="/activate" element={
-          <VerifyEmail />
-        } />
-
-
-        {/* Admin Dashboard */}
-        <Route path="/admin" element={<DashboardLayout />}>
-          <Route index element={<ManageProfile />} />
-          <Route path="ManageProfile" element={<ManageProfile />} />
-          <Route path="ManageDistributors" element={<AdminManageDistributors />} />
-          <Route path="ManageAdministrators" element={<AdminManageAdmins />} />
-          <Route path="ManageEmployees" element={<AdminManageEmployees />} />
-          <Route path="ManageDistributorRequests" element={<AdminManageDistributorRequests />} />
-          <Route path="ManageDomainRequests" element={<AdminManageDomainRequests />} />
-          <Route path="ManageClients" element={<AdminManageClients />} />
-        </Route>
-
-        {/* Client Dashboard */}
-        <Route path="/client" element={<DashboardLayout />}>
-          <Route index element={<ManageProfile />} />
-          <Route path="ManageProfile" element={<ManageProfile />} />
-          <Route path="PaymentManagement" element={<PaymentManagement />} />
-          <Route path="MyPlans" element={<MyPlans />} />
-          <Route path="MyDomains" element={<MyDomains />} />
-          <Route path="DomainRequest" element={<DomainRequest />} />
-          <Route path="Checkout" element={<Checkout />} />
-        </Route>
-
-        {/* Distributor Dashboard */}
-        <Route path="/distributor" element={<DashboardLayout />}>
-          <Route index element={<ManageProfile />} />
-          <Route path="ManageProfile" element={<ManageProfile />} />
-          <Route path="PaymentManagement" element={<PaymentManagement />} />
-          <Route path="MyDomains" element={<MyDomains />} />
-          <Route path="DomainRequest" element={<DomainRequest />} />
-        </Route>
-
-        {/* Employee Dashboard */}
-        <Route path="/employee" element={<DashboardLayout />}>
-          <Route index element={<ManageProfile />} />
-          <Route path="ManageProfile" element={<ManageProfile />} />
-          <Route path="ManageTickets" element={<EmployeeManageTickets />} />
-        </Route>
-      </Routes>
+          <Route path="/activate" element={
+            <VerifyEmail />
+          } />
 
 
+          {/* Admin Dashboard */}
+          <Route path="/admin" element={<DashboardLayout />}>
+            <Route index element={<ManageProfile />} />
+            <Route path="ManageProfile" element={<ManageProfile />} />
+            <Route path="ManageDistributors" element={<AdminManageDistributors />} />
+            <Route path="ManageAdministrators" element={<AdminManageAdmins />} />
+            <Route path="ManageEmployees" element={<AdminManageEmployees />} />
+            <Route path="ManageDistributorRequests" element={<AdminManageDistributorRequests />} />
+            <Route path="ManageDomainRequests" element={<AdminManageDomainRequests />} />
+            <Route path="ManageClients" element={<AdminManageClients />} />
+          </Route>
 
-      <GlobalAlert />
+          {/* Client Dashboard */}
+          <Route path="/client" element={<DashboardLayout />}>
+            <Route index element={<ManageProfile />} />
+            <Route path="ManageProfile" element={<ManageProfile />} />
+            <Route path="PaymentManagement" element={<PaymentManagement />} />
+            <Route path="MyPlans" element={<MyPlans />} />
+            <Route path="MyDomains" element={<MyDomains />} />
+            <Route path="DomainRequest" element={<DomainRequest />} />
+            <Route path="Checkout" element={<Checkout />} />
+          </Route>
+
+          {/* Distributor Dashboard */}
+          <Route path="/distributor" element={<DashboardLayout />}>
+            <Route index element={<ManageProfile />} />
+            <Route path="ManageProfile" element={<ManageProfile />} />
+            <Route path="PaymentManagement" element={<PaymentManagement />} />
+            <Route path="MyDomains" element={<MyDomains />} />
+            <Route path="DomainRequest" element={<DomainRequest />} />
+          </Route>
+
+          {/* Employee Dashboard */}
+          <Route path="/employee" element={<DashboardLayout />}>
+            <Route index element={<ManageProfile />} />
+            <Route path="ManageProfile" element={<ManageProfile />} />
+            <Route path="ManageTickets" element={<EmployeeManageTickets />} />
+          </Route>
+        </Routes>
+
+        <GlobalLoader />
+        <GlobalAlert />
+      </LoadingProvider>
+      
     </>
   );
 }
