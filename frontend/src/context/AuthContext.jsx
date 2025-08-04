@@ -37,9 +37,9 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("authenticated", authenticated);
   }, [authenticated]);
 
-  const login = async (email, password) => {
+  const login = async (email, password, captchaToken) => {
     try {
-      const response = await auth({ correo: email, contrasena: password });
+      const response = await auth({ correo: email, contrasena: password, captchaToken: captchaToken });
 
       if (response.autenticado) {
         setToken(response.token);

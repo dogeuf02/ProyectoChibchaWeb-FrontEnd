@@ -15,7 +15,7 @@ import Collapse from '@mui/material/Collapse';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import CreditCardIcon from '@mui/icons-material/CreditCard';
+import AddCardIcon from '@mui/icons-material/AddCard';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import DnsIcon from '@mui/icons-material/Dns';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -26,6 +26,8 @@ import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import PersonIcon from '@mui/icons-material/Person';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 
 import { useAuth } from '../context/AuthContext';
 import { ROLE } from '../enum/roleEnum'
@@ -80,7 +82,12 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function MiniDrawer() {
 
-  const { authenticated, role, logout } = useAuth();
+  //const { authenticated, role, logout } = useAuth();
+  // 🔹 Simulación temporal
+  const authenticated = true; 
+  const role = ROLE.CLIENT; // Cambia a CLIENT, DISTRIBUTOR, ADMIN
+  const logout = () => console.log("Simulated logout");
+
   const theme = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(true);
@@ -117,13 +124,17 @@ export default function MiniDrawer() {
   ];
 
   const clientDistributorItems = [
-    { text: 'Payments', icon: <CreditCardIcon />, basePath: 'PaymentManagement' },
+    { text: 'Payments', icon: <AddCardIcon />, basePath: 'paymentManagement' },
     { text: 'MyDomains', icon: <DnsIcon />, basePath: 'mydomains' },
-    { text: 'Domain Request', icon: <DnsIcon />, basePath: 'DomainRequest' },
+    { text: 'Domain Request', icon: <DomainVerificationIcon />, basePath: 'DomainRequest' },
   ];
 
   const clientOnlyItems = [
     { text: 'My Plans', icon: <ListAltIcon />, path: '/client/myplans' },
+  ];
+
+  const employeeOnlyItems = [
+    { text: 'Manage Tickets', icon: <ConfirmationNumberIcon />, path: '/Employee/ManageTickets' },
   ];
 
   const handleLogout = () => {
@@ -318,6 +329,49 @@ export default function MiniDrawer() {
               </Collapse>
             </>
           )}
+
+          {/* Solo visible para EMPLOYEE */}
+          {role === ROLE.EMPLOYEE &&
+            employeeOnlyItems.map(({ text, icon, path }) => {
+              const selected = location.pathname === path;
+              return (
+                <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                  <ListItemButton
+                    onClick={() => navigate(path)}
+                    selected={selected}
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: open ? 'initial' : 'center',
+                      px: 2.5,
+                      color: '#212121',
+                      '&:hover': {
+                        backgroundColor: '#FFBE02',
+                        color: '#212121',
+                      },
+                      '&.Mui-selected': {
+                        backgroundColor: '#FF6400',
+                        color: '#FAFAFA',
+                        '& .MuiListItemIcon-root': {
+                          color: '#FAFAFA',
+                        },
+                      },
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : 'auto',
+                        justifyContent: 'center',
+                        color: '#FF6400',
+                      }}
+                    >
+                      {icon}
+                    </ListItemIcon>
+                    <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
 
           {/* Logout siempre visible */}
           <ListItem disablePadding sx={{ display: 'block' }}>

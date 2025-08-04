@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -10,15 +10,26 @@ import {
   TableBody,
   Paper,
   Chip,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
 } from "@mui/material";
 
 export default function MyDomainsPage() {
-  const domains = [
+  const [domains, setDomains] = useState([
     { id: 1, name: "chibchaweb", tld: ".com", status: "active" },
     { id: 2, name: "tiendachibcha", tld: ".store", status: "expired" },
     { id: 3, name: "portafolio", tld: ".dev", status: "active" },
     { id: 4, name: "miempresa", tld: ".org", status: "pending" },
-  ];
+  ]);
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedDomain, setSelectedDomain] = useState(null);
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState(false);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -33,34 +44,165 @@ export default function MyDomainsPage() {
     }
   };
 
+  const handleTransferClick = (domain) => {
+    setSelectedDomain(domain);
+    setOpenDialog(true);
+  };
+
+  const handleConfirmTransfer = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailError(true);
+      return;
+    }
+
+    // Cambiar estado a pending
+    setDomains((prevDomains) =>
+      prevDomains.map((d) =>
+        d.id === selectedDomain.id ? { ...d, status: "pending" } : d
+      )
+    );
+
+    setOpenDialog(false);
+    setEmail("");
+    setEmailError(false);
+    setSelectedDomain(null);
+    alert("Transfer request sent successfully.");
+  };
+
   return (
     <Box sx={{ maxWidth: 1000, mx: "auto", mt: 10 }}>
-      <Typography variant="h4" sx={{ fontWeight: "bold", color: "#212121", mb: 6 }}>
+      <Typography
+        variant="h4"
+        sx={{ fontWeight: "bold", color: "#212121", mb: 6 }}
+      >
         My Domains
       </Typography>
 
       <TableContainer component={Paper}>
         <Table>
+          {/* Columnas uniformes */}
+          <colgroup>
+            <col style={{ width: "25%" }} />
+            <col style={{ width: "25%" }} />
+            <col style={{ width: "25%" }} />
+            <col style={{ width: "25%" }} />
+          </colgroup>
+
           <TableHead>
             <TableRow sx={{ bgcolor: "#fff3e0" }}>
               <TableCell sx={{ fontWeight: "bold" }}>Domain Name</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>TLD</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }} align="center">
+                Domain Transfer
+              </TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
-            {domains.map((domain) => (
-              <TableRow key={domain.id} hover>
-                <TableCell>{domain.name}</TableCell>
-                <TableCell>{domain.tld}</TableCell>
-                <TableCell>
-                  <Chip label={domain.status} color={getStatusColor(domain.status)} />
-                </TableCell>
-              </TableRow>
-            ))}
+            {domains.map((domain) => {
+              const isExpired = domain.status === "expired";
+              const isPending = domain.status === "pending";
+
+              return (
+                <TableRow key={domain.id} hover>
+                  <TableCell>{domain.name}</TableCell>
+                  <TableCell>{domain.tld}</TableCell>
+                  <TableCell>
+                    <Chip label={domain.status} color={getStatusColor(domain.status)} />
+                  </TableCell>
+                  <TableCell align="center">
+                    {isExpired ? (
+                      <Button
+                        variant="contained"
+                        size="small"
+                        disabled
+                        sx={{
+                          borderRadius: 30,
+                          bgcolor: "#BDBDBD",
+                          color: "#fff",
+                        }}
+                      >
+                        Transfer
+                      </Button>
+                    ) : isPending ? (
+                      <Chip
+                        label="Pending Transfer"
+                        variant="outlined"
+                        color="warning" 
+                        sx={{ fontWeight: "bold" }}
+                      />
+                    ) : (
+                      <Button
+                        variant="contained"
+                        size="small"
+                        onClick={() => handleTransferClick(domain)}
+                        sx={{
+                          borderRadius: 30,
+                          bgcolor: "#FF6300",
+                          color: "#fff",
+                          "&:hover": { bgcolor: "#e65c00" },
+                        }}
+                      >
+                        Transfer
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Diálogo de transferencia */}
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Transfer Domain</DialogTitle>
+        <DialogContent>
+          <Typography sx={{ mb: 2 }}>
+            Enter the email of the user to transfer{" "}
+            <strong>
+              {selectedDomain?.name}
+              {selectedDomain?.tld}
+            </strong>{" "}
+            to:
+          </Typography>
+
+          <TextField
+            fullWidth
+            label="Recipient Email"
+            type="email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setEmailError(false);
+            }}
+            error={emailError}
+            helperText={emailError && "Please enter a valid email address"}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setOpenDialog(false)}
+            sx={{ color: "#212121", borderRadius: 30 }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleConfirmTransfer}
+            sx={{
+              bgcolor: "#FF6300",
+              color: "#fff",
+              borderRadius: 30,
+              "&:hover": { bgcolor: "#e65c00" },
+            }}
+          >
+            Confirm Transfer
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
