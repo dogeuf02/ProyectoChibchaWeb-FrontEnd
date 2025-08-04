@@ -2,18 +2,10 @@ import {
   Box,
   TextField,
   MenuItem,
-  InputAdornment,
   Button,
-  IconButton,
+  IconButton
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import VisaIcon from '@mui/icons-material/Payment';
-
-const cardTypes = [
-  { value: 'visa', label: 'Visa', icon: <VisaIcon fontSize="small" /> },
-  { value: 'mastercard', label: 'MasterCard', icon: <VisaIcon fontSize="small" /> },
-  { value: 'diners', label: 'Diners', icon: <VisaIcon fontSize="small" /> },
-];
 
 export default function PaymentCardForm({
   data,
@@ -22,6 +14,7 @@ export default function PaymentCardForm({
   onSave,
   isNew = false,
   disableSave = false,
+  bankOptions = []
 }) {
   const handleChange = (e) => {
     onChange({ ...data, [e.target.name]: e.target.value });
@@ -29,41 +22,44 @@ export default function PaymentCardForm({
 
   return (
     <Box component="form" noValidate>
+      {/* tipo de tarjeta */}
       <TextField
         select
-        label="Tipo de Tarjeta"
+        label="Card Type"
         name="tipoMedioPago"
         value={data.tipoMedioPago}
         onChange={handleChange}
         fullWidth
         margin="normal"
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              {cardTypes.find((type) => type.value === data.tipoMedioPago)?.icon}
-            </InputAdornment>
-          ),
-        }}
       >
-        {cardTypes.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
+        {['Debito', 'Credito', 'PSE'].map((tipo) => (
+          <MenuItem key={tipo} value={tipo}>
+            {tipo}
           </MenuItem>
         ))}
       </TextField>
 
+
+      {/* banco */}
       <TextField
-        label="Número de Tarjeta"
-        name="numeroTarjetaCuenta"
-        value={data.numeroTarjetaCuenta}
+        select
+        label="Bank"
+        name="banco"
+        value={data.banco}
         onChange={handleChange}
         fullWidth
         margin="normal"
-        inputProps={{ maxLength: 19 }}
-      />
+      >
+        {bankOptions.map((bank) => (
+          <MenuItem key={bank.idBanco} value={bank.idBanco}>
+            {bank.nombreBanco}
+          </MenuItem>
+        ))}
+      </TextField>
 
+      {/* nombre del titular */}
       <TextField
-        label="Nombre del Titular"
+        label="Cardholder Name"
         name="nombreTitular"
         value={data.nombreTitular}
         onChange={handleChange}
@@ -71,24 +67,38 @@ export default function PaymentCardForm({
         margin="normal"
       />
 
+      {/* número de tarjeta */}
       <TextField
-        label="Correo PSE (si aplica)"
-        name="correoPse"
-        value={data.correoPse}
+        label="Card Number"
+        name="numeroTarjetaCuenta"
+        value={data.numeroTarjetaCuenta}
         onChange={handleChange}
         fullWidth
         margin="normal"
       />
 
-      <TextField
-        label="Banco ID"
-        name="banco"
-        value={data.banco || ''}
+      {/* email PSE */}
+      {data.tipoMedioPago === 'PSE' && (
+        <TextField
+          label="PSE Email"
+          name="correoPse"
+          value={data.correoPse}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+        />
+      )}
+      {/* <TextField
+        label="Expiration Date"
+        name="fechaExpiracion"
+        type="month"
+        value={data.fechaExpiracion}
         onChange={handleChange}
         fullWidth
         margin="normal"
-        type="number"
-      />
+      /> */}
+
+
 
       <Box display="flex" justifyContent="space-between" mt={2}>
         <Button
@@ -101,7 +111,7 @@ export default function PaymentCardForm({
           onClick={onSave}
           disabled={disableSave}
         >
-          {isNew ? 'Agregar Método' : 'Guardar Cambios'}
+          {isNew ? 'Add Method' : 'Save Changes'}
         </Button>
 
         {!isNew && (

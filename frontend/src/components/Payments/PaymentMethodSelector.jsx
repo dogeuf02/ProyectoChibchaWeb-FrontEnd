@@ -11,6 +11,11 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PaymentCardForm from './PaymentCardForm';
+import { useAuth } from '../../context/AuthContext';
+import { createPayMethod, getPayMethodsByUserId } from '../../api/payMethodApi';
+import { useGlobalAlert } from '../../context/AlertContext';
+
+
 
 export default function PaymentMethodSelector({
   methods = [],
@@ -18,32 +23,84 @@ export default function PaymentMethodSelector({
   onSelect,
   onDelete,
   onAdd,
+  bankOptions = []
 }) {
+
   const [newMethod, setNewMethod] = useState({
-    cardType: 'visa',
-    cardNumber: '',
-    cvc: '',
-    expiryDate: '',
+    tipoMedioPago: 'visa',
+    nombreTitular: '',
+    numeroTarjetaCuenta: '',
+    banco: null,
   });
 
-  const handleAdd = () => {
-    if (!newMethod.cardNumber || !newMethod.cvc || !newMethod.expiryDate) return;
-    const newEntry = {
-      ...newMethod,
-      id: Date.now(),
+
+  const disableSave =
+    !newMethod.numeroTarjetaCuenta ||
+    !newMethod.nombreTitular ||
+    !newMethod.banco;
+
+
+  const { specificId, role } = useAuth();
+  const { showAlert } = useGlobalAlert();
+
+
+  const handleAdd = async () => {
+    if (
+      !newMethod.numeroTarjetaCuenta ||
+      !newMethod.banco
+    ) {
+      showAlert('Please fill in all required fields', 'warning');
+      return;
+    }
+
+    const nuevoMetodo = {
+      tipoMedioPago: newMethod.tipoMedioPago,
+      nombreTitular: newMethod.nombreTitular,
+      numeroTarjetaCuenta: newMethod.numeroTarjetaCuenta,
+      correoPse: '',
+      banco: newMethod.banco,
+      fechaRegistro: new Date().toISOString(),
+      cliente: specificId,
     };
-    onAdd(newEntry);
+
+
+
+    try {
+      const response = await createPayMethod(nuevoMetodo);
+      if (response.exito) {
+        const userType = role.toLowerCase();
+        const refresh = await getPayMethodsByUserId(userType, specificId);
+
+        if (refresh.exito) {
+          const adapted = refresh.data.map((p) => ({
+            id: p.idMedioPago,
+            cardType: p.tipoMedioPago,
+            cardNumber: p.numeroTarjetaCuenta,
+            expiryDate: p.fechaExpiracion || 'N/A',
+          }));
+          onAdd && onAdd(adapted[adapted.length - 1]);
+          showAlert('Payment method added successfully', 'success');
+        }
+      } else {
+        showAlert(response.mensaje || 'Failed to add method', 'error');
+      }
+    } catch (err) {
+      showAlert('Error adding payment method', 'error');
+    }
+
     setNewMethod({
       cardType: 'visa',
       cardNumber: '',
-      cvc: '',
-      expiryDate: '',
+      nombreTitular: '',
+      banco: null,
     });
   };
 
-  const handleChange = (event) => {
-    onSelect(parseInt(event.target.value));
+
+  const handleChange = (e) => {
+    onChange({ ...data, [e.target.name]: e.target.value });
   };
+
 
   return (
     <Paper sx={{ p: 3, bgcolor: '#FAFAFA' }} elevation={3}>
@@ -63,8 +120,13 @@ export default function PaymentMethodSelector({
             onSave={handleAdd}
             isNew
             disableSave={
-              !newMethod.cardNumber || !newMethod.cvc || !newMethod.expiryDate
+              !newMethod.numeroTarjetaCuenta ||
+              !newMethod.nombreTitular ||
+              !newMethod.banco
             }
+
+
+            bankOptions={bankOptions}
           />
         </Box>
       ) : (

@@ -3,14 +3,27 @@ import { Box, Typography, Button, Paper } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import PaymentCardForm from '../components/Payments/PaymentCardForm';
 import PaymentManagementTable from '../components/Payments/PaymentManagementTable';
-import { createPayMethod, getPayMethodsByUserId } from '../api/payMethodApi';
+import {
+  createPayMethod,
+  getPayMethodsByUserId,
+  getBanks,
+  deletePayMethod,
+} from '../api/payMethodApi';
 import { useAuth } from '../context/AuthContext';
+import { useGlobalAlert } from '../context/AlertContext';
+import ConfirmDialog from '../components/ConfirmDialog';
+
 
 export default function PaymentManagement() {
   const { specificId, role } = useAuth();
   const normalizedRole = role?.toLowerCase();
 
+  const { showAlert } = useGlobalAlert();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedIdToDelete, setSelectedIdToDelete] = useState(null);
+
   const [payments, setPayments] = useState([]);
+  const [bankOptions, setBankOptions] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [newCard, setNewCard] = useState({
     tipoMedioPago: 'visa',
@@ -18,9 +31,10 @@ export default function PaymentManagement() {
     numeroTarjetaCuenta: '',
     correoPse: '',
     banco: null,
+    fechaExpiracion: new Date().toISOString().slice(0, 7), // "YYYY-MM"
+
   });
 
-  // ✅ función reutilizable para cargar métodos de pago
   const fetchPayments = async () => {
     const response = await getPayMethodsByUserId(normalizedRole, specificId);
     if (response.exito && Array.isArray(response.data)) {
@@ -30,27 +44,52 @@ export default function PaymentManagement() {
     }
   };
 
+  const fetchBanks = async () => {
+    const response = await getBanks();
+    if (response.exito) {
+      setBankOptions(response.data); // [{ idBanco, nombreBanco }]
+    } else {
+      console.error('Error al cargar bancos:', response.mensaje);
+    }
+  };
+
   const handleAddPayment = async () => {
     const nuevoMetodo = {
       ...newCard,
       fechaRegistro: new Date().toISOString(),
-      cliente: specificId, // o distribuidor según backend
+      cliente: specificId,
     };
+
+
 
     const response = await createPayMethod(nuevoMetodo);
     if (response.exito) {
-      await fetchPayments(); // ✅ refresca la lista después de crear
+      await fetchPayments();
+      showAlert('Payment method added successfully', 'success');
       setShowForm(false);
       setNewCard({
         tipoMedioPago: 'visa',
         numeroTarjetaCuenta: '',
         nombreTitular: '',
         correoPse: '',
-        banco: '',
+        banco: null,
       });
     } else {
-      console.error('Error creando el método:', response.mensaje);
+      showAlert(response.mensaje || 'Failed to add payment method', 'error');
     }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedIdToDelete) return;
+    const response = await deletePayMethod(selectedIdToDelete);
+    if (response.exito) {
+      showAlert('Payment method deleted successfully', 'success');
+      await fetchPayments();
+    } else {
+      showAlert(response.mensaje || 'Failed to delete payment method', 'error');
+    }
+    setConfirmOpen(false);
+    setSelectedIdToDelete(null);
   };
 
   const disableSave = !(
@@ -61,12 +100,15 @@ export default function PaymentManagement() {
   );
 
   const handleDelete = (id) => {
-    setPayments(payments.filter((p) => p.id !== id));
+    setSelectedIdToDelete(id);
+    setConfirmOpen(true);
   };
+
 
   useEffect(() => {
     if (specificId && role) {
       fetchPayments();
+      fetchBanks();
     }
   }, [specificId, role]);
 
@@ -105,9 +147,28 @@ export default function PaymentManagement() {
             onSave={handleAddPayment}
             isNew
             disableSave={disableSave}
+            bankOptions={bankOptions}
+            onDelete={() => handleDelete(data.idMedioPago)}
           />
         </Paper>
       )}
+
+      <ConfirmDialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Payment Method"
+        message="Are you sure you want to delete this payment method? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
+
+
     </Box>
+
+
+
   );
+
+
 }

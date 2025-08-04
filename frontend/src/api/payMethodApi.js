@@ -70,3 +70,14 @@ export const deletePayMethod = async (id) => {
         }
     }
 }
+
+export const getBanks = async () => {
+  try {
+    const response = await api.get('/banco');
+    return { exito: true, data: response.data };
+  } catch (error) {
+    const mensaje =
+      error?.response?.data?.mensaje || 'Error al obtener los bancos';
+    return { exito: false, mensaje };
+  }
+};

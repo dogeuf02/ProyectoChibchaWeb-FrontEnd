@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
     Box,
     Paper,
@@ -10,6 +9,15 @@ import PaymentMethodSelector from '../components/Payments/PaymentMethodSelector'
 import { createPlanAdquirido } from '../api/planAdquiridoApi';
 import { useGlobalAlert } from '../context/AlertContext';
 import { useGlobalLoading } from '../context/LoadingContext';
+import { useEffect, useState } from 'react';
+import { getPayMethodsByUserId } from '../api/payMethodApi';
+import { useAuth } from '../context/AuthContext';
+import ConfirmDialog from '../components/ConfirmDialog';
+import { deletePayMethod } from '../api/payMethodApi';
+import { getBanks } from '../api/payMethodApi';
+
+
+
 
 export default function CheckoutPage() {
     // Mock plan
@@ -26,34 +34,85 @@ export default function CheckoutPage() {
         ],
     };
 
-    // Mock payment methods
-    const [paymentMethods, setPaymentMethods] = useState([
-        {
-            id: 1,
-            cardType: 'visa',
-            cardNumber: '4111111111111111',
-            expiryDate: '2026-01',
-        },
-        {
-            id: 2,
-            cardType: 'mastercard',
-            cardNumber: '5500000000000004',
-            expiryDate: '2025-08',
-        },
-    ]);
+    const [bankOptions, setBankOptions] = useState([]);
+
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [selectedIdToDelete, setSelectedIdToDelete] = useState(null);
+
+
+    const [paymentMethods, setPaymentMethods] = useState([]);
+
+    const { role, specificId } = useAuth();
 
     const { showAlert } = useGlobalAlert();
     const { showLoader, hideLoader } = useGlobalLoading();
 
     const [selectedMethodId, setSelectedMethodId] = useState(paymentMethods[0]?.id || null);
 
+    useEffect(() => {
+        const fetchPayments = async () => {
+            if (specificId && role) {
+                const normalizedRole = role.toLowerCase();
+                const response = await getPayMethodsByUserId(normalizedRole, specificId);
+                if (response.exito && Array.isArray(response.data)) {
+                    const adapted = response.data.map((p) => ({
+                        id: p.idMedioPago,
+                        cardType: p.tipoMedioPago,
+                        cardNumber: p.numeroTarjetaCuenta,
+                        expiryDate: p.fechaExpiracion || 'N/A',
+                    }));
+                    setPaymentMethods(adapted);
+                    setSelectedMethodId(adapted[0]?.id || null);
+                }
+            }
+        };
+
+        const fetchBanks = async () => {
+            const response = await getBanks();
+            if (response.exito) {
+                setBankOptions(response.data); // [{ idBanco, nombreBanco }]
+            } else {
+                showAlert('Failed to load banks', 'error');
+            }
+        };
+
+        fetchPayments();
+        fetchBanks();
+    }, [role, specificId]);
+
+
     const handleDelete = (id) => {
-        const updated = paymentMethods.filter((m) => m.id !== id);
-        setPaymentMethods(updated);
-        if (selectedMethodId === id) {
-            setSelectedMethodId(updated[0]?.id || null);
-        }
+        setSelectedIdToDelete(id);
+        setConfirmOpen(true);
     };
+
+    const handleConfirmDelete = async () => {
+        if (!selectedIdToDelete) return;
+
+        const response = await deletePayMethod(selectedIdToDelete);
+        if (response.exito) {
+            showAlert('Payment method deleted successfully', 'success');
+            // Refrescar lista
+            const normalizedRole = role.toLowerCase();
+            const updated = await getPayMethodsByUserId(normalizedRole, specificId);
+            if (updated.exito) {
+                const adapted = updated.data.map((p) => ({
+                    id: p.idMedioPago,
+                    cardType: p.tipoMedioPago,
+                    cardNumber: p.numeroTarjetaCuenta,
+                    expiryDate: p.fechaExpiracion || 'N/A',
+                }));
+                setPaymentMethods(adapted);
+                setSelectedMethodId(adapted[0]?.id || null);
+            }
+        } else {
+            showAlert(response.mensaje || 'Failed to delete payment method', 'error');
+        }
+
+        setConfirmOpen(false);
+        setSelectedIdToDelete(null);
+    };
+
 
     const handlePay = async () => {
         if (!selectedMethodId) {
@@ -129,7 +188,9 @@ export default function CheckoutPage() {
                             setPaymentMethods((prev) => [...prev, newEntry]);
                             setSelectedMethodId(newEntry.id);
                         }}
+                        bankOptions={bankOptions}
                     />
+
 
                 </Box>
 
@@ -206,6 +267,16 @@ export default function CheckoutPage() {
                     </Box>
                 </Box>
             </Box>
+
+            <ConfirmDialog
+                open={confirmOpen}
+                onClose={() => setConfirmOpen(false)}
+                onConfirm={handleConfirmDelete}
+                title="Delete Payment Method"
+                message="Are you sure you want to delete this payment method? This action cannot be undone."
+                confirmText="Delete"
+                cancelText="Cancel"
+            />
         </Box>
     );
 }
