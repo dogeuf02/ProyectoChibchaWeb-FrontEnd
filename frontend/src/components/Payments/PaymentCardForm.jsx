@@ -31,16 +31,16 @@ export default function PaymentCardForm({
     <Box component="form" noValidate>
       <TextField
         select
-        label="Card Type"
-        name="cardType"
-        value={data.cardType}
+        label="Tipo de Tarjeta"
+        name="tipoMedioPago"
+        value={data.tipoMedioPago}
         onChange={handleChange}
         fullWidth
         margin="normal"
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              {cardTypes.find((type) => type.value === data.cardType)?.icon}
+              {cardTypes.find((type) => type.value === data.tipoMedioPago)?.icon}
             </InputAdornment>
           ),
         }}
@@ -53,36 +53,42 @@ export default function PaymentCardForm({
       </TextField>
 
       <TextField
-        label="Card Number"
-        name="cardNumber"
-        value={data.cardNumber}
+        label="Número de Tarjeta"
+        name="numeroTarjetaCuenta"
+        value={data.numeroTarjetaCuenta}
         onChange={handleChange}
         fullWidth
         margin="normal"
         inputProps={{ maxLength: 19 }}
       />
 
-      <Box display="flex" gap={2}>
-        <TextField
-          label="CVC"
-          name="cvc"
-          value={data.cvc}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          inputProps={{ maxLength: 4 }}
-        />
-        <TextField
-          label="Expiry Date"
-          name="expiryDate"
-          type="month"
-          value={data.expiryDate}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          InputLabelProps={{ shrink: true }}
-        />
-      </Box>
+      <TextField
+        label="Nombre del Titular"
+        name="nombreTitular"
+        value={data.nombreTitular}
+        onChange={handleChange}
+        fullWidth
+        margin="normal"
+      />
+
+      <TextField
+        label="Correo PSE (si aplica)"
+        name="correoPse"
+        value={data.correoPse}
+        onChange={handleChange}
+        fullWidth
+        margin="normal"
+      />
+
+      <TextField
+        label="Banco ID"
+        name="banco"
+        value={data.banco || ''}
+        onChange={handleChange}
+        fullWidth
+        margin="normal"
+        type="number"
+      />
 
       <Box display="flex" justifyContent="space-between" mt={2}>
         <Button
@@ -95,7 +101,7 @@ export default function PaymentCardForm({
           onClick={onSave}
           disabled={disableSave}
         >
-          {isNew ? 'Add Method' : 'Save Changes'}
+          {isNew ? 'Agregar Método' : 'Guardar Cambios'}
         </Button>
 
         {!isNew && (

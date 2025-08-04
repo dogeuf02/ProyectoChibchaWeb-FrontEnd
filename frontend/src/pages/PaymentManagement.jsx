@@ -1,38 +1,74 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Typography, Button, Paper } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import PaymentCardForm from '../components/Payments/PaymentCardForm';
 import PaymentManagementTable from '../components/Payments/PaymentManagementTable';
+import { createPayMethod, getPayMethodsByUserId } from '../api/payMethodApi';
+import { useAuth } from '../context/AuthContext';
 
 export default function PaymentManagement() {
-  const [payments, setPayments] = useState([
-    {
-      id: 1,
-      cardType: 'mastercard',
-      cardNumber: '1234567812345678',
-      cvc: '123',
-      expiryDate: '2025-12',
-    },
-  ]);
+  const { specificId, role } = useAuth();
+  const normalizedRole = role?.toLowerCase();
 
+  const [payments, setPayments] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [newCard, setNewCard] = useState({
-    cardType: 'visa',
-    cardNumber: '',
-    cvc: '',
-    expiryDate: '',
+    tipoMedioPago: 'visa',
+    nombreTitular: '',
+    numeroTarjetaCuenta: '',
+    correoPse: '',
+    banco: null,
   });
 
-  const handleAddPayment = () => {
-    const newPayment = { ...newCard, id: Date.now() };
-    setPayments([...payments, newPayment]);
-    setNewCard({ cardType: 'visa', cardNumber: '', cvc: '', expiryDate: '' });
-    setShowForm(false);
+  // ✅ función reutilizable para cargar métodos de pago
+  const fetchPayments = async () => {
+    const response = await getPayMethodsByUserId(normalizedRole, specificId);
+    if (response.exito && Array.isArray(response.data)) {
+      setPayments(response.data);
+    } else {
+      console.error('No se pudieron cargar los métodos de pago:', response.mensaje);
+    }
   };
+
+  const handleAddPayment = async () => {
+    const nuevoMetodo = {
+      ...newCard,
+      fechaRegistro: new Date().toISOString(),
+      cliente: specificId, // o distribuidor según backend
+    };
+
+    const response = await createPayMethod(nuevoMetodo);
+    if (response.exito) {
+      await fetchPayments(); // ✅ refresca la lista después de crear
+      setShowForm(false);
+      setNewCard({
+        tipoMedioPago: 'visa',
+        numeroTarjetaCuenta: '',
+        nombreTitular: '',
+        correoPse: '',
+        banco: '',
+      });
+    } else {
+      console.error('Error creando el método:', response.mensaje);
+    }
+  };
+
+  const disableSave = !(
+    newCard.tipoMedioPago &&
+    newCard.numeroTarjetaCuenta &&
+    newCard.nombreTitular &&
+    newCard.banco
+  );
 
   const handleDelete = (id) => {
     setPayments(payments.filter((p) => p.id !== id));
   };
+
+  useEffect(() => {
+    if (specificId && role) {
+      fetchPayments();
+    }
+  }, [specificId, role]);
 
   return (
     <Box sx={{ p: 4 }}>
@@ -40,10 +76,8 @@ export default function PaymentManagement() {
         My Payment Methods
       </Typography>
 
-      {/* ✅ Lista delegada a componente */}
       <PaymentManagementTable payments={payments} onDelete={handleDelete} />
 
-      {/* ✅ Botón o formulario */}
       {!showForm ? (
         <Box textAlign="center" mt={2}>
           <Button
@@ -70,9 +104,7 @@ export default function PaymentManagement() {
             onChange={setNewCard}
             onSave={handleAddPayment}
             isNew
-            disableSave={
-              !newCard.cardNumber || !newCard.cvc || !newCard.expiryDate
-            }
+            disableSave={disableSave}
           />
         </Paper>
       )}
