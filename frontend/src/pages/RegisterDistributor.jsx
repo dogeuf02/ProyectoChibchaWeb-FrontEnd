@@ -15,10 +15,13 @@ import { useGlobalAlert } from "../context/AlertContext";
 import { createDistributor } from '../api/distributorApi';
 import { getDocumentTypes } from '../api/documentTypeApi';
 import ReCAPTCHA from 'react-google-recaptcha';
+import { useGlobalLoading } from '../context/LoadingContext';
 
 export default function RegisterDistributor() {
   useScrollToTop();
 
+
+  const { showLoader, hideLoader } = useGlobalLoading();
   const [documentTypes, setDocumentTypes] = useState([]);
   const { showAlert } = useGlobalAlert();
   const [form, setForm] = useState({
@@ -101,6 +104,8 @@ export default function RegisterDistributor() {
     };
 
     try {
+
+      showLoader();
       const result = await createDistributor(distributor);
       if (result.exito) {
         showAlert('Register Success', 'success');
@@ -120,6 +125,8 @@ export default function RegisterDistributor() {
     } catch (err) {
       console.error(err);
       showAlert('Error inesperado al registrar el distribuidor', 'error');
+    } finally {
+      hideLoader();
     }
   };
 

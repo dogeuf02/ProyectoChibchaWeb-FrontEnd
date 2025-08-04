@@ -82,11 +82,9 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function MiniDrawer() {
 
-  //const { authenticated, role, logout } = useAuth();
-  // 🔹 Simulación temporal
-  const authenticated = true; 
-  const role = ROLE.CLIENT; // Cambia a CLIENT, DISTRIBUTOR, ADMIN
-  const logout = () => console.log("Simulated logout");
+
+  const { authenticated, role, logout } = useAuth();
+
 
   const theme = useTheme();
   const navigate = useNavigate();
@@ -212,7 +210,7 @@ export default function MiniDrawer() {
           })}
 
           {/* client y distributor */}
-          {(role === ROLE.CLIENT|| role === ROLE.DISTRIBUTOR) &&
+          {(role === ROLE.CLIENT || role === ROLE.DISTRIBUTOR) &&
             clientDistributorItems.map(({ text, icon, basePath }) => {
               const path = getPath(basePath);
               const selected = location.pathname === path;
