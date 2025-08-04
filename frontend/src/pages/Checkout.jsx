@@ -7,6 +7,8 @@ import {
     Button,
 } from '@mui/material';
 import PaymentMethodSelector from '../components/Payments/PaymentMethodSelector';
+import { createPlanAdquirido } from '../api/planAdquiridoApi';
+import { useGlobalAlert } from '../context/AlertContext';
 
 export default function CheckoutPage() {
     // Mock plan
@@ -39,6 +41,9 @@ export default function CheckoutPage() {
         },
     ]);
 
+    const { showAlert } = useGlobalAlert();
+
+
     const [selectedMethodId, setSelectedMethodId] = useState(paymentMethods[0]?.id || null);
 
     const handleDelete = (id) => {
@@ -49,15 +54,49 @@ export default function CheckoutPage() {
         }
     };
 
-    const handlePay = () => {
+    const handlePay = async () => {
         if (!selectedMethodId) {
-            alert('Please select a payment method.');
+            showAlert('Please select a payment method.', 'warning');
             return;
         }
 
-        // Aquí puedes enviar el plan + método seleccionado al backend
-        console.log('Processing payment with method ID:', selectedMethodId);
+        const clienteId = 10002;
+        const planClienteId = 1;
+        const planPagoId = 1;
+
+        const fechaHoy = new Date();
+        const fechaCompra = fechaHoy.toISOString().split('T')[0];
+        const fechaExpiracion = new Date(fechaHoy);
+        fechaExpiracion.setFullYear(fechaExpiracion.getFullYear() + 1);
+        const fechaExpStr = fechaExpiracion.toISOString().split('T')[0];
+
+        const payload = {
+            idPlanAdquirido: 1,
+            estadoPlan: 'ACTIVO',
+            fechaCompra, 
+            fechaExpiracion: fechaExpStr,
+            fechaActualizacion: new Date().toISOString(),
+            precioPlanAdquirido: selectedPlan.price.toFixed(2),
+            cliente: clienteId,
+            planCliente: planClienteId,
+            planPago: planPagoId,
+        };
+
+        console.log(payload);
+
+        try {
+            const response = await createPlanAdquirido(payload);
+            console.log('✅ Plan registered:', response.data);
+            showAlert('Payment successful!', 'success');
+            // Opcional: redirigir o limpiar
+        } catch (error) {
+            console.error('❌ Error during payment:', error);
+            showAlert('There was a problem processing your payment.', 'error');
+        }
     };
+
+
+
 
     return (
         <Box sx={{ p: 4 }}>
