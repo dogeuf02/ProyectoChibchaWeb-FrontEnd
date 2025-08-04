@@ -82,7 +82,11 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function MiniDrawer() {
 
-  const { authenticated, role, logout } = useAuth();
+  //const { authenticated, role, logout } = useAuth();
+  // 🔹 Simulación temporal
+  const authenticated = true; 
+  const role = ROLE.CLIENT; // Cambia a CLIENT, DISTRIBUTOR, ADMIN
+  const logout = () => console.log("Simulated logout");
 
   const theme = useTheme();
   const navigate = useNavigate();
@@ -120,7 +124,7 @@ export default function MiniDrawer() {
   ];
 
   const clientDistributorItems = [
-    { text: 'Payments', icon: <CreditCardIcon />, basePath: 'payments' },
+    { text: 'Payments', icon: <AddCardIcon />, basePath: 'paymentManagement' },
     { text: 'MyDomains', icon: <DnsIcon />, basePath: 'mydomains' },
     { text: 'Domain Request', icon: <DomainVerificationIcon />, basePath: 'DomainRequest' },
   ];
