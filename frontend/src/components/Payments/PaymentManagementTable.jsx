@@ -4,13 +4,9 @@ import {
   Typography,
   Paper,
   IconButton,
-  Button,
-  Divider,
 } from '@mui/material';
 
 import DeleteIcon from '@mui/icons-material/Delete';
-
-
 
 export default function PaymentManagementTable({ payments, onDelete }) {
   return (
@@ -22,7 +18,7 @@ export default function PaymentManagementTable({ payments, onDelete }) {
       ) : (
         payments.map((payment) => (
           <Box
-            key={payment.id}
+            key={payment.idMedioPago}
             sx={{
               border: '1px solid #ddd',
               borderRadius: 2,
@@ -35,18 +31,34 @@ export default function PaymentManagementTable({ payments, onDelete }) {
             }}
           >
             <Box>
-              <Typography variant="subtitle1">
-                {payment.cardType.toUpperCase()}
+              <Typography variant="subtitle1" fontWeight="bold">
+                {payment.tipoMedioPago?.toUpperCase()}
               </Typography>
+
+              {payment.numeroTarjetaCuenta && (
+                <Typography variant="body2" color="text.secondary">
+                  **** **** **** {payment.numeroTarjetaCuenta.slice(-4)}
+                </Typography>
+              )}
+
+              {payment.nombreTitular && (
+                <Typography variant="body2" color="text.secondary">
+                  Titular: {payment.nombreTitular}
+                </Typography>
+              )}
+
+              {payment.correoPse && (
+                <Typography variant="body2" color="text.secondary">
+                  Correo PSE: {payment.correoPse}
+                </Typography>
+              )}
+
               <Typography variant="body2" color="text.secondary">
-                **** **** **** {payment.cardNumber.slice(-4)}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Expires: {payment.expiryDate}
+                Registrado: {new Date(payment.fechaRegistro).toLocaleDateString()}
               </Typography>
             </Box>
 
-            <IconButton onClick={() => onDelete(payment.id)}>
+            <IconButton onClick={() => onDelete(payment.idMedioPago)}>
               <DeleteIcon color="error" />
             </IconButton>
           </Box>

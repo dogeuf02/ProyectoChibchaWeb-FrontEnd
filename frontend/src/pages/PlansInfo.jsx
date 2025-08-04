@@ -30,7 +30,7 @@ export default function PlansInfo() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { showAlert } = useGlobalAlert();
-  const { autenticated, role } = useAuth();
+  const { autenticated, role, specificId } = useAuth();
 
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [openBillingDialog, setOpenBillingDialog] = useState(false);
@@ -63,7 +63,7 @@ export default function PlansInfo() {
     // Verificar método de pago
     if (!hasPayMethod) {
       showAlert("Please register a payment method first.", "warning");
-      navigate("/client/payments");
+      navigate("/client/PaymentManagement");
       return;
     }
 
@@ -114,13 +114,16 @@ export default function PlansInfo() {
   }, []);
 
   useEffect(() => {
+    if (!specificId) return; // evita ejecutar si aún no hay ID válido
+
     const checkHasPayMethods = async () => {
-      const hasMethods = await hasPayMethods();
+      const hasMethods = await hasPayMethods("cliente", specificId);
       setHasPayMethod(hasMethods);
     };
 
     checkHasPayMethods();
-  }, []);
+  }, [specificId]); // depende de specificId
+
 
 
   return (
@@ -266,13 +269,13 @@ export default function PlansInfo() {
                   sx={{ mb: 2 }}
                 >
                   <MenuItem value="monthly">
-                    Monthly - ${selectedPlan.price.monthly} US
+                    Monthly - $1 US
                   </MenuItem>
                   <MenuItem value="semiAnnual">
-                    Semi-Annual - ${selectedPlan.price.semiAnnual} US
+                    Semi-Annual - $2 US
                   </MenuItem>
                   <MenuItem value="annual">
-                    Annual - ${selectedPlan.price.annual} US
+                    Annual - $3 US
                   </MenuItem>
                 </TextField>
               </>
