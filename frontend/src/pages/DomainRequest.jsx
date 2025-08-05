@@ -25,8 +25,7 @@ export default function DomainRequest() {
   const [precioActual, setPrecioActual] = useState('');
   const [formData, setFormData] = useState({
     domainName: '',
-    domainTld: '',
-    description: '',
+    domainTld: ''
   });
 
   const getCurrentUserId = () => {
@@ -53,9 +52,8 @@ export default function DomainRequest() {
 
     const domainName = formData.domainName.trim().toLowerCase();
     const domainTld = formData.domainTld.trim();
-    const description = formData.description.trim();
 
-    if (!domainName || !domainTld || !description) {
+    if (!domainName || !domainTld) {
       showAlert("Please fill in all fields", "warning");
       return;
     }
@@ -80,7 +78,7 @@ export default function DomainRequest() {
         console.log("gettted", domain);
       }
 
-      if (domain) {
+      if (domain && domain.estado == "Reservado") {
         const todayDate = getTodayDate();
         const [client, distributor] = getCurrentUserId();
 
@@ -92,7 +90,7 @@ export default function DomainRequest() {
           cliente: client,
           distributor: distributor
         };
-        console.log("dreqyes",domainRequest);
+        console.log("dreqyes", domainRequest);
         const response = await createDomainRequest(domainRequest);
 
         if (response.exito) {
@@ -102,7 +100,7 @@ export default function DomainRequest() {
           showAlert(response.message || "Failed to submit domain request", "error");
         }
       } else {
-        showAlert("Could not retrieve domain after creation", "error");
+        showAlert("Domain is active and in use", "error");
       }
 
     } catch (error) {
@@ -110,11 +108,6 @@ export default function DomainRequest() {
       showAlert("Something went wrong", "error");
     }
   };
-
-
-
-
-
   useEffect(() => {
     const fetchTlds = async () => {
       try {
@@ -171,26 +164,7 @@ export default function DomainRequest() {
                 </MenuItem>
               ))}
             </TextField>
-            <TextField
-              label="Description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              multiline
-              rows={4}
-              placeholder="Briefly describe why you need this domain..."
-            />
 
-            {/*Se muestra el dominio completo */}
-            {/* <Typography
-              variant="subtitle1"
-              sx={{ mt: 2, mb: 1, fontWeight: 'bold', textAlign: 'center' }}
-            >
-              Full Domain: {formData.domainName || 'example'}
-              {formData.domainTld || '.com'}
-            </Typography> */}
             <Typography variant="h6">
               {formData.domainName && formData.domainTld ? (
                 <>
