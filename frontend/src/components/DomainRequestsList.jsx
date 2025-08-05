@@ -24,7 +24,7 @@ import { useTranslation } from "react-i18next";
 function Row({ request, onAccept, onReject }) {
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
-    const fullDomain = `${request.nombreDominio}${request.tld}`;
+    const fullDomain = `${request.dominio.nombreDominio}${request.dominio.tld}`;
 
     return (
         <>
@@ -36,7 +36,7 @@ function Row({ request, onAccept, onReject }) {
                 </TableCell>
                 <TableCell>{fullDomain}</TableCell>
                 <TableCell>{request.estado}</TableCell>
-                <TableCell>{request.estado}</TableCell>
+                <TableCell>{request.dominio.estado}</TableCell>
                 <TableCell>{request.nombreUsuario || "-"}</TableCell>
                 <TableCell>{request.rolUsuario || "-"}</TableCell>
                 <TableCell>-</TableCell> {/* Placeholder for reviewedBy */}
@@ -51,7 +51,7 @@ function Row({ request, onAccept, onReject }) {
                             </Typography>
                             <Typography variant="body2">{t('domainRequestsManagement.list.id')}: {request.idSolicitud}</Typography>
                             <Typography variant="body2">{t('domainRequestsManagement.list.fullDomain')}: {fullDomain}</Typography>
-                            <Typography variant="body2">{t('domainRequestsManagement.list.domainStatus')}: {request.estado}</Typography>
+                            <Typography variant="body2">{t('domainRequestsManagement.list.domainStatus')}: {request.dominio.estado}</Typography>
                             <Typography variant="body2">{t('domainRequestsManagement.list.requestStatus')}: {request.estado}</Typography>
 
                             <Typography variant="subtitle2" sx={{ mt: 2 }}>{t('domainRequestsManagement.list.applicantInfo')}</Typography>

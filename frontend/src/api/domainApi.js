@@ -20,6 +20,16 @@ export const getAllDomains = async () => {
     }
 }
 
+export const getDomainById = async (id) => {
+    try {
+        const response = await api.get(`/dominio/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching domain by ID:', error);
+        throw error;
+    }
+}
+
 export const getDomain = async (nombreDominio, tldId) => {
   try {
     const response = await api.post('/dominio/buscar', {
