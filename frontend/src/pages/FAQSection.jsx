@@ -27,7 +27,7 @@ export default function FAQSection() {
     {
       question: "Do you provide customer support?",
       answer:
-        "Yes! Our support team is available 24/7 to assist you via chat, email, or phone.",
+        "Yes! Our support team is available 24/7 to assist you and check the issues that you may have.",
     },
     {
       question: "Can I upgrade my hosting plan later?",
@@ -88,11 +88,22 @@ export default function FAQSection() {
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls={`faq-content-${index}`}
                   id={`faq-header-${index}`}
-                  sx={{ fontWeight: "bold", color: "#212121" }}
+                  sx={{
+                    fontWeight: "bold",
+                    color: "#212121",
+                    fontFamily: '"Roboto", sans-serif',
+                  }}
                 >
                   {faq.question}
                 </AccordionSummary>
-                <AccordionDetails sx={{ color: "#616161", lineHeight: 1.7 }}>
+                <AccordionDetails
+                  sx={{
+                    color: "#616161",
+                    lineHeight: 1.7,
+                    fontFamily: '"Roboto", sans-serif',
+                    fontSize: "0.95rem",
+                  }}
+                >
                   {faq.answer}
                 </AccordionDetails>
               </Accordion>

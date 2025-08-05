@@ -30,6 +30,7 @@ import { LoadingProvider } from './context/LoadingContext';
 import GlobalLoader from './components/common/GlobalLoader';
 import AdminManagePlans from './pages/AdminManagePlans.jsx'
 import AdminManageDomains from './pages/AdminManageDomains.jsx'
+import FAQSection from './pages/FAQSection.jsx'
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
               <DomainsInfo />
               <PlansInfo />
               <DistributorInfo />
+              <FAQSection />
             </MainLayout>
           } />
 
