@@ -15,9 +15,12 @@ import { createClient } from '../api/clientApi';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ReCAPTCHA from 'react-google-recaptcha';
+import { useGlobalLoading } from '../context/LoadingContext';
 
 export default function RegisterAccount() {
   const { t } = useTranslation();
+  const { showLoader, hideLoader } = useGlobalLoading();
+
   useScrollToTop();
 
   const navigate = useNavigate();
@@ -93,16 +96,25 @@ export default function RegisterAccount() {
       "captchaToken": captchaToken
     }
 
-    const res = await createClient(client);
-    if (res.exito) {
-      showAlert('Register success', 'success');
-      setTimeout(() => {
-        navigate('/login');
-      }, 500);
-    } else {
-      showAlert(res.mensaje, 'error');
-      setCaptchaToken(null);
+    try {
+      showLoader();
+      const res = await createClient(client);
+      console.log(res);
+      if (res.exito) {
+        showAlert('Register success', 'success');
+        setTimeout(() => {
+          navigate('/login');
+        }, 500);
+      } else {
+        showAlert(res.mensaje, 'error');
+
+      }
+    } catch (error) {
+      showAlert(error.message);
+    } finally {
+      hideLoader();
     }
+    setCaptchaToken(null);
   };
 
   return (
@@ -232,7 +244,7 @@ export default function RegisterAccount() {
               type="password"
               fullWidth
               margin="normal"
-              required 
+              required
               sx={{
                 '& label': { color: '#a5a5a5ff' },
                 '& .MuiOutlinedInput-root': {

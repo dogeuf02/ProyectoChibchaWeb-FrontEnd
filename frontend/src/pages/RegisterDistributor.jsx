@@ -118,7 +118,7 @@ export default function RegisterDistributor() {
           documentType: documentTypes[0]?.nombreTipoDoc || '',
           companyName: '',
         });
-        setCaptchaToken(null);
+
       } else {
         showAlert(result.mensaje || 'Error al registrar el distribuidor', 'error');
       }
@@ -128,6 +128,7 @@ export default function RegisterDistributor() {
     } finally {
       hideLoader();
     }
+    setCaptchaToken(null);
   };
 
   return (
