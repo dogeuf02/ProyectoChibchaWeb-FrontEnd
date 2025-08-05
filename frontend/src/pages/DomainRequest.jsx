@@ -6,41 +6,77 @@ import {
   Button,
   Paper,
   Box,
-  MenuItem
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Chip,
 } from '@mui/material';
-import { useGlobalAlert } from '../context/AlertContext';
 import Zoom from '@mui/material/Zoom';
-import getTodayDate from '../utils/dateUtils';
-import { createDomainRequest } from '../api/domainRequestApi';
+import { useGlobalAlert } from '../context/AlertContext';
 import { useAuth } from '../context/AuthContext';
 import { ROLE } from '../enum/roleEnum';
+import getTodayDate from '../utils/dateUtils';
 import { getTlds } from '../api/tldApi';
 import { createDomain, getDomain } from '../api/domainApi';
+import { createDomainRequest } from '../api/domainRequestApi';
 
 export default function DomainRequest() {
+  // Lista de solicitudes de dominio ejemplo
+  const [domainRequests, setDomainRequests] = useState([
+    { 
+      id: 1, 
+      name: "mybusiness", 
+      tld: ".com", 
+      status: "En Revision", 
+      date: "2025-08-01" 
+    },
+    { 
+      id: 2, 
+      name: "coolproject", 
+      tld: ".dev", 
+      status: "Aprobado", 
+      date: "2025-07-28" 
+    },
+    { 
+      id: 3, 
+      name: "storechibcha", 
+      tld: ".store", 
+      status: "Rechazado", 
+      date: "2025-07-15" 
+    }
+  ]);
+
   const { showAlert } = useGlobalAlert();
   const { role, specificId } = useAuth();
 
   const [tlds, setTlds] = useState([]);
   const [precioActual, setPrecioActual] = useState('');
-  const [formData, setFormData] = useState({
-    domainName: '',
-    domainTld: ''
-  });
+  const [formData, setFormData] = useState({ domainName: '', domainTld: '' });
+
+  //const [domainRequests, setDomainRequests] = useState([]); // Lista de solicitudes
+  const [openDialog, setOpenDialog] = useState(false);
 
   const getCurrentUserId = () => {
-    let clienId = null;
+    let clientId = null;
     let distributorId = null;
-
     switch (role) {
       case ROLE.CLIENT:
-        clienId = specificId
+        clientId = specificId;
         break;
       case ROLE.DISTRIBUTOR:
-        distributorId = specificId
+        distributorId = specificId;
+        break;
     }
-    return [clienId, distributorId];
-  }
+    return [clientId, distributorId];
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -59,43 +95,45 @@ export default function DomainRequest() {
     }
 
     try {
-      // Intentar obtener el dominio desde el nuevo endpoint
       let domain = await getDomain(domainName, domainTld);
 
       if (!domain) {
-        // Si no existe, lo creamos
         const newDomainPayload = {
           nombreDominio: domainName,
           tld: domainTld,
-          precioDominio: precioActual, // asegúrate que este valor esté definido correctamente
+          precioDominio: precioActual,
           estado: "Reservado"
         };
-        console.log("newdoamin", newDomainPayload);
         await createDomain(newDomainPayload);
-
-        // Intentamos obtenerlo de nuevo con el mismo endpoint
         domain = await getDomain(domainName, domainTld);
-        console.log("gettted", domain);
       }
 
-      if (domain && domain.estado == "Reservado") {
+      if (domain && domain.estado === "Reservado") {
         const todayDate = getTodayDate();
         const [client, distributor] = getCurrentUserId();
 
         const domainRequest = {
-          dominio: domain.idDominio, // viene directamente del backend
+          dominio: domain.idDominio,
           estadoSolicitud: "En Revision",
           tld: domainTld,
           fechaSolicitud: todayDate,
           cliente: client,
           distributor: distributor
         };
-        console.log("dreqyes", domainRequest);
+
         const response = await createDomainRequest(domainRequest);
 
         if (response.exito) {
           showAlert("Domain request submitted successfully!", "success");
-          setFormData({ domainName: '', domainTld: '', description: '' });
+          setDomainRequests(prev => [...prev, { 
+            id: Date.now(), 
+            name: domainName, 
+            tld: domainTld, 
+            status: "En Revision", 
+            date: todayDate 
+          }]);
+          setFormData({ domainName: '', domainTld: '' });
+          setOpenDialog(false);
         } else {
           showAlert(response.message || "Failed to submit domain request", "error");
         }
@@ -108,91 +146,155 @@ export default function DomainRequest() {
       showAlert("Something went wrong", "error");
     }
   };
+
   useEffect(() => {
     const fetchTlds = async () => {
       try {
         const data = await getTlds();
-        console.log("tlds", data)
         setTlds(data);
       } catch (error) {
         console.error('Error cargando los TLDs:', error);
       }
     };
-
     fetchTlds();
   }, []);
 
   useEffect(() => {
     const tldSeleccionado = tlds.find(tld => tld.tld === formData.domainTld);
-    if (tldSeleccionado) {
-      setPrecioActual(tldSeleccionado.precioTld);
-    } else {
-      setPrecioActual('');
-    }
+    setPrecioActual(tldSeleccionado ? tldSeleccionado.precioTld : '');
   }, [formData.domainTld, tlds]);
 
   return (
     <Zoom in timeout={600}>
-      <Container maxWidth="sm" sx={{ mt: 6 }}>
-        <Paper elevation={3} sx={{ p: 4 }}>
-          <Typography variant="h5" gutterBottom>
-            Domain Request
+      <Container maxWidth="md" sx={{ mt: 6 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 4,
+          }}
+        >
+          <Typography variant="h4" sx={{ fontWeight: "bold", color: "#212121" }}>
+            Domain Requests
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate>
-            <TextField
-              label="Domain Name"
-              name="domainName"
-              value={formData.domainName}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              placeholder="example"
-            />
+          <Button
+            variant="contained"
+            sx={{
+              borderRadius: 30,
+              bgcolor: "#ff6f00",
+              "&:hover": { bgcolor: "#ffc107", color: "#212121" }
+            }}
+            onClick={() => setOpenDialog(true)}
+          >
+            Add Request
+          </Button>
+        </Box>
 
-            <TextField
-              select
-              label="TLD"
-              name="domainTld"
-              value={formData.domainTld}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-            >
-              {tlds.map((tld) => (
-                <MenuItem key={tld.tld} value={tld.tld}>
-                  {tld.tld}
-                </MenuItem>
-              ))}
-            </TextField>
-
-            <Typography variant="h6">
-              {formData.domainName && formData.domainTld ? (
-                <>
-                  Cost for <strong>{formData.domainName}{formData.domainTld}</strong>: ${precioActual}
-                </>
-              ) : (
-                <>
-                  Select a domain
-                </>
-              )}
+        {domainRequests.length === 0 ? (
+          <Paper sx={{ p: 5, textAlign: "center", bgcolor: "#FAFAFA" }} elevation={2}>
+            <Typography variant="h6" color="text.secondary">
+              You haven't created any domain requests yet.
             </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              Click the button above to submit your first request.
+            </Typography>
+          </Paper>
+        ) : (
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ bgcolor: "#fff3e0" }}>
+                  <TableCell sx={{ fontWeight: "bold" }}>Domain Name</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>TLD</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>Request Date</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {domainRequests.map((req) => (
+                  <TableRow key={req.id}>
+                    <TableCell>{req.name}</TableCell>
+                    <TableCell>{req.tld}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={req.status}
+                        color={
+                          req.status === "En Revision"
+                            ? "warning"
+                            : req.status === "Aprobado"
+                            ? "success"
+                            : "default"
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>{req.date}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+
+        {/* Dialog para crear request */}
+        <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
+          <DialogTitle>New Domain Request</DialogTitle>
+          <DialogContent>
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+              <TextField
+                label="Domain Name"
+                name="domainName"
+                value={formData.domainName}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                placeholder="example"
+              />
+              <TextField
+                select
+                label="TLD"
+                name="domainTld"
+                value={formData.domainTld}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+              >
+                {tlds.map((tld) => (
+                  <MenuItem key={tld.tld} value={tld.tld}>
+                    {tld.tld}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <Typography variant="body1" sx={{ mt: 2 }}>
+                {formData.domainName && formData.domainTld ? (
+                  <>
+                    Cost for <strong>{formData.domainName}{formData.domainTld}</strong>: ${precioActual}
+                  </>
+                ) : (
+                  <>Select a domain to see its cost</>
+                )}
+              </Typography>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenDialog(false)} sx={{ borderRadius: 30 }}>
+              Cancel
+            </Button>
             <Button
               type="submit"
               variant="contained"
+              onClick={handleSubmit}
               sx={{
-                mt: 3,
                 borderRadius: 30,
-                bgcolor: '#ff6f00',
-                '&:hover': { bgcolor: '#ffc107', color: '#212121' }
+                bgcolor: "#ff6f00",
+                "&:hover": { bgcolor: "#ffc107", color: "#212121" }
               }}
-              fullWidth
             >
               Submit Request
             </Button>
-          </Box>
-        </Paper>
+          </DialogActions>
+        </Dialog>
       </Container>
     </Zoom>
   );
-
 }
