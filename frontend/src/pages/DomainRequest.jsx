@@ -15,6 +15,8 @@ import { createDomainRequest } from '../api/domainRequestApi';
 import { useAuth } from '../context/AuthContext';
 import { ROLE } from '../enum/roleEnum';
 import { getTlds } from '../api/tldApi';
+import { createDomain, getDomain } from '../api/domainApi';
+
 export default function DomainRequest() {
   const { showAlert } = useGlobalAlert();
   const { role, specificId } = useAuth();
@@ -49,42 +51,67 @@ export default function DomainRequest() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { domainName, domainTld, description } = formData;
+    const domainName = formData.domainName.trim().toLowerCase();
+    const domainTld = formData.domainTld.trim();
+    const description = formData.description.trim();
 
-    if (!domainName.trim() || !domainTld.trim() || !description.trim()) {
+    if (!domainName || !domainTld || !description) {
       showAlert("Please fill in all fields", "warning");
       return;
     }
-    const todayDate = getTodayDate();
-    const [client, distributor] = getCurrentUserId();
-    const domainRequest = {
-      nombreDominio: domainName,
-      estadoSolicitud: "En Revision",
-      tld: domainTld,
-      fechaSolicitud: todayDate,
-      cliente: client,
-      distributor: distributor
-    }
-
-    console.log(domainRequest)
 
     try {
-      const response = await createDomainRequest(domainRequest);
-      if (response.exito) {
-        showAlert(response.message, "success")
+      // Intentar obtener el dominio desde el nuevo endpoint
+      let domain = await getDomain(domainName, domainTld);
+
+      if (!domain) {
+        // Si no existe, lo creamos
+        const newDomainPayload = {
+          nombreDominio: domainName,
+          tld: domainTld,
+          precioDominio: precioActual, // asegúrate que este valor esté definido correctamente
+          estado: "Reservado"
+        };
+        console.log("newdoamin", newDomainPayload);
+        await createDomain(newDomainPayload);
+
+        // Intentamos obtenerlo de nuevo con el mismo endpoint
+        domain = await getDomain(domainName, domainTld);
+        console.log("gettted", domain);
+      }
+
+      if (domain) {
+        const todayDate = getTodayDate();
+        const [client, distributor] = getCurrentUserId();
+
+        const domainRequest = {
+          dominio: domain.idDominio, // viene directamente del backend
+          estadoSolicitud: "En Revision",
+          tld: domainTld,
+          fechaSolicitud: todayDate,
+          cliente: client,
+          distributor: distributor
+        };
+        console.log("dreqyes",domainRequest);
+        const response = await createDomainRequest(domainRequest);
+
+        if (response.exito) {
+          showAlert("Domain request submitted successfully!", "success");
+          setFormData({ domainName: '', domainTld: '', description: '' });
+        } else {
+          showAlert(response.message || "Failed to submit domain request", "error");
+        }
       } else {
-        showAlert(response.message, "error")
-
+        showAlert("Could not retrieve domain after creation", "error");
       }
+
     } catch (error) {
-      if (error.response) {
-        console.log(error.response)
-      }
+      console.error("Error submitting domain request:", error);
+      showAlert("Something went wrong", "error");
     }
-
-    showAlert("Domain request submitted successfully!", "success");
-    setFormData({ domainName: '', domainTld: '', description: '' }); // limpia el formulario
   };
+
+
 
 
 
@@ -175,9 +202,6 @@ export default function DomainRequest() {
                 </>
               )}
             </Typography>
-
-
-
             <Button
               type="submit"
               variant="contained"
