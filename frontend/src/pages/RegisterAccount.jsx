@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
   Container,
   TextField,
@@ -15,9 +15,12 @@ import { createClient } from '../api/clientApi';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ReCAPTCHA from 'react-google-recaptcha';
+
 import { useGlobalLoading } from '../context/LoadingContext';
 
 export default function RegisterAccount() {
+
+  const recaptchaRef = useRef();
   const { t } = useTranslation();
   const { showLoader, hideLoader } = useGlobalLoading();
 
@@ -51,11 +54,13 @@ export default function RegisterAccount() {
 
     if (!captchaToken) {
       showAlert('Please complete the captcha', 'warning');
+      recaptchaRef.current?.reset();
       return;
     }
 
     if (form.password !== form.confirmPassword) {
       showAlert('Passwords do not match', 'warning');
+      recaptchaRef.current?.reset();
       return;
     }
 
@@ -82,6 +87,7 @@ export default function RegisterAccount() {
     for (const field of requiredFields) {
       if (!form[field]) {
         showAlert(`The field "${friendlyNames[field]}" is required.`, 'warning');
+        recaptchaRef.current?.reset();
         return;
       }
     }
@@ -107,14 +113,16 @@ export default function RegisterAccount() {
         }, 500);
       } else {
         showAlert(res.mensaje, 'error');
-
+        recaptchaRef.current?.reset();
       }
     } catch (error) {
       showAlert(error.message);
+      recaptchaRef.current?.reset();
     } finally {
       hideLoader();
+      setCaptchaToken(null);
+
     }
-    setCaptchaToken(null);
   };
 
   return (
@@ -258,6 +266,7 @@ export default function RegisterAccount() {
               <ReCAPTCHA
                 sitekey="6LePn5krAAAAAAnj4Tz_1s9K7dZEYLVsdUeFqwqB"
                 onChange={handleCaptchaChange}
+                ref={recaptchaRef}
               />
             </Box>
 
