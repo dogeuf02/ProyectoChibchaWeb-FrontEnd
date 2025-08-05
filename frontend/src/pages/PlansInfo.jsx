@@ -21,12 +21,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useGlobalAlert } from "../context/AlertContext";
 import { useTranslation } from "react-i18next";
-import { getPlans } from "../api/planApi"
+import { getPlansInfo } from "../api/planApi"
 import { useAuth } from "../context/AuthContext";
 import { ROLE } from "../enum/roleEnum";
 import { hasPayMethods } from "../api/payMethodApi";
-import { getPayBillings } from "../api/payBillingApi";
-import { getPlanPrices } from "../api/planPriceApi";
 
 export default function PlansInfo() {
   const navigate = useNavigate();
@@ -36,18 +34,14 @@ export default function PlansInfo() {
 
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [openBillingDialog, setOpenBillingDialog] = useState(false);
-  const [billingCycles, setBillingCycles] = useState([]);
   const [billingCycle, setBillingCycle] = useState("");
   const [plans, setPlans] = useState([]);
-  const [hasPayMethod, setHasPayMethod] = useState(false);
-  const [planPrices, setPlanPrices] = useState([]);
 
   const planColors = {
     CHIBCHASILVER: "#C0C0C0",
     CHIBCHAGOLD: "#FFD700",
     CHIBCHAPLATINUM: "#CD7F32"
   };
-
 
   const handleGetPlan = (plan) => {
     // Verificar login como cliente
@@ -56,14 +50,6 @@ export default function PlansInfo() {
       return;
     }
 
-    // Verificar método de pago
-    if (!hasPayMethod) {
-      showAlert("Please register a payment method first.", "warning");
-      navigate("/client/PaymentManagement");
-      return;
-    }
-    console.log("selected plan", plan);
-    // Todo correcto → Abrir popup de selección de billing
     setSelectedPlan(plan);
     setOpenBillingDialog(true);
   };
@@ -71,85 +57,99 @@ export default function PlansInfo() {
   const handleConfirmPlan = () => {
     if (!selectedPlan || !billingCycle) return;
 
-    localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
-    setOpenBillingDialog(false);
-    navigate('/client/Checkout');
+    // Buscar la modalidad seleccionada
+    const modalidadSeleccionada = selectedPlan.precios.find(
+      (p) => p.planPago.idPlanPago === billingCycle
+    );
 
+    if (!modalidadSeleccionada) {
+      showAlert("Modalidad de pago no encontrada.", "error");
+      return;
+    }
+
+    // Construir objeto para checkout
+    const checkoutData = {
+      idPlanCliente: selectedPlan.planCliente.idPlanCliente,
+      nombrePlanCliente: selectedPlan.planCliente.nombrePlanCliente,
+      caracteristicas: {
+        numeroWebs: selectedPlan.planCliente.numeroWebs,
+        numeroBaseDatos: selectedPlan.planCliente.numeroBaseDatos,
+        almacenamientoNvme: selectedPlan.planCliente.almacenamientoNvme,
+        numeroCuentasCorreo: selectedPlan.planCliente.numeroCuentasCorreo,
+        creadorWeb: selectedPlan.planCliente.creadorWeb,
+        numeroCertificadoSslHttps: selectedPlan.planCliente.numeroCertificadoSslHttps,
+        emailMarketing: selectedPlan.planCliente.emailMarketing
+      },
+      modalidad: {
+        idPlanPago: modalidadSeleccionada.planPago.idPlanPago,
+        intervaloPago: modalidadSeleccionada.planPago.intervaloPago,
+        precio: modalidadSeleccionada.precio,
+      },
+    };
+
+    console.log("check:", checkoutData)
+    // Guardar en localStorage
+    localStorage.setItem("checkoutData", JSON.stringify(checkoutData));
+
+    // Cerrar diálogo y navegar
+    setOpenBillingDialog(false);
+    navigate("/client/Checkout");
   };
 
-  const checkoutData = planPrices
-    .filter((pp) => pp.planCliente === selectedPlan?.idPlanCliente)
-    .map((pp) => {
-      const cycle = billingCycles.find((bc) => bc.idPlanPago === pp.planPago);
-
-      return {
-        plan: pp,
-        intervaloPago: cycle?.intervaloPago,
-        planPrice: pp      // objeto completo del planPrecio
-      };
-    });
-
-  const billingOptions = planPrices
-    .filter((pp) => pp.planCliente === selectedPlan?.idPlanCliente)
-    .map((pp) => {
-      const cycle = billingCycles.find((bc) => bc.idPlanPago === pp.planPago);
-      console.log("PlanPrice:", pp, "Matched Cycle:", cycle);
-      return {
-        value: pp.planPago,
-        label: `${cycle?.intervaloPago} - $${pp.precio} USD`
-      };
-    });
 
   useEffect(() => {
-    const fetchPlans = async () => {
-      const response = await getPlans();
+    const fetchPlansInfo = async () => {
+      const response = await getPlansInfo();
       if (response.exito) {
-        setPlans(response.data);
-        console.log(response.data);
+        const rawPlans = response.data;
+
+        // Agrupar los planes por planCliente.idPlanCliente
+        const groupedPlans = [];
+
+        rawPlans.forEach((item) => {
+          const existing = groupedPlans.find(
+            (group) => group.planCliente.idPlanCliente === item.planCliente.idPlanCliente
+          );
+
+          if (!existing) {
+            groupedPlans.push({
+              planCliente: item.planCliente,
+              precios: [{
+                planPago: item.planPago,
+                precio: item.precio,
+                id: item.id // opcional si necesitas este id original
+              }]
+            });
+          } else {
+            existing.precios.push({
+              planPago: item.planPago,
+              precio: item.precio,
+              id: item.id
+            });
+          }
+        });
+
+        setPlans(groupedPlans); // Ahora setPlans tiene una estructura agrupada
+        console.log("Grouped Plans:", groupedPlans);
+
       } else {
         showAlert("Error loading plans", "error");
       }
     };
-    fetchPlans();
+
+    fetchPlansInfo();
   }, []);
 
-  useEffect(() => {
-    const fetchBillingCycles = async () => {
-      const response = await getPayBillings();
-      if (response.exito) {
-        setBillingCycles(response.data);
-        console.log("BC:", response.data)
-      } else {
-        showAlert("Error loading billing cycles", "error")
-      }
-    }
-    fetchBillingCycles();
-  }, [])
+  // useEffect(() => {
+  //   if (!specificId) return; // evita ejecutar si aún no hay ID válido
 
-  useEffect(() => {
-    const fetchPlanPrices = async () => {
-      const response = await getPlanPrices();
-      if (response.exito && Array.isArray(response.data)) {
-        setPlanPrices(response.data);
-        console.log("Precios de planes:", response.data);
-      } else {
-        showAlert("Error al cargar precios de planes", "error");
-      }
-    };
+  //   const checkHasPayMethods = async () => {
+  //     const hasMethods = await hasPayMethods("cliente", specificId);
+  //     setHasPayMethod(hasMethods);
+  //   };
 
-    fetchPlanPrices();
-  }, []);
-
-  useEffect(() => {
-    if (!specificId) return; // evita ejecutar si aún no hay ID válido
-
-    const checkHasPayMethods = async () => {
-      const hasMethods = await hasPayMethods("cliente", specificId);
-      setHasPayMethod(hasMethods);
-    };
-
-    checkHasPayMethods();
-  }, [specificId]); // depende de specificId
+  //   checkHasPayMethods();
+  // }, [specificId]); // depende de specificId
 
   return (
     <Box id="Plans" sx={{ bgcolor: "#FAFAFA", py: 8 }}>
@@ -160,117 +160,139 @@ export default function PlansInfo() {
           gutterBottom
           sx={{ color: "#212121", fontWeight: "bold" }}
         >
-          {t('hosting.sectionTitle')} </Typography>
+          {t("hosting.sectionTitle")}
+        </Typography>
         <Typography
           variant="subtitle1"
           align="center"
           sx={{ color: "#616161ff", mb: 4 }}
         >
-          {t('hosting.subtitle')} </Typography>
+          {t("hosting.subtitle")}
+        </Typography>
 
         <Grid container spacing={4} justifyContent="center">
+          {plans.length === 0 ? (
+            <Typography
+              variant="h5"
+              align="center"
+              sx={{ color: "black", fontWeight: "bold", mb: 2 }}
+            >
+              No hay
+            </Typography>
+          ) : (
+            plans.map((plan, index) => (
+              <Grid item key={index} xs={12} sm={6} md={4}>
+                <Card
+                  sx={{
+                    height: "100%",
+                    borderRadius: "30px",
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    bgcolor: "#fff",
+                    transition: "transform 0.3s, box-shadow 0.3s",
+                    "&:hover": {
+                      transform: "translateY(-6px)",
+                      boxShadow: "0 12px 32px rgba(0,0,0,0.15)",
+                    },
+                  }}
+                >
+                  <CardContent>
+                    <Typography
+                      variant="h5"
+                      align="center"
+                      sx={{
+                        color:
+                          planColors[plan.planCliente.nombrePlanCliente] || "#333",
+                        fontWeight: "bold",
+                        mb: 2,
+                      }}
+                    >
+                      {plan.planCliente.nombrePlanCliente}
+                    </Typography>
 
+                    <Divider sx={{ mb: 2 }} />
 
-          {
-            plans.length === 0 ? (
-              <Typography
-                variant="h5"
-                align="center"
-                sx={{ color: "black", fontWeight: "bold", mb: 2 }}
-              >
-                No hay
-              </Typography>
-            ) : (
-              plans.map((plan, index) => (
-                <Grid item key={index} xs={12} sm={6} md={4}>
-                  <Card
-                    sx={{
-                      height: "100%",
-                      borderRadius: "30px",
-                      boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "space-between",
-                      bgcolor: "#fff",
-                      transition: "transform 0.3s, box-shadow 0.3s",
-                      "&:hover": {
-                        transform: "translateY(-6px)",
-                        boxShadow: "0 12px 32px rgba(0,0,0,0.15)"
-                      }
-                    }}
-                  >
-                    <CardContent>
-                      <Typography
-                        variant="h5"
-                        align="center"
-                        sx={{ color: planColors[plan.nombrePlanCliente] || "#333", fontWeight: "bold", mb: 2 }}
-                      >
-                        {plan.nombrePlanCliente}
+                    <Box sx={{ mb: 2 }}>
+                      {["Mensual", "Semestral", "Anual"].map((period) => {
+                        const p = plan.precios.find(
+                          (precio) =>
+                            precio.planPago.intervaloPago.toLowerCase() ===
+                            period.toLowerCase()
+                        );
+                        return (
+                          <Typography key={period} variant="body1">
+                            <strong>
+                              {t(
+                                `hosting.planPeriodicity.${period.toLowerCase()}`
+                              )}
+                              :
+                            </strong>{" "}
+                            {p ? `$${p.precio}` : "—"}
+                          </Typography>
+                        );
+                      })}
+                    </Box>
+
+                    <Divider sx={{ mb: 2 }} />
+
+                    <Box sx={{ mb: 2, textAlign: "left", pl: 2 }}>
+                      <Typography variant="body1">
+                        <strong>• {plan.planCliente.numeroBaseDatos} </strong>
+                        {t("hosting.hostingPlans.features.databases")}
                       </Typography>
-
-                      <Divider sx={{ mb: 2 }} />
-
-                      <Box sx={{ mb: 2 }}>
+                      <Typography variant="body1">
+                        <strong>• {plan.planCliente.numeroWebs} </strong>
+                        {t("hosting.hostingPlans.features.websites")}
+                      </Typography>
+                      <Typography variant="body1">
+                        <strong>• {plan.planCliente.almacenamientoNvme} </strong>
+                        {t("hosting.hostingPlans.features.storage")}
+                      </Typography>
+                      <Typography variant="body1">
+                        <strong>• {plan.planCliente.numeroCuentasCorreo} </strong>
+                        {t("hosting.hostingPlans.features.emailAccounts")}
+                      </Typography>
+                      {plan.planCliente.creadorWeb && (
                         <Typography variant="body1">
-                          <strong>{t('hosting.planPeriodicity.monthly')}:</strong> {/*plan.price.monthly*/} {t('util.dolarCoin')}
+                          <strong>• </strong>
+                          {t("hosting.hostingPlans.features.builder")}
                         </Typography>
+                      )}
+                      <Typography variant="body1">
+                        <strong>• {plan.planCliente.numeroCertificadoSslHttps} </strong>
+                        {t("hosting.hostingPlans.features.sslCertificates")}
+                      </Typography>
+                      {plan.planCliente.emailMarketing && (
                         <Typography variant="body1">
-                          <strong>{t('hosting.planPeriodicity.semiAnnual')}:</strong> {/*plan.price.semiAnnual*/} {t('util.dolarCoin')}
+                          <strong>• </strong>
+                          {t("hosting.hostingPlans.features.emailMarketing")}
                         </Typography>
-                        <Typography variant="body1">
-                          <strong>{t('hosting.planPeriodicity.annual')}:</strong> {/*plan.price.annual*/} {t('util.dolarCoin')}
-                        </Typography>
-                      </Box>
-
-
-                      <Divider sx={{ mb: 2 }} />
-                      <Box sx={{ mb: 2, textAlign: 'left', pl: 2 }}>
-                        <Typography variant="body1">
-                          <strong>• {plan.numeroBaseDatos} </strong>{t('hosting.hostingPlans.features.databases')}
-                        </Typography>
-                        <Typography variant="body1">
-                          <strong>• {plan.numeroWebs} </strong>{t('hosting.hostingPlans.features.websites')}
-                        </Typography>
-                        <Typography variant="body1">
-                          <strong>• {plan.almacenamientoNvme} </strong>{t('hosting.hostingPlans.features.storage')}
-                        </Typography>
-                        <Typography variant="body1">
-                          <strong>• {plan.numeroCuentasCorreo} </strong>{t('hosting.hostingPlans.features.emailAccounts')}
-                        </Typography>
-                        <Typography variant="body1">
-                          <strong>{plan.creadorWeb && (
-                            "• " + t('hosting.hostingPlans.features.builder')
-                          )}</strong>
-                        </Typography>
-                        <Typography variant="body1">
-                          <strong>• {plan.numeroCertificadoSslHttps} </strong>{t('hosting.hostingPlans.features.sslCertificates')}
-                        </Typography>
-                        <Typography variant="body1">
-                          <strong>{plan.emailMarketing && (
-                            "• " + t('hosting.hostingPlans.features.emailMarketing')
-                          )}</strong>
-                        </Typography>
-                      </Box>
-                    </CardContent>
-                    <CardActions sx={{ justifyContent: "center", pb: 2 }}>
-                      <Button
-                        variant="contained"
-                        size="medium"
-                        onClick={() => handleGetPlan(plan)}
-                        sx={{
-                          bgcolor: "#FF6400",
-                          borderRadius: "30px",
-                          px: 4,
-                          "&:hover": {
-                            bgcolor: "#e25a00"
-                          }
-                        }}
-                      >
-                        {t('hosting.hostingButton')} </Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
-              )))}
+                      )}
+                    </Box>
+                  </CardContent>
+                  <CardActions sx={{ justifyContent: "center", pb: 2 }}>
+                    <Button
+                      variant="contained"
+                      size="medium"
+                      onClick={() => handleGetPlan(plan)}
+                      sx={{
+                        bgcolor: "#FF6400",
+                        borderRadius: "30px",
+                        px: 4,
+                        "&:hover": {
+                          bgcolor: "#e25a00",
+                        },
+                      }}
+                    >
+                      {t("hosting.hostingButton")}
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))
+          )}
         </Grid>
 
         {/* Popup para seleccionar billing */}
@@ -278,52 +300,59 @@ export default function PlansInfo() {
           open={openBillingDialog}
           onClose={() => setOpenBillingDialog(false)}
         >
-          <DialogTitle>Select Billing Type</DialogTitle>
+          <DialogTitle>Select billing type</DialogTitle>
           <DialogContent>
             {selectedPlan && (
               <>
                 <Typography sx={{ mb: 2 }}>
-                  Selected Plan: <strong>{selectedPlan.nombrePlanCliente}</strong>
+                  Plan seleccionado: {" "}
+                  <strong>{selectedPlan.planCliente.nombrePlanCliente}</strong>
                 </Typography>
+
                 <TextField
                   select
                   fullWidth
-                  label="Billing Cycle"
+                  label="Billing cycle"
                   value={billingCycle}
                   onChange={(e) => setBillingCycle(e.target.value)}
                   sx={{ mb: 2 }}
                 >
-                  {billingOptions.length > 0 ? (
-
-                    billingOptions.map((opt) => (
-                      <MenuItem key={opt.value} value={opt.value}>
-                        {opt.label}
+                  {selectedPlan.precios.length > 0 ? (
+                    selectedPlan.precios.map((opt) => (
+                      <MenuItem key={opt.planPago.idPlanPago} value={opt.planPago.idPlanPago}>
+                        {t(`hosting.planPeriodicity.${opt.planPago.intervaloPago.toLowerCase()}`)} — ${opt.precio}
                       </MenuItem>
                     ))
-
                   ) : (
                     <MenuItem disabled value="">
-                      No billing options available
+                      No billing cycle options
                     </MenuItem>
                   )}
                 </TextField>
-
-
               </>
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setOpenBillingDialog(false)}>Cancel</Button>
+            <Button onClick={() => setOpenBillingDialog(false)}>
+              Cancel
+            </Button>
             <Button
               variant="contained"
-              sx={{ bgcolor: "#FF6400", borderRadius: 30, "&:hover": { bgcolor: "#e25a00" } }}
+              sx={{
+                bgcolor: "#FF6400",
+                borderRadius: 30,
+                "&:hover": { bgcolor: "#e25a00" },
+              }}
               onClick={handleConfirmPlan}
+              disabled={!billingCycle}
             >
               Confirm
             </Button>
           </DialogActions>
         </Dialog>
+
       </Container>
     </Box>
   );
+
 }

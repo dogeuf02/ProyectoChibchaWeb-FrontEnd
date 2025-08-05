@@ -15,13 +15,12 @@ import { useAuth } from '../context/AuthContext';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { deletePayMethod } from '../api/payMethodApi';
 import { getBanks } from '../api/payMethodApi';
+import { useTranslation } from 'react-i18next';
 
 export default function CheckoutPage() {
-
-    //Carga
-    const checkoutData = JSON.parse(localStorage.getItem('checkoutData'));
     // Mock plan
-    const selectedPlan = {
+    const { t } = useTranslation();
+    const [selectedPlan, setSelectedPlan] = useState({
         name: 'CHIBCHA-PLATINUM',
         interval: 'Annual',
         price: 240.0,
@@ -32,17 +31,37 @@ export default function CheckoutPage() {
             'Email Marketing: Included',
             'Website Builder: Included',
         ],
-    };
+    });
 
     const [bankOptions, setBankOptions] = useState([]);
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [selectedIdToDelete, setSelectedIdToDelete] = useState(null);
     const [paymentMethods, setPaymentMethods] = useState([]);
     const [selectedMethodId, setSelectedMethodId] = useState(paymentMethods[0]?.id || null);
+    //const [checkoutData, setCheckoutData] = useState(null);
 
     const { role, specificId } = useAuth();
     const { showAlert } = useGlobalAlert();
     const { showLoader, hideLoader } = useGlobalLoading();
+
+    useEffect(() => {
+        const checkoutData = JSON.parse(localStorage.getItem('checkoutData'));
+        console.log("checkout from checkout:", checkoutData);
+        setSelectedPlan({
+            idPlan: checkoutData.idPlanCliente,
+            idPlanPago: checkoutData.modalidad.idPlanPago,
+            nombrePlanCliente: checkoutData.nombrePlanCliente,
+            intervaloPago: checkoutData.modalidad.intervaloPago,
+            almacenamientoNvme: checkoutData.caracteristicas.almacenamientoNvme,
+            creadorWeb: checkoutData.caracteristicas.creadorWeb,
+            emailMarketing: checkoutData.caracteristicas.emailMarketing,
+            numeroBaseDatos: checkoutData.caracteristicas.numeroBaseDatos,
+            numeroCertificadoSslHttps: checkoutData.caracteristicas.numeroCertificadoSslHttps,
+            numeroCuentasCorreo: checkoutData.caracteristicas.numeroCuentasCorreo,
+            numeroWebs: checkoutData.caracteristicas.numeroWebs,
+            price: checkoutData.modalidad.precio,
+        });
+    }, [])
 
     useEffect(() => {
         const fetchPayments = async () => {
@@ -115,8 +134,8 @@ export default function CheckoutPage() {
             return;
         }
 
-        const clienteId = 10002;
-        const planClienteId = 1;
+        //const specificId = 10002;
+        const planClienteId = selectedPlan;
         const planPagoId = 1;
 
         const fechaHoy = new Date();
@@ -126,15 +145,15 @@ export default function CheckoutPage() {
         const fechaExpStr = fechaExpiracion.toISOString().split('T')[0];
 
         const payload = {
-            idPlanAdquirido: 1,
+            //idPlanAdquirido: s,
             estadoPlan: 'ACTIVO',
             fechaCompra,
             fechaExpiracion: fechaExpStr,
             fechaActualizacion: new Date().toISOString(),
-            precioPlanAdquirido: selectedPlan.price.toFixed(2),
-            cliente: clienteId,
-            planCliente: planClienteId,
-            planPago: planPagoId,
+            precioPlanAdquirido: selectedPlan.price,
+            cliente: specificId,
+            planCliente: selectedPlan.idPlan,
+            planPago: selectedPlan.idPlanPago,
         };
 
         console.log(payload);
@@ -142,9 +161,10 @@ export default function CheckoutPage() {
         try {
             showLoader();
 
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // await new Promise(resolve => setTimeout(resolve, 2000));
             const response = await createPlanAdquirido(payload);
             console.log('✅ Plan registered:', response.data);
+            localStorage.removeItem('checkoutData');
             showAlert('Payment successful!', 'success');
         } catch (error) {
             console.error('❌ Error during payment:', error);
@@ -196,14 +216,14 @@ export default function CheckoutPage() {
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                             <Typography variant="subtitle1">Plan:</Typography>
                             <Typography variant="body1" sx={{ color: '#FF6400' }}>
-                                {selectedPlan.name}
+                                {selectedPlan.nombrePlanCliente}
                             </Typography>
                         </Box>
 
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                             <Typography variant="subtitle1">Billing Cycle:</Typography>
                             <Typography variant="body1" sx={{ color: '#212121' }}>
-                                {selectedPlan.interval}
+                                {selectedPlan.intervaloPago}
                             </Typography>
                         </Box>
 
@@ -213,23 +233,39 @@ export default function CheckoutPage() {
                             Features:
                         </Typography>
 
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                            {selectedPlan.features.map((feat, i) => {
-                                const [label, value] = feat.split(':').map((s) => s.trim());
-                                return (
-                                    <Box
-                                        key={i}
-                                        sx={{ display: 'flex', justifyContent: 'space-between' }}
-                                    >
-                                        <Typography variant="body2" sx={{ color: '#212121' }}>
-                                            {label}:
-                                        </Typography>
-                                        <Typography variant="body2" sx={{ color: '#212121' }}>
-                                            {value}
-                                        </Typography>
-                                    </Box>
-                                );
-                            })}
+                        <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: "left", gap: 1 }}>
+                            <Typography variant="body1">
+                                <strong>• {selectedPlan.numeroBaseDatos} </strong>
+                                {t("hosting.hostingPlans.features.databases")}
+                            </Typography>
+                            <Typography variant="body1">
+                                <strong>• {selectedPlan.numeroWebs} </strong>
+                                {t("hosting.hostingPlans.features.websites")}
+                            </Typography>
+                            <Typography variant="body1">
+                                <strong>• {selectedPlan.almacenamientoNvme} </strong>
+                                {t("hosting.hostingPlans.features.storage")}
+                            </Typography>
+                            <Typography variant="body1">
+                                <strong>• {selectedPlan.numeroCuentasCorreo} </strong>
+                                {t("hosting.hostingPlans.features.emailAccounts")}
+                            </Typography>
+                            {selectedPlan.creadorWeb && (
+                                <Typography variant="body1">
+                                    <strong>• </strong>
+                                    {t("hosting.hostingPlans.features.builder")}
+                                </Typography>
+                            )}
+                            <Typography variant="body1">
+                                <strong>• {selectedPlan.numeroCertificadoSslHttps} </strong>
+                                {t("hosting.hostingPlans.features.sslCertificates")}
+                            </Typography>
+                            {selectedPlan.emailMarketing && (
+                                <Typography variant="body1">
+                                    <strong>• </strong>
+                                    {t("hosting.hostingPlans.features.emailMarketing")}
+                                </Typography>
+                            )}
                         </Box>
 
                         <Divider sx={{ my: 2 }} />
@@ -237,7 +273,7 @@ export default function CheckoutPage() {
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
                             <Typography variant="h6">Total:</Typography>
                             <Typography variant="h6" sx={{ color: '#FF6400' }}>
-                                ${selectedPlan.price.toFixed(2)}
+                                ${selectedPlan.price.toFixed(2)} dolarines
                             </Typography>
                         </Box>
                     </Paper>

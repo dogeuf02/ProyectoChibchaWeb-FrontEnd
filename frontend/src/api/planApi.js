@@ -30,7 +30,7 @@ export const getPlans = async () => {
 
 export const updatePlan = async (planId, planData) => {
   try {
-    const response = await api.put(`/plan/${planId}`, planData);
+    const response = await api.put(`/planCliente/${planId}`, planData);
     return { exito: true, data: response.data };
   } catch (error) {
     if (error.response && error.response.data) {
@@ -44,7 +44,7 @@ export const updatePlan = async (planId, planData) => {
 
 export const deletePlan = async (planId) => {
   try {
-    const response = await api.delete(`/plan/${planId}`);
+    const response = await api.delete(`/planCliente/${planId}`);
     return { exito: true, data: response.data };
   } catch (error) {
     if (error.response && error.response.data) {
@@ -52,6 +52,20 @@ export const deletePlan = async (planId) => {
       return { exito, mensaje }; // devuelve el mensaje del backend
     } else {
       return { exito: false, mensaje: 'Error desconocido al eliminar el plan' };
+    }
+  }
+}
+
+export const getPlansInfo = async () => {
+  try {
+    const response = await api.get('/planCliente/infoPlanes');
+    return { exito: true, data: response.data };
+  } catch (error) {
+    if (error.response && error.response.data) {
+      const { exito, mensaje } = error.response.data;
+      return { exito, mensaje }; // devuelve el mensaje del backend
+    } else {
+      return { exito: false, mensaje: 'Error desconocido al obtener la información de los planes' };
     }
   }
 }
