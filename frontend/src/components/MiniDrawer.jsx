@@ -22,12 +22,13 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import PeopleIcon from '@mui/icons-material/People';
-import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import PersonIcon from '@mui/icons-material/Person';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import RecentActorsIcon from '@mui/icons-material/RecentActors';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 import { useAuth } from '../context/AuthContext';
 import { ROLE } from '../enum/roleEnum'
@@ -96,11 +97,13 @@ export default function MiniDrawer() {
   const handleToggleManage = () => setOpenManage((prev) => !prev);
 
   const manageItems = [
-    { text: 'Clients', icon: <PeopleIcon />, path: '/admin/Manageclients' },
-    { text: 'Distributors', icon: <SupervisorAccountIcon />, path: '/admin/ManageDistributors' },
-    { text: 'Employees', icon: <PersonIcon />, path: '/admin/ManageEmployees' },
+    { text: 'Clients', icon: <PersonIcon />, path: '/admin/Manageclients' },
+    { text: 'Distributors', icon: <PeopleIcon />, path: '/admin/ManageDistributors' },
+    { text: 'Employees', icon: <RecentActorsIcon />, path: '/admin/ManageEmployees' },
     { text: 'Domain Request', icon: <AssignmentIcon />, path: '/admin/ManageDomainRequests' },
     { text: 'Distributor Request', icon: <AssignmentIcon />, path: '/admin/ManageDistributorRequests' },
+    { text: 'Domains', icon: <DnsIcon />, path: '/admin/ManageDomains' },
+    { text: 'Plans', icon: <ListAltIcon />, path: '/admin/ManagePlans' },
     {
       text: 'Administrators', // 👈 NUEVO
       icon: <AdminPanelSettingsIcon />,
@@ -125,6 +128,7 @@ export default function MiniDrawer() {
     { text: 'Payments', icon: <AddCardIcon />, basePath: 'paymentManagement' },
     { text: 'MyDomains', icon: <DnsIcon />, basePath: 'mydomains' },
     { text: 'Domain Request', icon: <DomainVerificationIcon />, basePath: 'DomainRequest' },
+    { text: 'MyTickets', icon: <ConfirmationNumberIcon />, basePath: 'MyTickets' },
   ];
 
   const clientOnlyItems = [
@@ -278,7 +282,7 @@ export default function MiniDrawer() {
                       color: '#FF6400',
                     }}
                   >
-                    <SupervisorAccountIcon />
+                    <ManageAccountsIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage" sx={{ opacity: open ? 1 : 0 }} />
                   {open && (openManage ? <ExpandLess /> : <ExpandMore />)}

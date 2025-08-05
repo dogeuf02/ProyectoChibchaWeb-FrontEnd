@@ -77,7 +77,7 @@ export default function MyTickets() {
 
   return (
     <Box sx={{ p: 4 }}>
-      {/* Header con título a la izquierda y botón a la derecha */}
+      {/* Header */}
       <Box
         sx={{
           display: "flex",
