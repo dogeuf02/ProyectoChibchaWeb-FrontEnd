@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Container,
   TextField,
   Typography,
   Button,
   Paper,
-  Box
+  Box,
+  MenuItem
 } from '@mui/material';
 import { useGlobalAlert } from '../context/AlertContext';
 import Zoom from '@mui/material/Zoom';
@@ -13,11 +14,13 @@ import getTodayDate from '../utils/dateUtils';
 import { createDomainRequest } from '../api/domainRequestApi';
 import { useAuth } from '../context/AuthContext';
 import { ROLE } from '../enum/roleEnum';
-
+import { getTlds } from '../api/tldApi';
 export default function DomainRequest() {
   const { showAlert } = useGlobalAlert();
   const { role, specificId } = useAuth();
 
+  const [tlds, setTlds] = useState([]);
+  const [precioActual, setPrecioActual] = useState('');
   const [formData, setFormData] = useState({
     domainName: '',
     domainTld: '',
@@ -83,6 +86,31 @@ export default function DomainRequest() {
     setFormData({ domainName: '', domainTld: '', description: '' }); // limpia el formulario
   };
 
+
+
+  useEffect(() => {
+    const fetchTlds = async () => {
+      try {
+        const data = await getTlds();
+        console.log("tlds", data)
+        setTlds(data);
+      } catch (error) {
+        console.error('Error cargando los TLDs:', error);
+      }
+    };
+
+    fetchTlds();
+  }, []);
+
+  useEffect(() => {
+    const tldSeleccionado = tlds.find(tld => tld.tld === formData.domainTld);
+    if (tldSeleccionado) {
+      setPrecioActual(tldSeleccionado.precioTld);
+    } else {
+      setPrecioActual('');
+    }
+  }, [formData.domainTld, tlds]);
+
   return (
     <Zoom in timeout={600}>
       <Container maxWidth="sm" sx={{ mt: 6 }}>
@@ -98,17 +126,24 @@ export default function DomainRequest() {
               onChange={handleChange}
               fullWidth
               margin="normal"
-              placeholder="example.com"
+              placeholder="example"
             />
+
             <TextField
+              select
               label="TLD"
               name="domainTld"
               value={formData.domainTld}
               onChange={handleChange}
               fullWidth
               margin="normal"
-              placeholder="example.com"
-            />
+            >
+              {tlds.map((tld) => (
+                <MenuItem key={tld.tld} value={tld.tld}>
+                  {tld.tld}
+                </MenuItem>
+              ))}
+            </TextField>
             <TextField
               label="Description"
               name="description"
@@ -120,6 +155,29 @@ export default function DomainRequest() {
               rows={4}
               placeholder="Briefly describe why you need this domain..."
             />
+
+            {/*Se muestra el dominio completo */}
+            {/* <Typography
+              variant="subtitle1"
+              sx={{ mt: 2, mb: 1, fontWeight: 'bold', textAlign: 'center' }}
+            >
+              Full Domain: {formData.domainName || 'example'}
+              {formData.domainTld || '.com'}
+            </Typography> */}
+            <Typography variant="h6">
+              {formData.domainName && formData.domainTld ? (
+                <>
+                  Cost for <strong>{formData.domainName}{formData.domainTld}</strong>: ${precioActual}
+                </>
+              ) : (
+                <>
+                  Select a domain
+                </>
+              )}
+            </Typography>
+
+
+
             <Button
               type="submit"
               variant="contained"
@@ -138,4 +196,5 @@ export default function DomainRequest() {
       </Container>
     </Zoom>
   );
+
 }
