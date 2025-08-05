@@ -28,6 +28,7 @@ import VerifyEmail from './components/VerifyEmail.jsx'
 import Checkout from './pages/Checkout.jsx'
 import { LoadingProvider } from './context/LoadingContext';
 import GlobalLoader from './components/common/GlobalLoader';
+import AdminManagePlans from './pages/AdminManagePlans.jsx'
 
 function App() {
   return (
@@ -88,6 +89,7 @@ function App() {
             <Route path="ManageDistributorRequests" element={<AdminManageDistributorRequests />} />
             <Route path="ManageDomainRequests" element={<AdminManageDomainRequests />} />
             <Route path="ManageClients" element={<AdminManageClients />} />
+            <Route path="ManagePlans" element={<AdminManagePlans />} />
           </Route>
 
           {/* Client Dashboard */}
