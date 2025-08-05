@@ -29,6 +29,7 @@ import Checkout from './pages/Checkout.jsx'
 import { LoadingProvider } from './context/LoadingContext';
 import GlobalLoader from './components/common/GlobalLoader';
 import AdminManagePlans from './pages/AdminManagePlans.jsx'
+import AdminManageDomains from './pages/AdminManageDomains.jsx'
 
 function App() {
   return (
@@ -90,6 +91,7 @@ function App() {
             <Route path="ManageDomainRequests" element={<AdminManageDomainRequests />} />
             <Route path="ManageClients" element={<AdminManageClients />} />
             <Route path="ManagePlans" element={<AdminManagePlans />} />
+            <Route path="ManageDomains" element={<AdminManageDomains />} />
           </Route>
 
           {/* Client Dashboard */}
