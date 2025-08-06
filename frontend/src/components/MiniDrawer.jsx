@@ -31,14 +31,11 @@ import RecentActorsIcon from '@mui/icons-material/RecentActors';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 import { useAuth } from '../context/AuthContext';
-import { ROLE } from '../enum/roleEnum'
+import { ROLE } from '../enum/roleEnum';
 
 import { useTranslation } from 'react-i18next';
 
-
 const drawerWidth = 240;
-
-
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -87,17 +84,13 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function MiniDrawer() {
-
-
   const { authenticated, role, logout } = useAuth();
-
   const { t } = useTranslation();
 
   const theme = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(true);
   const [openManage, setOpenManage] = React.useState(false);
-
 
   const toggleDrawer = () => setOpen(!open);
   const handleToggleManage = () => setOpenManage((prev) => !prev);
@@ -123,7 +116,8 @@ export default function MiniDrawer() {
   };
 
   const sharedItems = [
-    { text: t('drawer.profile'), icon: <AccountCircleIcon />, basePath: 'manageProfile' }];
+    { text: t('drawer.profile'), icon: <AccountCircleIcon />, basePath: 'manageProfile' },
+  ];
 
   const clientDistributorItems = [
     { text: t('drawer.payments'), icon: <AddCardIcon />, basePath: 'paymentManagement' },
@@ -164,14 +158,18 @@ export default function MiniDrawer() {
         <DrawerHeader>
           <IconButton onClick={toggleDrawer}>
             {open
-              ? theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />
-              : theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+              ? theme.direction === 'rtl'
+                ? <ChevronRightIcon />
+                : <ChevronLeftIcon />
+              : theme.direction === 'rtl'
+                ? <ChevronLeftIcon />
+                : <ChevronRightIcon />}
           </IconButton>
         </DrawerHeader>
         <Divider />
 
         <List>
-          {/* Botón Profile siempre visible para todos los roles */}
+          {/* Profile siempre visible */}
           {sharedItems.map(({ text, icon, basePath }) => {
             const path = getPath(basePath);
             const selected = location.pathname === path;
@@ -185,16 +183,11 @@ export default function MiniDrawer() {
                     justifyContent: open ? 'initial' : 'center',
                     px: 2.5,
                     color: '#212121',
-                    '&:hover': {
-                      backgroundColor: '#FFBE02',
-                      color: '#212121',
-                    },
+                    '&:hover': { backgroundColor: '#FFBE02', color: '#212121' },
                     '&.Mui-selected': {
                       backgroundColor: '#FF6400',
                       color: '#FAFAFA',
-                      '& .MuiListItemIcon-root': {
-                        color: '#FAFAFA',
-                      },
+                      '& .MuiListItemIcon-root': { color: '#FAFAFA' },
                     },
                   }}
                 >
@@ -218,7 +211,7 @@ export default function MiniDrawer() {
             );
           })}
 
-          {/* client y distributor */}
+          {/* Client & Distributor */}
           {(role === ROLE.CLIENT || role === ROLE.DISTRIBUTOR) &&
             clientDistributorItems.map(({ text, icon, basePath }) => {
               const path = getPath(basePath);
@@ -233,16 +226,11 @@ export default function MiniDrawer() {
                       justifyContent: open ? 'initial' : 'center',
                       px: 2.5,
                       color: '#212121',
-                      '&:hover': {
-                        backgroundColor: '#FFBE02',
-                        color: '#212121',
-                      },
+                      '&:hover': { backgroundColor: '#FFBE02', color: '#212121' },
                       '&.Mui-selected': {
                         backgroundColor: '#FF6400',
                         color: '#FAFAFA',
-                        '& .MuiListItemIcon-root': {
-                          color: '#FAFAFA',
-                        },
+                        '& .MuiListItemIcon-root': { color: '#FAFAFA' },
                       },
                     }}
                   >
@@ -266,7 +254,49 @@ export default function MiniDrawer() {
               );
             })}
 
-          {/* Admin: Sección Manage */}
+          {/* ✅ Solo para CLIENT */}
+          {role === ROLE.CLIENT &&
+            clientOnlyItems.map(({ text, icon, path }) => {
+              const selected = location.pathname === path;
+              return (
+                <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                  <ListItemButton
+                    onClick={() => navigate(path)}
+                    selected={selected}
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: open ? 'initial' : 'center',
+                      px: 2.5,
+                      color: '#212121',
+                      '&:hover': { backgroundColor: '#FFBE02', color: '#212121' },
+                      '&.Mui-selected': {
+                        backgroundColor: '#FF6400',
+                        color: '#FAFAFA',
+                        '& .MuiListItemIcon-root': { color: '#FAFAFA' },
+                      },
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : 'auto',
+                        justifyContent: 'center',
+                        color: '#FF6400',
+                      }}
+                    >
+                      {icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={text}
+                      primaryTypographyProps={{ whiteSpace: 'pre-line' }}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
+
+          {/* Admin - Sección Manage */}
           {role === ROLE.ADMIN && (
             <>
               <ListItem disablePadding sx={{ display: 'block' }}>
@@ -277,10 +307,7 @@ export default function MiniDrawer() {
                     justifyContent: open ? 'initial' : 'center',
                     px: 2.5,
                     color: '#212121',
-                    '&:hover': {
-                      backgroundColor: '#FFBE02',
-                      color: '#212121',
-                    },
+                    '&:hover': { backgroundColor: '#FFBE02', color: '#212121' },
                   }}
                 >
                   <ListItemIcon
@@ -310,26 +337,15 @@ export default function MiniDrawer() {
                         sx={{
                           pl: open ? 6 : 2.5,
                           color: '#212121',
-                          '&:hover': {
-                            backgroundColor: '#FFBE02',
-                            color: '#212121',
-                          },
+                          '&:hover': { backgroundColor: '#FFBE02', color: '#212121' },
                           '&.Mui-selected': {
                             backgroundColor: '#FF6400',
                             color: '#FAFAFA',
-                            '& .MuiListItemIcon-root': {
-                              color: '#FAFAFA',
-                            },
+                            '& .MuiListItemIcon-root': { color: '#FAFAFA' },
                           },
                         }}
                       >
-                        <ListItemIcon
-                          sx={{
-                            minWidth: 0,
-                            mr: 2,
-                            color: '#FF6400',
-                          }}
-                        >
+                        <ListItemIcon sx={{ minWidth: 0, mr: 2, color: '#FF6400' }}>
                           {icon}
                         </ListItemIcon>
                         <ListItemText
@@ -345,7 +361,7 @@ export default function MiniDrawer() {
             </>
           )}
 
-          {/* Solo visible para EMPLOYEE */}
+          {/* Solo para EMPLOYEE */}
           {role === ROLE.EMPLOYEE &&
             employeeOnlyItems.map(({ text, icon, path }) => {
               const selected = location.pathname === path;
@@ -359,16 +375,11 @@ export default function MiniDrawer() {
                       justifyContent: open ? 'initial' : 'center',
                       px: 2.5,
                       color: '#212121',
-                      '&:hover': {
-                        backgroundColor: '#FFBE02',
-                        color: '#212121',
-                      },
+                      '&:hover': { backgroundColor: '#FFBE02', color: '#212121' },
                       '&.Mui-selected': {
                         backgroundColor: '#FF6400',
                         color: '#FAFAFA',
-                        '& .MuiListItemIcon-root': {
-                          color: '#FAFAFA',
-                        },
+                        '& .MuiListItemIcon-root': { color: '#FAFAFA' },
                       },
                     }}
                   >

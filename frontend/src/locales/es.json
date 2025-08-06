@@ -38,6 +38,7 @@
     "moreInfo": "Más información"
   },
   "hosting": {
+    "hostingTitle": "Planes de Hosting",
     "sectionTitle": "Elige el Plan de Hosting Correcto",
     "subtitle": "Precios flexibles para crecer con tu negocio",
     "hostingButton": "OBTENER PLAN",
@@ -78,8 +79,47 @@
     "description": "Como distribuidor podrás recibir comisión dependiendo de tus ventas en CHIBCHAWEB. ¡Únete a nuestro programa y comienza a crecer tu negocio con nosotros!",
     "applyLink": "Postúlate como distribuidor ->"
   },
+  "faq": {
+    "title": "Preguntas Frecuentes",
+    "description": "Encuentra respuestas a las preguntas más comunes sobre nuestros servicios y características.",
+    "questions": [
+        {
+            "question": "¿Qué servicios ofrecen?",
+            "answer": "Ofrecemos registro de dominios, alojamiento web, certificados SSL, marketing por correo electrónico y constructores de sitios web para ayudarte a estar en línea rápidamente."
+        },
+        {
+            "question": "¿Cómo puedo registrar un dominio?",
+            "answer": "Simplemente busca tu dominio deseado en nuestra plataforma y sigue los pasos guiados para registrarlo. Solo toma unos minutos."
+        },
+        {
+            "question": "¿Ofrecen soporte al cliente?",
+            "answer": "¡Sí! Nuestro equipo de soporte está disponible 24/7 para ayudarte y revisar cualquier inconveniente que puedas tener."
+        },
+        {
+            "question": "¿Puedo actualizar mi plan de hosting más adelante?",
+            "answer": "Por supuesto. Puedes actualizar o modificar tu plan en cualquier momento desde tu panel de cuenta."
+        }
+    ]
+  },
+  "testimonials": {
+    "title": "Confiado por miles de dueños de sitios web, la plataforma número 1 de Colombia.",
+    "roles": {
+      "charlie": "Cofundadora de Nohma",
+      "jack": "Director Creativo",
+      "jhon": "Emprendedor",
+      "laura": "Diseñadora UX"
+    }
+  },
   "footer": {
-    "copyright": "© {{year}} ChibchaWeb. Todos los derechos reservados."
+    "links": [
+      "Trabaja con nosotros",
+      "Términos y condiciones",
+      "Planes",
+      "Cómo protegemos tu privacidad",
+      "Accesibilidad",
+      "Ayuda"
+    ],
+    "copyright": "Copyright © {{year}} ChibchaWeb S.A.S. Sugamuxi. Todos los derechos reservados."
   },
   "loginPage": {
     "signInTitle": "Iniciar sesión",

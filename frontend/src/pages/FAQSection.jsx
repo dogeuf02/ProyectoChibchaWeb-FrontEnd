@@ -9,32 +9,13 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from "@mui/material";
-
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useTranslation } from "react-i18next";
 
 export default function FAQSection() {
-  const faqs = [
-    {
-      question: "What services do you offer?",
-      answer:
-        "We offer domain registration, web hosting, SSL certificates, email marketing, and website builders to help you get online quickly.",
-    },
-    {
-      question: "How can I register a domain?",
-      answer:
-        "Simply search for your desired domain on our platform and follow the guided steps to register it. It only takes a few minutes.",
-    },
-    {
-      question: "Do you provide customer support?",
-      answer:
-        "Yes! Our support team is available 24/7 to assist you and check the issues that you may have.",
-    },
-    {
-      question: "Can I upgrade my hosting plan later?",
-      answer:
-        "Absolutely. You can upgrade or modify your plan at any time from your account dashboard.",
-    },
-  ];
+  const { t } = useTranslation();
+
+  const faqs = t("faq.questions", { returnObjects: true });
 
   return (
     <Box id="FAQ" sx={{ bgcolor: "#212121", py: 8 }}>
@@ -44,7 +25,7 @@ export default function FAQSection() {
             borderRadius: "30px",
             boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
             overflow: "hidden",
-            bgcolor: "#333333", // Card oscura para contrastar con fondo
+            bgcolor: "#333333",
           }}
         >
           <CardContent sx={{ py: 6, px: 4 }}>
@@ -59,7 +40,7 @@ export default function FAQSection() {
                 fontFamily: '"Roboto", sans-serif',
               }}
             >
-              Frequently Asked Questions
+              {t("faq.title")}
             </Typography>
 
             {/* Descripción */}
@@ -75,8 +56,7 @@ export default function FAQSection() {
                 fontFamily: '"Roboto", sans-serif',
               }}
             >
-              Find answers to the most common questions about our services and
-              features.
+              {t("faq.description")}
             </Typography>
 
             {/* Lista de Preguntas */}

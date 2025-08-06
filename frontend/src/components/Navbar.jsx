@@ -57,13 +57,13 @@ export default function NavbarMUI() {
     navigate('/');
   };
 
-  // ✅ Alternar idioma
+  // Alternar idioma
   const handleLanguageToggle = () => {
     const newLang = i18n.language === 'en' ? 'es' : 'en';
     i18n.changeLanguage(newLang);
   };
 
-  // ✅ Bandera según idioma actual
+  // Bandera según idioma actual
   const getLanguageFlag = () => {
     return i18n.language === 'en'
       ? "https://flagcdn.com/w40/us.png" // Bandera EEUU

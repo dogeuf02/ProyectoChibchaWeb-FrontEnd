@@ -6,43 +6,43 @@ import {
   Card,
   CardContent,
   Avatar,
-  Rating,
-  Link
+  Rating
 } from '@mui/material';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import '../utils/TestimonialsCarousel.css'; // Importa los estilos personalizados
+import '../utils/TestimonialsCarousel.css';
+import { useTranslation } from 'react-i18next';
 
 const testimonials = [
   {
+    key: "charlie",
     name: "Charlie Low",
-    role: "Co-founder of Nohma",
     comment:
       "Since we've been with ChibchaWeb, it's been an incredible experience. We haven't had any issues, and if a question ever arises, their customer service is excellent.",
     rating: 5,
     img: "https://randomuser.me/api/portraits/women/44.jpg",
   },
   {
+    key: "jack",
     name: "Jack Bies",
-    role: "Creative Director",
     comment:
       "El equipo de éxito de ChibchaWeb hace todo lo posible para conocer más mi problema y resolverlo rápido.",
     rating: 5,
     img: "https://randomuser.me/api/portraits/men/32.jpg",
   },
   {
+    key: "jhon",
     name: "Jhon Ortega",
-    role: "Entrepreneur",
     comment:
       "Estaba buscando una empresa de hosting que fuera intuitiva para principiantes y bien configurada para un buen rendimiento, y ChibchaWeb cumplió con todo.",
     rating: 5,
     img: "https://randomuser.me/api/portraits/men/52.jpg",
   },
   {
+    key: "laura",
     name: "Laura Méndez",
-    role: "UX Designer",
     comment:
       "Desde que migrei meus projetos para o ChibchaWeb, a velocidade e o suporte superaram minhas expectativas.",
     rating: 5,
@@ -51,9 +51,12 @@ const testimonials = [
 ];
 
 export default function TestimonialsCarousel() {
+  const { t } = useTranslation();
+
   return (
     <Box sx={{ bgcolor: '#212121', py: 8 }}>
       <Container maxWidth="lg">
+        {/* Título traducido */}
         <Typography
           variant="h4"
           align="center"
@@ -64,7 +67,7 @@ export default function TestimonialsCarousel() {
             fontFamily: "'Roboto', sans-serif"
           }}
         >
-          Trusted by thousand webside owners, Colombia Top 1 webside platform.
+          {t("testimonials.title")}
         </Typography>
 
         <Swiper
@@ -103,7 +106,7 @@ export default function TestimonialsCarousel() {
                         {testimonial.name}
                       </Typography>
                       <Typography variant="body2" color="text.secondary" sx={{ fontFamily: "'Roboto', sans-serif" }}>
-                        {testimonial.role}
+                        {t(`testimonials.roles.${testimonial.key}`)}
                       </Typography>
                     </Box>
                   </Box>

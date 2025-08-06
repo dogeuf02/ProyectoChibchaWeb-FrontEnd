@@ -3,19 +3,15 @@ import { Box, Container, Grid, Typography, Link, IconButton } from "@mui/materia
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import XIcon from "@mui/icons-material/X"; // Asegúrate de tener @mui/icons-material actualizado
+import XIcon from "@mui/icons-material/X";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
+  const { t } = useTranslation();
   const year = new Date().getFullYear();
 
-  const links = [
-    "Work with us",
-    "Terms and conditions",
-    "Plans",
-    "How we protect your privacy",
-    "Accesibility",
-    "Help",
-  ];
+  // Traemos el array de links traducidos
+  const links = t("footer.links", { returnObjects: true });
 
   return (
     <Box
@@ -38,7 +34,7 @@ export default function Footer() {
             sx={{ height: 60, mb: { xs: 2, md: 0 } }}
           />
 
-          {/* Links */}
+          {/* Links traducidos */}
           <Grid item xs={12} md={6}>
             <Box
               sx={{
@@ -61,7 +57,7 @@ export default function Footer() {
               ))}
             </Box>
             <Typography variant="body2" sx={{ textAlign: "center", color: "#616161", mt: 1 }}>
-              Copyright © {year} ChibchaWeb S.A.S. Sugamuxi. All rights reserved.
+              {t("footer.copyright", { year })}
             </Typography>
           </Grid>
 
