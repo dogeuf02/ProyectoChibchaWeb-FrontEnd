@@ -2,133 +2,121 @@ import React from 'react';
 import {
   Box,
   Container,
-  Grid,
+  Typography,
   Card,
   CardContent,
   CardMedia,
-  Typography,
   Button,
-  CardActions,
-  Divider,
 } from '@mui/material';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
 
-import { useTranslation } from 'react-i18next';
-
-export default function DomainsInfo() {
-
-  const { t } = useTranslation();
-
+export default function DomainsCarousel() {
   const domains = [
     {
-      title: t('domains.domainInfo.com.title'),
-      description: t('domains.domainInfo.com.description'),
-      image: "/com.png"
+      title: "Commercial",
+      description:
+        "The most globally recognized and trusted domain, ideal for businesses, online stores, and professional websites seeking a worldwide audience.",
+      img: "/com.png",
     },
     {
-      title: t('domains.domainInfo.net.title'),
-      description: t('domains.domainInfo.net.description'),
-      image: "/net.png"
+      title: "Network",
+      description:
+        "A professional domain often linked to technology and internet services, suitable for startups, software platforms, and hosting providers.",
+      img: "/net.png",
     },
     {
-      title: t('domains.domainInfo.org.title'),
-      description: t('domains.domainInfo.org.description'),
-      image: "/org.png"
+      title: "Organization",
+      description:
+        "A credible and trustworthy domain commonly used by non-profits, foundations, and community or educational projects.",
+      img: "/org.png",
     },
   ];
-  console.log(domains)
+
   return (
-    <Box id="Domains" sx={{ bgcolor: '#FAFAFA', py: 8 }}>
+    <Box sx={{ bgcolor: '#FAFAFA', py: 8 }}>
       <Container maxWidth="lg">
         <Typography
           variant="h3"
           align="center"
-          gutterBottom
-          sx={{ color: '#212121', fontWeight: 'bold' }}
+          sx={{ 
+            fontWeight: 'bold',
+            mb: 6,
+            color: '#212121',
+            fontFamily: "'Roboto', sans-serif"
+          }}
         >
-          {t('domains.domainInfo.title')}
+          Explore Our Domains
         </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          sx={{ color: '#616161ff', mb: 4 }}
-        >
-          {t('domains.domainInfo.subtitle')} </Typography>
 
-        <Grid container spacing={4} justifyContent="center">
-          {domains.map((card, index) => (
-            <Grid item key={index} xs={12} sm={6} md={4}>
+        <Swiper
+          modules={[Autoplay, Pagination]}
+          spaceBetween={30}
+          slidesPerView={1}
+          autoplay={{ delay: 4000, disableOnInteraction: false }}
+          pagination={{ clickable: true }}
+          breakpoints={{
+            600: { slidesPerView: 1 },
+            900: { slidesPerView: 2 },
+            1200: { slidesPerView: 3 },
+          }}
+          style={{ paddingBottom: '50px' }}
+        >
+          {domains.map((domain, index) => (
+            <SwiperSlide key={index} style={{ display: 'flex', height: '100%' }}>
               <Card
                 sx={{
-                  height: '100%',
-                  borderRadius: '30px',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+                  borderRadius: '20px',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                  bgcolor: '#fff',
+                  mx: 1,
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  bgcolor: '#fff',
-                  transition: '0.3s',
+                  height: '100%',          // Mantiene mismo alto
+                  minHeight: 350,          // Alto mínimo uniforme
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease', // Transición suave
                   '&:hover': {
-                    transform: 'translateY(-5px)',
+                    transform: 'translateY(-8px)',    // Mueve la card hacia arriba
+                    boxShadow: '0 12px 28px rgba(0,0,0,0.2)', // Sombra más marcada
                   },
                 }}
               >
                 <CardMedia
                   component="img"
-                  image={card.image}
-                  alt={card.title}
-                  sx={{
-                    height: 150,
-                    objectFit: 'contain',
-                    mt: 2,
-                  }}
+                  image={domain.img}
+                  alt={domain.title}
+                  sx={{ height: 140, objectFit: 'contain', mt: 2 }}
                 />
-
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    align="center"
-                    sx={{ fontWeight: 'bold', color: card.color, mb: 1 }}
-                  >
-                    {card.title}
+                <CardContent sx={{ textAlign: 'center', px: 3, flexGrow: 1 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#212121', mb: 1 }}>
+                    {domain.title}
                   </Typography>
-
-                  <Divider sx={{ mb: 2 }} />
-
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    align="center"
-                    sx={{
-                      px: 1,
-                      display: '-webkit-box',
-                      WebkitLineClamp: 4,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                    }}
-                  >
-                    {card.description}
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    {domain.description}
                   </Typography>
-                </CardContent>
-
-                <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
                   <Button
                     variant="contained"
                     size="medium"
                     sx={{
                       bgcolor: '#FF6400',
                       borderRadius: '30px',
+                      textTransform: 'none',
                       px: 4,
                       '&:hover': {
                         bgcolor: '#e25a00',
                       },
                     }}
                   >
-                    {t('domains.moreInfo')} </Button>
-                </CardActions>
+                    Learn More
+                  </Button>
+                </CardContent>
               </Card>
-            </Grid>
+            </SwiperSlide>
           ))}
-        </Grid>
+        </Swiper>
       </Container>
     </Box>
   );

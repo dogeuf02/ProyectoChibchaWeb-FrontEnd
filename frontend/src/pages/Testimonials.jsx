@@ -18,7 +18,7 @@ import '../utils/TestimonialsCarousel.css'; // Importa los estilos personalizado
 const testimonials = [
   {
     name: "Charlie Low",
-    role: "Co-fundadora de Nohma",
+    role: "Co-founder of Nohma",
     comment:
       "Since we've been with ChibchaWeb, it's been an incredible experience. We haven't had any issues, and if a question ever arises, their customer service is excellent.",
     rating: 5,
@@ -26,7 +26,7 @@ const testimonials = [
   },
   {
     name: "Jack Bies",
-    role: "Director creativo",
+    role: "Creative Director",
     comment:
       "El equipo de éxito de ChibchaWeb hace todo lo posible para conocer más mi problema y resolverlo rápido.",
     rating: 5,
@@ -34,7 +34,7 @@ const testimonials = [
   },
   {
     name: "Jhon Ortega",
-    role: "Emprendedor",
+    role: "Entrepreneur",
     comment:
       "Estaba buscando una empresa de hosting que fuera intuitiva para principiantes y bien configurada para un buen rendimiento, y ChibchaWeb cumplió con todo.",
     rating: 5,
@@ -42,7 +42,7 @@ const testimonials = [
   },
   {
     name: "Laura Méndez",
-    role: "Diseñadora UX",
+    role: "UX Designer",
     comment:
       "Desde que migrei meus projetos para o ChibchaWeb, a velocidade e o suporte superaram minhas expectativas.",
     rating: 5,
