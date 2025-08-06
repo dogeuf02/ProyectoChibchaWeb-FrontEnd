@@ -241,8 +241,8 @@ export default function DomainRequest() {
               <TableBody>
                 {domainRequests.map((req) => (
                   <TableRow key={req.idSolicitud}>
-                    <TableCell>{req.dominio.nombreDominio}</TableCell>
-                    <TableCell>{req.dominio.tld}</TableCell>
+                    <TableCell>{req.dominio?.nombreDominio || "-"}</TableCell>
+                    <TableCell>{req.dominio?.tld || "-"}</TableCell>
                     <TableCell>
                       <Chip
                         label={req.estado}

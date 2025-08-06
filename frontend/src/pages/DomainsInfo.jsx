@@ -12,26 +12,27 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import { useTranslation } from 'react-i18next';
 
 export default function DomainsCarousel() {
+
+  const { t } = useTranslation();
+
   const domains = [
     {
-      title: "Commercial",
-      description:
-        "The most globally recognized and trusted domain, ideal for businesses, online stores, and professional websites seeking a worldwide audience.",
-      img: "/com.png",
+      title: t('DomainsInfo.carousel.com.title'),
+      description: t('DomainsInfo.carousel.com.description'),
+      img: '/com.png',
     },
     {
-      title: "Network",
-      description:
-        "A professional domain often linked to technology and internet services, suitable for startups, software platforms, and hosting providers.",
-      img: "/net.png",
+      title: t('DomainsInfo.carousel.net.title'),
+      description: t('DomainsInfo.carousel.net.description'),
+      img: '/net.png',
     },
     {
-      title: "Organization",
-      description:
-        "A credible and trustworthy domain commonly used by non-profits, foundations, and community or educational projects.",
-      img: "/org.png",
+      title: t('DomainsInfo.carousel.org.title'),
+      description: t('DomainsInfo.carousel.org.description'),
+      img: '/org.png',
     },
   ];
 
@@ -41,14 +42,14 @@ export default function DomainsCarousel() {
         <Typography
           variant="h3"
           align="center"
-          sx={{ 
+          sx={{
             fontWeight: 'bold',
             mb: 6,
             color: '#212121',
             fontFamily: "'Roboto', sans-serif"
           }}
         >
-          Explore Our Domains
+          {t('DomainsInfo.carousel.title')}
         </Typography>
 
         <Swiper
@@ -110,7 +111,7 @@ export default function DomainsCarousel() {
                       },
                     }}
                   >
-                    Learn More
+                    {t('DomainsInfo.carousel.learnMore')}
                   </Button>
                 </CardContent>
               </Card>

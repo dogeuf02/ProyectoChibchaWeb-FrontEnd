@@ -20,8 +20,8 @@
     "domains": {
         "domainsTitle": "Domains",
         "domainInfo": {
-            "title":"Choose Your Domain",
-            "subtitle":"Select the perfect domain for your website",
+            "title": "Choose Your Domain",
+            "subtitle": "Select the perfect domain for your website",
             "com": {
                 "title": "Domain .com",
                 "description": "Brief description of the first service."
@@ -38,39 +38,40 @@
         "moreInfo": "More information"
     },
     "hosting": {
-        "hostingTitle": "Hosting Plans",
-        "sectionTitle":"Choose the Right Hosting Plan",
-        "subtitle":"Flexible prices to grow with your business",
-        "planPeriodicity":{
-            "monthly":"Monthly",
-            "semiAnnual":"Semi-Annual",
-            "annual":"Annual"
+        "sectionTitle": "Choose the Right Hosting Plan",
+        "subtitle": "Flexible prices to grow with your business",
+        "hostingButton": "GET THE PLAN",
+        "planPeriodicity": {
+            "mensual": "Monthly",
+            "semestral": "Semi-Annual",
+            "anual": "Annual"
         },
         "hostingPlans": {
-            "gold": {
-                "title": "CHIBCHAGOLD",
-                "description": "Brief description of Gold plan"
-            },
-            "silver": {
-                "title": "CHIBCHASILVER",
-                "description": "Brief description of Silver plan."
-            },
-            "platinum": {
-                "title": "CHIBCHAPLATINUM",
-                "description": "Brief description of Platinum plan."
-            },
-            "features":{
-                "websites":"Websites",
-                "databases":"Databases",
-                "emailAccounts":"Email accounts",
-                "builder":"Website builder",
-                "sslCertificates":"SSL certificates, https",
-                "emailMarketing":"Email marketing",
-                "unlimitedDatabases":"Unlimited databases",
-                "storage":"GB NVMe SSD storage"
+            "features": {
+                "websites": "Websites",
+                "databases": "Databases",
+                "emailAccounts": "Email accounts",
+                "builder": "Website builder",
+                "sslCertificates": "SSL certificates, https",
+                "emailMarketing": "Email marketing",
+                "unlimitedDatabases": "Unlimited databases",
+                "storage": "GB NVMe SSD storage"
             }
         },
-        "hostingButton": "GET THE PLAN"
+        "dialog": {
+            "title": "Select billing type",
+            "selectedPlan": "Selected plan",
+            "billingCycle": "Billing cycle",
+            "noOptions": "No billing cycle options",
+            "cancel": "Cancel",
+            "confirm": "Confirm"
+        },
+        "alerts": {
+            "notClient": "You must log in as a client to get a plan.",
+            "noBilling": "Billing method not found.",
+            "errorLoading": "Error loading plans"
+        },
+        "emptyList": "No plans available."
     },
     "distributor": {
         "title": "Distributor",
@@ -246,8 +247,8 @@
         "expires": "Expires",
         "deleteCard": "Delete card"
     },
-    "util":{
-        "dolarCoin":"USD"
+    "util": {
+        "dolarCoin": "USD"
     },
     "alert": {
         "success": {
@@ -255,6 +256,59 @@
         },
         "error": {
             "login": "Verify your credentials."
+        }
+    },
+    "drawer": {
+        "profile": "Profile",
+        "payments": "Payments",
+        "myDomains": "My Domains",
+        "domainRequest": "Domain Request",
+        "myTickets": "My Tickets",
+        "myPlans": "My Plans",
+        "manage": "Manage",
+        "clients": "Clients",
+        "distributors": "Distributors",
+        "employees": "Employees",
+        "domainRequests": "Domain Requests",
+        "distributorRequests": "Distributor Requests",
+        "domains": "Domains",
+        "plans": "Plans",
+        "administrators": "Administrators",
+        "logout": "Logout"
+    },
+    "navbar": {
+        "myProfile": "My Profile",
+        "clientsManagement": "Clients Management",
+        "distributorManagement": "Distributor Management",
+        "employeesManagement": "Employees Management",
+        "domainRequestManagement": "Domain Request Management",
+        "distributorRequestManagement": "Distributor Request Management",
+        "domainsManagement": "Domains Management",
+        "plansManagement": "Plans Management",
+        "administratorsManagement": "Administrators Management",
+        "paymentManagement": "Payment Management",
+        "myPlans": "My Plans",
+        "myDomains": "My Domains",
+        "domainRequest": "Domain Request",
+        "myTickets": "My Tickets",
+        "ticketsManagement": "Tickets Management"
+    },
+    "DomainsInfo": {
+        "carousel": {
+            "title": "Explore Our Domains",
+            "learnMore": "Learn More",
+            "com": {
+                "title": "Commercial",
+                "description": "The most globally recognized and trusted domain, ideal for businesses, online stores, and professional websites seeking a worldwide audience."
+            },
+            "net": {
+                "title": "Network",
+                "description": "A professional domain often linked to technology and internet services, suitable for startups, software platforms, and hosting providers."
+            },
+            "org": {
+                "title": "Organization",
+                "description": "A credible and trustworthy domain commonly used by non-profits, foundations, and community or educational projects."
+            }
         }
     }
 }

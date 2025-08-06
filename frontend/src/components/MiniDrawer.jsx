@@ -33,7 +33,12 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { useAuth } from '../context/AuthContext';
 import { ROLE } from '../enum/roleEnum'
 
+import { useTranslation } from 'react-i18next';
+
+
 const drawerWidth = 240;
+
+
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -86,6 +91,7 @@ export default function MiniDrawer() {
 
   const { authenticated, role, logout } = useAuth();
 
+  const { t } = useTranslation();
 
   const theme = useTheme();
   const navigate = useNavigate();
@@ -97,18 +103,14 @@ export default function MiniDrawer() {
   const handleToggleManage = () => setOpenManage((prev) => !prev);
 
   const manageItems = [
-    { text: 'Clients', icon: <PersonIcon />, path: '/admin/Manageclients' },
-    { text: 'Distributors', icon: <PeopleIcon />, path: '/admin/ManageDistributors' },
-    { text: 'Employees', icon: <RecentActorsIcon />, path: '/admin/ManageEmployees' },
-    { text: 'Domain Request', icon: <AssignmentIcon />, path: '/admin/ManageDomainRequests' },
-    { text: 'Distributor Request', icon: <AssignmentIcon />, path: '/admin/ManageDistributorRequests' },
-    { text: 'Domains', icon: <DnsIcon />, path: '/admin/ManageDomains' },
-    { text: 'Plans', icon: <ListAltIcon />, path: '/admin/ManagePlans' },
-    {
-      text: 'Administrators', // 👈 NUEVO
-      icon: <AdminPanelSettingsIcon />,
-      path: '/admin/manageAdministrators',
-    },
+    { text: t('drawer.clients'), icon: <PersonIcon />, path: '/admin/Manageclients' },
+    { text: t('drawer.distributors'), icon: <PeopleIcon />, path: '/admin/ManageDistributors' },
+    { text: t('drawer.employees'), icon: <RecentActorsIcon />, path: '/admin/ManageEmployees' },
+    { text: t('drawer.domainRequests'), icon: <AssignmentIcon />, path: '/admin/ManageDomainRequests' },
+    { text: t('drawer.distributorRequests'), icon: <AssignmentIcon />, path: '/admin/ManageDistributorRequests' },
+    { text: t('drawer.domains'), icon: <DnsIcon />, path: '/admin/ManageDomains' },
+    { text: t('drawer.plans'), icon: <ListAltIcon />, path: '/admin/ManagePlans' },
+    { text: t('drawer.administrators'), icon: <AdminPanelSettingsIcon />, path: '/admin/manageAdministrators' },
   ];
 
   // Para rutas dinámicas por rol
@@ -121,18 +123,17 @@ export default function MiniDrawer() {
   };
 
   const sharedItems = [
-    { text: 'Profile', icon: <AccountCircleIcon />, basePath: 'manageProfile' },
-  ];
+    { text: t('drawer.profile'), icon: <AccountCircleIcon />, basePath: 'manageProfile' }];
 
   const clientDistributorItems = [
-    { text: 'Payments', icon: <AddCardIcon />, basePath: 'paymentManagement' },
-    { text: 'MyDomains', icon: <DnsIcon />, basePath: 'mydomains' },
-    { text: 'Domain Request', icon: <DomainVerificationIcon />, basePath: 'DomainRequest' },
-    { text: 'MyTickets', icon: <ConfirmationNumberIcon />, basePath: 'MyTickets' },
+    { text: t('drawer.payments'), icon: <AddCardIcon />, basePath: 'paymentManagement' },
+    { text: t('drawer.myDomains'), icon: <DnsIcon />, basePath: 'mydomains' },
+    { text: t('drawer.domainRequest'), icon: <DomainVerificationIcon />, basePath: 'DomainRequest' },
+    { text: t('drawer.myTickets'), icon: <ConfirmationNumberIcon />, basePath: 'MyTickets' },
   ];
 
   const clientOnlyItems = [
-    { text: 'My Plans', icon: <ListAltIcon />, path: '/client/myplans' },
+    { text: t('drawer.myPlans'), icon: <ListAltIcon />, path: '/client/myplans' }
   ];
 
   const employeeOnlyItems = [
@@ -207,7 +208,11 @@ export default function MiniDrawer() {
                   >
                     {icon}
                   </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                  <ListItemText
+                    primary={text}
+                    primaryTypographyProps={{ whiteSpace: 'pre-line' }}
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
                 </ListItemButton>
               </ListItem>
             );
@@ -251,7 +256,11 @@ export default function MiniDrawer() {
                     >
                       {icon}
                     </ListItemIcon>
-                    <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                    <ListItemText
+                      primary={text}
+                      primaryTypographyProps={{ whiteSpace: 'pre-line' }}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
                   </ListItemButton>
                 </ListItem>
               );
@@ -284,7 +293,7 @@ export default function MiniDrawer() {
                   >
                     <ManageAccountsIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Manage" sx={{ opacity: open ? 1 : 0 }} />
+                  <ListItemText primary={t('drawer.manage')} sx={{ opacity: open ? 1 : 0 }} />
                   {open && (openManage ? <ExpandLess /> : <ExpandMore />)}
                 </ListItemButton>
               </ListItem>
@@ -323,7 +332,11 @@ export default function MiniDrawer() {
                         >
                           {icon}
                         </ListItemIcon>
-                        <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                        <ListItemText
+                          primary={text}
+                          primaryTypographyProps={{ whiteSpace: 'pre-line' }}
+                          sx={{ opacity: open ? 1 : 0 }}
+                        />
                       </ListItemButton>
                     );
                   })}
@@ -369,7 +382,11 @@ export default function MiniDrawer() {
                     >
                       {icon}
                     </ListItemIcon>
-                    <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                    <ListItemText
+                      primary={text}
+                      primaryTypographyProps={{ whiteSpace: 'pre-line' }}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
                   </ListItemButton>
                 </ListItem>
               );
@@ -384,7 +401,7 @@ export default function MiniDrawer() {
               <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
                 <LogoutIcon />
               </ListItemIcon>
-              <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
+              <ListItemText primary={t('drawer.logout')} sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
         </List>

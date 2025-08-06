@@ -79,40 +79,38 @@ export default function NavbarMUI() {
       default: return "";
     }
   };
-
   const menuItemsByRole = {
     [ROLE.ADMIN]: [
-      { label: 'My Profile', path: '/admin' },
-      { label: 'Clients Management', path: '/admin/ManageClients' },
-      { label: 'Distributor Management', path: '/admin/ManageDistributors' },
-      { label: 'Employees Management', path: '/admin/ManageEmployees' },
-      { label: 'Domain Request Management', path: '/admin/ManageDomainRequests' },
-      { label: 'Distributor Request Management', path: '/admin/ManageDistributorRequests' },
-      { label: 'Domains Management', path: '/admin/ManageDomains' },
-      { label: 'Plans Management', path: '/admin/ManagePlans' },
-      { label: 'Administrators Management', path: '/admin/manageAdministrators' },
+      { label: t('navbar.myProfile'), path: '/admin' },
+      { label: t('navbar.clientsManagement'), path: '/admin/ManageClients' },
+      { label: t('navbar.distributorManagement'), path: '/admin/ManageDistributors' },
+      { label: t('navbar.employeesManagement'), path: '/admin/ManageEmployees' },
+      { label: t('navbar.domainRequestManagement'), path: '/admin/ManageDomainRequests' },
+      { label: t('navbar.distributorRequestManagement'), path: '/admin/ManageDistributorRequests' },
+      { label: t('navbar.domainsManagement'), path: '/admin/ManageDomains' },
+      { label: t('navbar.plansManagement'), path: '/admin/ManagePlans' },
+      { label: t('navbar.administratorsManagement'), path: '/admin/manageAdministrators' },
     ],
     [ROLE.CLIENT]: [
-      { label: 'My Profile', path: '/client' },
-      { label: 'Payment Management', path: '/client/paymentManagement' },
-      { label: 'My Plans', path: '/client/myplans' },
-      { label: 'My Domains', path: '/client/mydomains' },
-      { label: 'Domain Request', path: '/client/DomainRequest' },
-      { label: 'My Tickets', path: '/client/MyTickets' },
+      { label: t('navbar.myProfile'), path: '/client' },
+      { label: t('navbar.paymentManagement'), path: '/client/paymentManagement' },
+      { label: t('navbar.myPlans'), path: '/client/myplans' },
+      { label: t('navbar.myDomains'), path: '/client/mydomains' },
+      { label: t('navbar.domainRequest'), path: '/client/DomainRequest' },
+      { label: t('navbar.myTickets'), path: '/client/MyTickets' },
     ],
     [ROLE.DISTRIBUTOR]: [
-      { label: 'My Profile', path: '/distributor' },
-      { label: 'Payment Management', path: '/distributor/paymentManagement' },
-      { label: 'My Domains', path: '/distributor/mydomains' },
-      { label: 'Domain Request', path: '/distributor/DomainRequest' },
-      { label: 'My Tickets', path: '/distributor/MyTickets' },
+      { label: t('navbar.myProfile'), path: '/distributor' },
+      { label: t('navbar.paymentManagement'), path: '/distributor/paymentManagement' },
+      { label: t('navbar.myDomains'), path: '/distributor/mydomains' },
+      { label: t('navbar.domainRequest'), path: '/distributor/DomainRequest' },
+      { label: t('navbar.myTickets'), path: '/distributor/MyTickets' },
     ],
     [ROLE.EMPLOYEE]: [
-      { label: 'My Profile', path: '/employee' },
-      { label: 'Tickets Management', path: '/employee/ManageTickets' },
+      { label: t('navbar.myProfile'), path: '/employee' },
+      { label: t('navbar.ticketsManagement'), path: '/employee/ManageTickets' },
     ],
   };
-
   const roleMenuItems = menuItemsByRole[role] || [];
 
   return (

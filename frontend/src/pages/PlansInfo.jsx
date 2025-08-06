@@ -42,7 +42,7 @@ export default function PlansInfo() {
 
   const handleGetPlan = (plan) => {
     if (autenticated || role !== ROLE.CLIENT) {
-      showAlert("You must log in as a client to get a plan.", "warning");
+      showAlert(t('hosting.alerts.notClient'), "warning");
       return;
     }
 
@@ -58,7 +58,7 @@ export default function PlansInfo() {
     );
 
     if (!modalidadSeleccionada) {
-      showAlert("Modalidad de pago no encontrada.", "error");
+      showAlert(t('hosting.alerts.noBilling'), "error");
       return;
     }
 
@@ -123,7 +123,9 @@ export default function PlansInfo() {
 
         setPlans(groupedPlans);
       } else {
-        showAlert("Error loading plans", "error");
+        showAlert(t('hosting.alerts.errorLoading')
+
+, "error");
       }
     };
 
@@ -156,7 +158,7 @@ export default function PlansInfo() {
               align="center"
               sx={{ color: "black", fontWeight: "bold", mb: 2 }}
             >
-              No hay
+              {t('hosting.emptyList')}
             </Typography>
           ) : (
             plans.map((plan, index) => (
@@ -281,19 +283,19 @@ export default function PlansInfo() {
           open={openBillingDialog}
           onClose={() => setOpenBillingDialog(false)}
         >
-          <DialogTitle>Select billing type</DialogTitle>
+          <DialogTitle>{t("hosting.dialog.title")}</DialogTitle>
           <DialogContent>
             {selectedPlan && (
               <>
                 <Typography sx={{ mb: 2 }}>
-                  Plan seleccionado:{" "}
+                   {t("hosting.dialog.selectedPlan")}:{" "}
                   <strong>{selectedPlan.planCliente.nombrePlanCliente}</strong>
                 </Typography>
 
                 <TextField
                   select
                   fullWidth
-                  label="Billing cycle"
+                  label={t("hosting.dialog.billingCycle")}
                   value={billingCycle}
                   onChange={(e) => setBillingCycle(e.target.value)}
                   sx={{ mb: 2 }}
@@ -312,7 +314,7 @@ export default function PlansInfo() {
                     ))
                   ) : (
                     <MenuItem disabled value="">
-                      No billing cycle options
+                      {t("hosting.dialog.noOptions")}
                     </MenuItem>
                   )}
                 </TextField>
@@ -320,7 +322,7 @@ export default function PlansInfo() {
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setOpenBillingDialog(false)}>Cancel</Button>
+            <Button onClick={() => setOpenBillingDialog(false)}> {t("hosting.dialog.cancel")}</Button>
             <Button
               variant="contained"
               sx={{
@@ -331,7 +333,7 @@ export default function PlansInfo() {
               onClick={handleConfirmPlan}
               disabled={!billingCycle}
             >
-              Confirm
+              {t("hosting.dialog.confirm")}
             </Button>
           </DialogActions>
         </Dialog>

@@ -64,7 +64,7 @@ export default function TicketsList({
             <TableRow sx={{ bgcolor: "#fff3e0" }}>
               <TableCell />
               <TableCell><b>ID Ticket</b></TableCell>
-              {!readOnly && <TableCell><b>Client ID</b></TableCell>}        
+              {!readOnly && <TableCell><b>Client ID</b></TableCell>}
               {!readOnly && <TableCell><b>Distributor ID</b></TableCell>}
               <TableCell><b>Subject</b></TableCell>
               {readOnly && <TableCell><b>Description</b></TableCell>}
@@ -77,11 +77,12 @@ export default function TicketsList({
             {(tickets || [])
               .filter((t) => {
                 const ticketId = t.ticket_id?.toLowerCase() || "";
-                const clientId = t.client_id?.toLowerCase() || "";
+                const clientId = t.client_id?.toString().toLowerCase() || "";
                 const search = searchTerm.toLowerCase();
 
                 return ticketId.includes(search) || clientId.includes(search);
               })
+
               .map((ticket, index) => (
                 <TicketRow
                   key={ticket.ticket_id || index}

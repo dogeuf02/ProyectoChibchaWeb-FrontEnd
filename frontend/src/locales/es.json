@@ -1,5 +1,314 @@
 {
+  "title": "CHIBCHAWEB",
   "home": {
-    "title": "Empresa líder de hosting web en Colombia"
+    "title": "Empresa líder de hosting web en Colombia",
+    "menu": {
+      "domains": "Dominios",
+      "hosting": "Planes de Hosting",
+      "distributor": "Distribuidor"
+    },
+    "features": {
+      "flexiblePlans": "Planes flexibles para los clientes",
+      "agreements": "Convenios comerciales para distribuidores",
+      "support": "Soporte técnico especializado",
+      "registrators": "Acuerdos directos con registradores"
+    }
+  },
+  "login": {
+    "button": "Iniciar sesión"
+  },
+  "domains": {
+    "domainsTitle": "Dominios",
+    "domainInfo": {
+      "title": "Elige tu dominio",
+      "subtitle": "Selecciona el dominio perfecto para tu sitio web",
+      "com": {
+        "title": "Dominio .com",
+        "description": "Descripción breve del primer servicio."
+      },
+      "net": {
+        "title": "Dominio .net",
+        "description": "Descripción breve del segundo servicio."
+      },
+      "org": {
+        "title": "Dominio .org",
+        "description": "Descripción breve del tercer servicio."
+      }
+    },
+    "moreInfo": "Más información"
+  },
+  "hosting": {
+    "sectionTitle": "Elige el Plan de Hosting Correcto",
+    "subtitle": "Precios flexibles para crecer con tu negocio",
+    "hostingButton": "OBTENER PLAN",
+    "planPeriodicity": {
+      "mensual": "Mensual",
+      "semestral": "Semestral",
+      "anual": "Anual"
+    },
+    "hostingPlans": {
+      "features": {
+        "websites": "Sitios web",
+        "databases": "Bases de datos",
+        "emailAccounts": "Cuentas de correo",
+        "builder": "Creador de sitios web",
+        "sslCertificates": "Certificados SSL, https",
+        "emailMarketing": "Email marketing",
+        "unlimitedDatabases": "Bases de datos ilimitadas",
+        "storage": "GB de almacenamiento NVMe SSD"
+      }
+    },
+    "dialog": {
+      "title": "Seleccionar tipo de facturación",
+      "selectedPlan": "Plan seleccionado",
+      "billingCycle": "Ciclo de facturación",
+      "noOptions": "No hay opciones de facturación",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar"
+    },
+    "alerts": {
+      "notClient": "Debes iniciar sesión como cliente para obtener un plan.",
+      "noBilling": "Modalidad de pago no encontrada.",
+      "errorLoading": "Error al cargar los planes"
+    },
+    "emptyList": "No hay planes disponibles."
+  },
+  "distributor": {
+    "title": "Distribuidor",
+    "description": "Como distribuidor podrás recibir comisión dependiendo de tus ventas en CHIBCHAWEB. ¡Únete a nuestro programa y comienza a crecer tu negocio con nosotros!",
+    "applyLink": "Postúlate como distribuidor ->"
+  },
+  "footer": {
+    "copyright": "© {{year}} ChibchaWeb. Todos los derechos reservados."
+  },
+  "loginPage": {
+    "signInTitle": "Iniciar sesión",
+    "emailField": "Correo electrónico",
+    "passwordField": "Contraseña",
+    "signInButton": "INGRESAR",
+    "accountLabel": "¿No tienes una cuenta?",
+    "createAccountLink": "Crear cuenta",
+    "distributorLabel": "¿Quieres trabajar con nosotros como distribuidor?",
+    "distributorLink": "Haz clic aquí"
+  },
+  "registerAccount": {
+    "title": "Registrar cuenta",
+    "firstNameField": "Nombre",
+    "lastnameField": "Apellido",
+    "emailField": "Correo electrónico",
+    "phoneNumberField": "Número de teléfono",
+    "birthDateField": "Fecha de nacimiento",
+    "passwordField": "Contraseña",
+    "confirmPasswordfield": "Confirmar contraseña",
+    "registerButton": "REGISTRARSE",
+    "accountLabel": "¿Ya tienes una cuenta?",
+    "accountLink": "Sign in",
+    "distributorLabel": "Do you want to work with us as a distributor?",
+    "distributorLink": "Haz clic aquí"
+  },
+  "clientManagement": {
+    "title": "Client Management",
+    "addClientButton": "Agregar cliente",
+    "addClientDialog": {
+      "title": "Agregar nuevo cliente",
+      "firstNameField": "Nombre",
+      "lastnameField": "Apellido",
+      "emailField": "Correo electrónico",
+      "phoneNumberField": "Número de teléfono",
+      "birthDateField": "Fecha de nacimiento",
+      "cancelButton": "CANCELAR",
+      "saveButton": "GUARDAR"
+    },
+    "deleteDialog": {
+      "title": "Eliminar cliente",
+      "message": "¿Estás seguro de que deseas eliminar este cliente? Esta acción no se puede deshacer.",
+      "confirmText": "Confirmar eliminación"
+    },
+    "list": {
+      "fullName": "Nombre completo",
+      "email": "Correo electrónico",
+      "status": "Estado",
+      "details": "Detalles del cliente",
+      "id": "ID del cliente",
+      "phone": "Teléfono",
+      "birthdate": "Fecha de nacimiento",
+      "searchField": "Buscar por ID"
+    }
+  },
+  "distributorManagement": {
+    "title": "Distributor Management",
+    "addDistributorButton": "Add Distributor",
+    "addDistributorDialog": {
+      "title": "Add New Distributor",
+      "emailField": "Correo electrónico",
+      "docTypeField": "Document Type",
+      "docNumberField": "Document Number",
+      "companyNameField": "Company Name",
+      "companyAddressField": "Company Address",
+      "cancelButton": "CANCELAR",
+      "saveButton": "GUARDAR"
+    },
+    "deleteDialog": {
+      "title": "Delete Distributor",
+      "message": "Are you sure you want to delete this distributor? This action cannot be undone.",
+      "confirmText": "Confirmar eliminación"
+    },
+    "list": {
+      "companyName": "Nombre completo",
+      "email": "Correo electrónico",
+      "status": "Estado",
+      "role": "Role",
+      "searchField": "Buscar por ID",
+      "details": "Distributor Details",
+      "id": "Distributor ID",
+      "docType": "Document Type",
+      "docNumber": "Document Number",
+      "companyAddress": "Company Address"
+    }
+  },
+  "employeeManagement": {
+    "title": "Employee Management",
+    "addEmployeeButton": "ADD EMPLOYEE",
+    "addEmployeeDialog": {
+      "title": "Add New Employee",
+      "firstNameField": "Nombre",
+      "lastnameField": "Apellido",
+      "emailField": "Correo electrónico",
+      "phoneNumberField": "Número de teléfono",
+      "positionField": "Position",
+      "cancelButton": "CANCELAR",
+      "saveButton": "GUARDAR"
+    },
+    "deleteDialog": {
+      "title": "Delete Employee",
+      "message": "Are you sure you want to delete this employee? This action cannot be undone.",
+      "confirmText": "Confirmar eliminación"
+    },
+    "list": {
+      "fullName": "Nombre completo",
+      "position": "Position",
+      "email": "Correo electrónico",
+      "status": "Estado",
+      "details": "Employee Details",
+      "id": "Employee ID",
+      "searchField": "Buscar por ID"
+    }
+  },
+  "domainRequestsManagement": {
+    "title": "Domain Registration Requests",
+    "denyRequestDialog": {
+      "title": "Deny Registration Request",
+      "message": "Are you sure you want to deny this registration request? This action cannot be undone.",
+      "confirmText": "Confirm Denial"
+    },
+    "list": {
+      "domain": "domain",
+      "fullDomain": "Full Domain",
+      "applicant": "Applicant",
+      "applicantInfo": "Applicant Info",
+      "applicantName": "Name",
+      "applicantRole": "Role",
+      "email": "Correo electrónico",
+      "requestStatus": "Request Status",
+      "domainStatus": "Domain Status",
+      "details": "Request Details",
+      "id": "Request ID",
+      "reviewedBy": "Reviewed By",
+      "searchField": "Search by Domain or ID",
+      "accept": "Accept",
+      "reject": "Reject"
+    }
+  },
+  "distributorRequestsManagement": {
+    "title": "Apply as Distributor requests",
+    "list": {
+      "details": "Distributor Request Details",
+      "id": "Distributor ID",
+      "docType": "Document Type",
+      "docNumber": "Document Number",
+      "companyAddress": "Company Address",
+      "accept": "Accept",
+      "deny": "Deny",
+      "searchField": "Buscar por ID",
+      "companyName": "Company Name",
+      "email": "Correo electrónico",
+      "status": "Estado",
+      "role": "Role"
+    }
+  },
+  "payment": {
+    "title": "Payment Information",
+    "cardType": "Card Type",
+    "cardNumber": "Card Number",
+    "cvc": "CVC",
+    "expiryDate": "Exp. Date (MM/YY)",
+    "saveButton": "SAVE PAYMENT METHOD",
+    "addMethod": "Add payment method",
+    "expires": "Expires",
+    "deleteCard": "Delete card"
+  },
+  "util": {
+    "dolarCoin": "USD"
+  },
+  "alert": {
+    "success": {
+      "login": "Inicio de sesión exitoso."
+    },
+    "error": {
+      "login": "Verifica tus credenciales."
+    }
+  },
+  "drawer": {
+    "profile": "Perfil",
+    "payments": "Pagos",
+    "myDomains": "Mis Dominios",
+    "domainRequest": "Solicitud\n de Dominio",
+    "myTickets": "Mis Tickets",
+    "myPlans": "Mis Planes",
+    "manage": "Gestión",
+    "clients": "Clientes",
+    "distributors": "Distribuidores",
+    "employees": "Empleados",
+    "domainRequests": "Solicitudes\n de Dominio",
+    "distributorRequests": "Solicitudes\n de Distribuidor",
+    "domains": "Dominios",
+    "plans": "Planes",
+    "administrators": "Administradores",
+    "logout": "Cerrar Sesión"
+  },
+  "navbar": {
+    "myProfile": "Mi Perfil",
+    "clientsManagement": "Gestión de Clientes",
+    "distributorManagement": "Gestión de Distribuidores",
+    "employeesManagement": "Gestión de Empleados",
+    "domainRequestManagement": "Gestión de Solicitudes de Dominio",
+    "distributorRequestManagement": "Gestión de Solicitudes de Distribuidor",
+    "domainsManagement": "Gestión de Dominios",
+    "plansManagement": "Gestión de Planes",
+    "administratorsManagement": "Gestión de Administradores",
+    "paymentManagement": "Gestión de Pagos",
+    "myPlans": "Mis Planes",
+    "myDomains": "Mis Dominios",
+    "domainRequest": "Solicitud de Dominio",
+    "myTickets": "Mis Tickets",
+    "ticketsManagement": "Gestión de Tickets"
+  },
+  "DomainsInfo": {
+    "carousel": {
+      "title": "Explora Nuestros Dominios",
+      "learnMore": "Más Información",
+      "com": {
+        "title": "Comercial",
+        "description": "El dominio más reconocido y confiable a nivel mundial, ideal para empresas, tiendas en línea y sitios web profesionales que buscan una audiencia global."
+      },
+      "net": {
+        "title": "Red",
+        "description": "Un dominio profesional comúnmente vinculado a servicios tecnológicos y de internet, adecuado para startups, plataformas de software y proveedores de hosting."
+      },
+      "org": {
+        "title": "Organización",
+        "description": "Un dominio creíble y confiable, utilizado comúnmente por organizaciones sin fines de lucro, fundaciones y proyectos educativos o comunitarios."
+      }
+    }
   }
 }
