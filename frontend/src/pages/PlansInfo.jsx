@@ -8,8 +8,6 @@ import {
   Typography,
   Button,
   CardActions,
-  List,
-  ListItem,
   Divider,
   Dialog,
   DialogTitle,
@@ -21,16 +19,15 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useGlobalAlert } from "../context/AlertContext";
 import { useTranslation } from "react-i18next";
-import { getPlansInfo } from "../api/planApi"
+import { getPlansInfo } from "../api/planApi";
 import { useAuth } from "../context/AuthContext";
 import { ROLE } from "../enum/roleEnum";
-import { hasPayMethods } from "../api/payMethodApi";
 
 export default function PlansInfo() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { showAlert } = useGlobalAlert();
-  const { autenticated, role, specificId } = useAuth();
+  const { autenticated, role } = useAuth();
 
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [openBillingDialog, setOpenBillingDialog] = useState(false);
@@ -40,11 +37,10 @@ export default function PlansInfo() {
   const planColors = {
     CHIBCHASILVER: "#C0C0C0",
     CHIBCHAGOLD: "#FFD700",
-    CHIBCHAPLATINUM: "#CD7F32"
+    CHIBCHAPLATINUM: "#CD7F32",
   };
 
   const handleGetPlan = (plan) => {
-    // Verificar login como cliente
     if (autenticated || role !== ROLE.CLIENT) {
       showAlert("You must log in as a client to get a plan.", "warning");
       return;
@@ -57,7 +53,6 @@ export default function PlansInfo() {
   const handleConfirmPlan = () => {
     if (!selectedPlan || !billingCycle) return;
 
-    // Buscar la modalidad seleccionada
     const modalidadSeleccionada = selectedPlan.precios.find(
       (p) => p.planPago.idPlanPago === billingCycle
     );
@@ -67,7 +62,6 @@ export default function PlansInfo() {
       return;
     }
 
-    // Construir objeto para checkout
     const checkoutData = {
       idPlanCliente: selectedPlan.planCliente.idPlanCliente,
       nombrePlanCliente: selectedPlan.planCliente.nombrePlanCliente,
@@ -77,8 +71,9 @@ export default function PlansInfo() {
         almacenamientoNvme: selectedPlan.planCliente.almacenamientoNvme,
         numeroCuentasCorreo: selectedPlan.planCliente.numeroCuentasCorreo,
         creadorWeb: selectedPlan.planCliente.creadorWeb,
-        numeroCertificadoSslHttps: selectedPlan.planCliente.numeroCertificadoSslHttps,
-        emailMarketing: selectedPlan.planCliente.emailMarketing
+        numeroCertificadoSslHttps:
+          selectedPlan.planCliente.numeroCertificadoSslHttps,
+        emailMarketing: selectedPlan.planCliente.emailMarketing,
       },
       modalidad: {
         idPlanPago: modalidadSeleccionada.planPago.idPlanPago,
@@ -87,51 +82,46 @@ export default function PlansInfo() {
       },
     };
 
-    console.log("check:", checkoutData)
-    // Guardar en localStorage
     localStorage.setItem("checkoutData", JSON.stringify(checkoutData));
-
-    // Cerrar diálogo y navegar
     setOpenBillingDialog(false);
     navigate("/client/Checkout");
   };
-
 
   useEffect(() => {
     const fetchPlansInfo = async () => {
       const response = await getPlansInfo();
       if (response.exito) {
         const rawPlans = response.data;
-
-        // Agrupar los planes por planCliente.idPlanCliente
         const groupedPlans = [];
 
         rawPlans.forEach((item) => {
           const existing = groupedPlans.find(
-            (group) => group.planCliente.idPlanCliente === item.planCliente.idPlanCliente
+            (group) =>
+              group.planCliente.idPlanCliente ===
+              item.planCliente.idPlanCliente
           );
 
           if (!existing) {
             groupedPlans.push({
               planCliente: item.planCliente,
-              precios: [{
-                planPago: item.planPago,
-                precio: item.precio,
-                id: item.id // opcional si necesitas este id original
-              }]
+              precios: [
+                {
+                  planPago: item.planPago,
+                  precio: item.precio,
+                  id: item.id,
+                },
+              ],
             });
           } else {
             existing.precios.push({
               planPago: item.planPago,
               precio: item.precio,
-              id: item.id
+              id: item.id,
             });
           }
         });
 
-        setPlans(groupedPlans); // Ahora setPlans tiene una estructura agrupada
-        console.log("Grouped Plans:", groupedPlans);
-
+        setPlans(groupedPlans);
       } else {
         showAlert("Error loading plans", "error");
       }
@@ -139,17 +129,6 @@ export default function PlansInfo() {
 
     fetchPlansInfo();
   }, []);
-
-  // useEffect(() => {
-  //   if (!specificId) return; // evita ejecutar si aún no hay ID válido
-
-  //   const checkHasPayMethods = async () => {
-  //     const hasMethods = await hasPayMethods("cliente", specificId);
-  //     setHasPayMethod(hasMethods);
-  //   };
-
-  //   checkHasPayMethods();
-  // }, [specificId]); // depende de specificId
 
   return (
     <Box id="Plans" sx={{ bgcolor: "#FAFAFA", py: 8 }}>
@@ -184,27 +163,29 @@ export default function PlansInfo() {
               <Grid item key={index} xs={12} sm={6} md={4}>
                 <Card
                   sx={{
-                    height: "100%",
-                    borderRadius: "30px",
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+                    borderRadius: "20px",
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+                    bgcolor: "#fff",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
-                    bgcolor: "#fff",
-                    transition: "transform 0.3s, box-shadow 0.3s",
+                    height: "100%",
+                    minHeight: 380, // 🔹 Mantiene altura uniforme
+                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
                     "&:hover": {
-                      transform: "translateY(-6px)",
-                      boxShadow: "0 12px 32px rgba(0,0,0,0.15)",
+                      transform: "translateY(-8px)",
+                      boxShadow: "0 12px 28px rgba(0,0,0,0.2)",
                     },
                   }}
                 >
-                  <CardContent>
+                  <CardContent sx={{ px: 3, flexGrow: 1 }}>
                     <Typography
                       variant="h5"
                       align="center"
                       sx={{
                         color:
-                          planColors[plan.planCliente.nombrePlanCliente] || "#333",
+                          planColors[plan.planCliente.nombrePlanCliente] ||
+                          "#333",
                         fontWeight: "bold",
                         mb: 2,
                       }}
@@ -295,7 +276,7 @@ export default function PlansInfo() {
           )}
         </Grid>
 
-        {/* Popup para seleccionar billing */}
+        {/* Dialog para seleccionar billing */}
         <Dialog
           open={openBillingDialog}
           onClose={() => setOpenBillingDialog(false)}
@@ -305,7 +286,7 @@ export default function PlansInfo() {
             {selectedPlan && (
               <>
                 <Typography sx={{ mb: 2 }}>
-                  Plan seleccionado: {" "}
+                  Plan seleccionado:{" "}
                   <strong>{selectedPlan.planCliente.nombrePlanCliente}</strong>
                 </Typography>
 
@@ -319,8 +300,14 @@ export default function PlansInfo() {
                 >
                   {selectedPlan.precios.length > 0 ? (
                     selectedPlan.precios.map((opt) => (
-                      <MenuItem key={opt.planPago.idPlanPago} value={opt.planPago.idPlanPago}>
-                        {t(`hosting.planPeriodicity.${opt.planPago.intervaloPago.toLowerCase()}`)} — ${opt.precio}
+                      <MenuItem
+                        key={opt.planPago.idPlanPago}
+                        value={opt.planPago.idPlanPago}
+                      >
+                        {t(
+                          `hosting.planPeriodicity.${opt.planPago.intervaloPago.toLowerCase()}`
+                        )}{" "}
+                        — ${opt.precio}
                       </MenuItem>
                     ))
                   ) : (
@@ -333,9 +320,7 @@ export default function PlansInfo() {
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setOpenBillingDialog(false)}>
-              Cancel
-            </Button>
+            <Button onClick={() => setOpenBillingDialog(false)}>Cancel</Button>
             <Button
               variant="contained"
               sx={{
@@ -350,9 +335,7 @@ export default function PlansInfo() {
             </Button>
           </DialogActions>
         </Dialog>
-
       </Container>
     </Box>
   );
-
 }
