@@ -32,6 +32,7 @@ import AdminManagePlans from './pages/AdminManagePlans.jsx'
 import AdminManageDomains from './pages/AdminManageDomains.jsx'
 import FAQSection from './pages/FAQSection.jsx'
 import MyTickets from './pages/MyTickets.jsx'
+import TestimonialsSection from './pages/Testimonials.jsx'
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
               <PlansInfo />
               <DistributorInfo />
               <FAQSection />
+              <TestimonialsSection />
             </MainLayout>
           } />
 

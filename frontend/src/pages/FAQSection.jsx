@@ -37,14 +37,14 @@ export default function FAQSection() {
   ];
 
   return (
-    <Box id="FAQ" sx={{ bgcolor: "#FAFAFA", py: 8 }}>
+    <Box id="FAQ" sx={{ bgcolor: "#212121", py: 8 }}>
       <Container maxWidth="md">
         <Card
           sx={{
             borderRadius: "30px",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
             overflow: "hidden",
-            bgcolor: "#fff",
+            bgcolor: "#333333", // Card oscura para contrastar con fondo
           }}
         >
           <CardContent sx={{ py: 6, px: 4 }}>
@@ -52,7 +52,12 @@ export default function FAQSection() {
             <Typography
               variant="h3"
               gutterBottom
-              sx={{ color: "#212121", fontWeight: "bold", textAlign: "center" }}
+              sx={{
+                color: "#FAFAFA",
+                fontWeight: "bold",
+                textAlign: "center",
+                fontFamily: '"Roboto", sans-serif',
+              }}
             >
               Frequently Asked Questions
             </Typography>
@@ -61,12 +66,13 @@ export default function FAQSection() {
             <Typography
               variant="h6"
               sx={{
-                color: "#9E9E9E",
+                color: "#BDBDBD",
                 maxWidth: 600,
                 mx: "auto",
                 lineHeight: 1.8,
                 mb: 4,
                 textAlign: "center",
+                fontFamily: '"Roboto", sans-serif',
               }}
             >
               Find answers to the most common questions about our services and
@@ -79,18 +85,19 @@ export default function FAQSection() {
                 key={index}
                 sx={{
                   borderRadius: "15px",
-                  boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
+                  boxShadow: "0 2px 12px rgba(0,0,0,0.2)",
                   mb: 2,
+                  bgcolor: "#424242",
+                  color: "#FAFAFA",
                   "&:before": { display: "none" },
                 }}
               >
                 <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
+                  expandIcon={<ExpandMoreIcon sx={{ color: "#FF6300" }} />}
                   aria-controls={`faq-content-${index}`}
                   id={`faq-header-${index}`}
                   sx={{
                     fontWeight: "bold",
-                    color: "#212121",
                     fontFamily: '"Roboto", sans-serif',
                   }}
                 >
@@ -98,7 +105,7 @@ export default function FAQSection() {
                 </AccordionSummary>
                 <AccordionDetails
                   sx={{
-                    color: "#616161",
+                    color: "#E0E0E0",
                     lineHeight: 1.7,
                     fontFamily: '"Roboto", sans-serif',
                     fontSize: "0.95rem",

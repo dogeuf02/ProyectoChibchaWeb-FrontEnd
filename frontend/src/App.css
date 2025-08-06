@@ -1,3 +1,7 @@
+@import 'swiper/css';
+@import 'swiper/css/pagination';
+@import 'swiper/css/autoplay';
+
 #root {
   
   margin: 0 auto;
