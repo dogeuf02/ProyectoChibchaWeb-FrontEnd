@@ -50,4 +50,13 @@ export const getDomain = async (nombreDominio, tldId) => {
   }
 };
 
+export const updateDomain = async (id, domain) => {
+    try {
+        const response = await api.put(`/dominio/${id}`, domain);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating domain:', error);
+        throw error;
+    }
+}
 

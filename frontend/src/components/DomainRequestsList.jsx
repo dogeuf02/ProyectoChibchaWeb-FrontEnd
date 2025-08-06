@@ -39,7 +39,7 @@ function Row({ request, onAccept, onReject }) {
                 <TableCell>{request.dominio.estado}</TableCell>
                 <TableCell>{request.nombreUsuario || "-"}</TableCell>
                 <TableCell>{request.rolUsuario || "-"}</TableCell>
-                <TableCell>-</TableCell> {/* Placeholder for reviewedBy */}
+                <TableCell>{request.nombreAdmin || "-"}</TableCell> {/* Placeholder for reviewedBy */}
             </TableRow>
 
             <TableRow>
@@ -58,13 +58,13 @@ function Row({ request, onAccept, onReject }) {
                             <Typography variant="body2">{t('domainRequestsManagement.list.applicantName')}: {request.nombreUsuario || "-"}</Typography>
                             <Typography variant="body2">{t('domainRequestsManagement.list.applicantRole')}: {request.rolUsuario || "-"}</Typography>
 
-                            {request.estado === 'pending' && (
+                            {request.estado === 'En Revision' && (
                                 <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                                     <Button
                                         variant="contained"
                                         color="success"
                                         sx={{ borderRadius: 30 }}
-                                        onClick={() => onAccept(request.idSolicitud)}
+                                        onClick={() => onAccept(request)}
                                     >
                                         {t('domainRequestsManagement.list.accept')}
                                     </Button>

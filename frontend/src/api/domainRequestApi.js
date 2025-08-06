@@ -3,6 +3,8 @@ import { getDistributorById } from './distributorApi';
 import { getDomainById } from './domainApi';
 import { getClientById } from './clientApi';
 import { ROLE } from '../enum/roleEnum';
+import { getUserProfile } from './userApi';
+import { getAdminProfile } from './adminApi';
 
 export const createDomainRequest = async (domain) => {
   try {
@@ -25,7 +27,7 @@ export const getDomainRequests = async () => {
     const enrichedRequests = await Promise.all(
       response.data.map(async (request) => {
         let nombreUsuario = '-';
-
+        let adminName = '-';
         if (request.cliente) {
           const clienteResult = await getClientById(request.cliente);
           if (clienteResult.exito) {
@@ -38,12 +40,21 @@ export const getDomainRequests = async () => {
           }
         }
 
+        if (request.admin) {
+          const adminResult = await getAdminProfile(request.admin);
+          console.log("adminResult", adminResult);
+          if (adminResult.exito && adminResult.data) {
+            adminName = adminResult.data.nombreAdmin;
+          }
+        }
+
         const domain = await getDomainById(request.dominio, request.tld);
         if (!domain) {
-          return null; 
+          return null;
         }
-        console.log("dom",domain);
-        return {
+        console.log("dom", domain);
+        
+        const response = {
           idSolicitud: request.idSolicitud,
           dominio: domain,
           estado: request.estadoSolicitud,
@@ -51,7 +62,11 @@ export const getDomainRequests = async () => {
           idUsuario: request.cliente || request.distribuidor,
           rolUsuario: request.cliente ? ROLE.CLIENT : ROLE.DISTRIBUTOR,
           nombreUsuario,
+          idAdmin: request.admin,
+          nombreAdmin: adminName,
         };
+        console.log("responseRe", response);
+        return response;
       })
     );
 
@@ -65,3 +80,17 @@ export const getDomainRequests = async () => {
     }
   }
 };
+
+export const updateDomainRequest = async (id, requestData) => {
+  try {
+    const response = await api.put(`/solicitudDominio/${id}`, requestData);
+    return { exito: true, data: response.data };
+  } catch (error) {
+    if (error.response && error.response.data) {
+      const { exito, mensaje } = error.response.data;
+      return { exito, mensaje };
+    } else {
+      return { exito: false, mensaje: 'Server error.' };
+    }
+  }
+}
