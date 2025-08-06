@@ -163,3 +163,37 @@ export const changePassword = async (correo, nuevaContrasena) => {
     throw err;
   }
 };
+
+export const getRoleAndId = async (email) => {
+  try {
+    const response = await api.get(`/usuario/identificarRol?correo=${email}`);
+    const user = response.data;
+    console.log("User data:", user);
+
+    if (!user) {
+      return { exito: false, mensaje: 'Usuario no encontrado' };
+    }
+
+    let role;
+    const id = user.id;
+
+    if (user.rol === ROLE.CLIENT) {
+      role = ROLE.CLIENT;
+    } else if (user.rol === ROLE.DISTRIBUTOR) {
+      role = ROLE.DISTRIBUTOR;
+    } else {
+      return { exito: false, mensaje: 'Rol no reconocido' };
+    }
+
+    return {
+      exito: true,
+      data: {
+        id,
+        rol: role,
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching user role and ID:', error);
+    return { exito: false, mensaje: 'Error al obtener rol e ID del usuario' };
+  }
+}

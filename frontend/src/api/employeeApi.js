@@ -69,7 +69,7 @@ export const deactivateUser = async (correo) => {
 
 
 export const getTechnicianOptions = async (employeeRole) => {
-  const { exito, empleados, mensaje } = await getEmployees();
+  const { exito, empleados } = await getEmployees();
   if (!exito) return [];
 
   let nivelesPermitidos = [];

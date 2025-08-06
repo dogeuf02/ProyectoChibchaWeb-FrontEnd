@@ -17,17 +17,22 @@ import {
   DialogActions,
   TextField,
 } from "@mui/material";
+import { useGlobalAlert } from "../context/AlertContext";
 import { getActiveDomains } from "../api/domainOwnApi";
 import { useAuth } from "../context/AuthContext"
+import { getRoleAndId } from "../api/userApi";
+import getTodayDate from "../utils/dateUtils";
+import { ROLE } from '../enum/roleEnum';
+import { createTransferRequest } from "../api/transferRequest";
 export default function MyDomainsPage() {
-  const { role, specificId } = useAuth();
+  const { role, specificId, email } = useAuth();
+  const { showAlert } = useGlobalAlert();
   const [domains, setDomains] = useState([]);
-
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedDomain, setSelectedDomain] = useState(null);
-  const [email, setEmail] = useState("");
+  const [targetEmail, setTargetEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
-
+  const [targetOwnerData, setTargetOwnerData] = useState({});
   const getStatusColor = (status) => {
     switch (status) {
       case "En Uso":
@@ -41,27 +46,71 @@ export default function MyDomainsPage() {
     }
   };
 
+  const fetchRoleAndId = async (email) => {
+    const result = await getRoleAndId(email);
+    console.log("roleAndId", result);
+    if (result) {
+      setTargetOwnerData(result.data);
+    }
+  }
+
   const handleTransferClick = (domain) => {
     setSelectedDomain(domain);
     setOpenDialog(true);
   };
 
-  const handleConfirmTransfer = () => {
+  const handleConfirmTransfer = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setEmailError(true);
       return;
     }
+    console.log("em - taem", email, targetEmail);
+    if (email === targetEmail) {
+      alert("Has ingresado tu propio correo cabeza de mondá");
+      return;
+    }
+    //const result = await fetchRoleAndId(targetEmail);
+    const result = await getRoleAndId(targetEmail);
+    console.log("roleAndId", result);
+    if (result) {
+      //setTargetOwnerData(result.data);
+      let idCliente = null;
+      let idDistribuidor = null;
+
+      if (result.data.rol === ROLE.CLIENT) {
+        idCliente = result.data.id;
+      } else {
+        idDistribuidor = result.data.id;
+      }
+      const transferRequest = {
+        fechaSolicitudTraslado: getTodayDate(),
+        estadoTraslado: "Pendiente",
+        pertenece: selectedDomain.idPertenece,
+        cliente: idCliente,
+        distribuidor: idDistribuidor,
+      };
+
+      const createResult = await createTransferRequest(transferRequest);
+      if(createResult.exito){
+        showAlert("Solicitud de transferencia realizada con exito.","success");
+      }
+    } else if (!result) {
+      showAlert("Email isn't registered", "error");
+      return;
+    }
+
+
 
     // Cambiar estado a pending
     setDomains((prevDomains) =>
       prevDomains.map((d) =>
-        d.id === selectedDomain.id ? { ...d, status: "pending" } : d
+        d.idDominio === selectedDomain.idDominio ? { ...d, estado: "pending" } : d
       )
     );
 
     setOpenDialog(false);
-    setEmail("");
+    setTargetEmail("");
     setEmailError(false);
     setSelectedDomain(null);
     alert("Transfer request sent successfully.");
@@ -69,7 +118,7 @@ export default function MyDomainsPage() {
 
   useEffect(() => {
     const fetchDomains = async () => {
- 
+
       const result = await getActiveDomains(role, specificId);
       console.log("domaData", result);
       if (result) {
@@ -80,7 +129,7 @@ export default function MyDomainsPage() {
     fetchDomains();
 
 
-  }, [role, specificId]);
+  }, [role, specificId, email]);
 
   return (
     <Box sx={{ maxWidth: 1000, mx: "auto", mt: 10 }}>
@@ -198,14 +247,15 @@ export default function MyDomainsPage() {
             fullWidth
             label="Recipient Email"
             type="email"
-            value={email}
+            value={targetEmail} // ✅ Corrección aquí
             onChange={(e) => {
-              setEmail(e.target.value);
+              setTargetEmail(e.target.value);
               setEmailError(false);
             }}
             error={emailError}
             helperText={emailError && "Please enter a valid email address"}
           />
+
         </DialogContent>
         <DialogActions>
           <Button

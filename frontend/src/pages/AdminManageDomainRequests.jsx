@@ -15,7 +15,7 @@ export default function AdminManageDomainRequests() {
   useScrollToTop();
   const { t } = useTranslation();
   const { showAlert } = useGlobalAlert();
-  const { specificId, email, userData, role } = useAuth();
+  const { specificId, userData,} = useAuth();
 
   const [domainRequests, setDomainRequests] = useState([]);
   const fetchDomainRequests = async () => {
@@ -129,7 +129,7 @@ export default function AdminManageDomainRequests() {
 
       }
     } catch (error) {
-      showAlert("Unhandled error", "error")
+      showAlert("Unhandled error: " + error, "error")
 
     }
   };

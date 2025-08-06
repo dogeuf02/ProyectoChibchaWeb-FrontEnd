@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Zoom from '@mui/material/Zoom';
 import {
   Container,
@@ -19,6 +19,7 @@ import ReCAPTCHA from 'react-google-recaptcha';
 export default function Login() {
   useScrollToTop();
   const { t } = useTranslation();
+  const recaptchaRef = useRef();
   const { showAlert } = useGlobalAlert();
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -51,6 +52,8 @@ export default function Login() {
 
     if (!captchaToken) {
       showAlert('Please complete the captcha', 'warning');
+      recaptchaRef.current?.reset();
+
       return;
     }
 
@@ -58,11 +61,14 @@ export default function Login() {
 
     if (result.success) {
       showAlert(t('alert.success.login'), "success");
+
       navigate("/");
     } else {
       showAlert(result.message || t("alert.error.login"), "error");
       setCaptchaToken(null);
     }
+    recaptchaRef.current?.reset();
+
   };
 
   return (
@@ -123,6 +129,7 @@ export default function Login() {
               <ReCAPTCHA
                 sitekey="6LePn5krAAAAAAnj4Tz_1s9K7dZEYLVsdUeFqwqB"
                 onChange={handleCaptchaChange}
+                ref={recaptchaRef}
               />
             </Box>
 

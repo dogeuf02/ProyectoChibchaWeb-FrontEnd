@@ -3,7 +3,6 @@ import { getDistributorById } from './distributorApi';
 import { getDomainById } from './domainApi';
 import { getClientById } from './clientApi';
 import { ROLE } from '../enum/roleEnum';
-import { getUserProfile } from './userApi';
 import { getAdminProfile } from './adminApi';
 
 export const createDomainRequest = async (domain) => {
