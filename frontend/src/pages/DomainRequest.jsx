@@ -26,31 +26,31 @@ import { ROLE } from '../enum/roleEnum';
 import getTodayDate from '../utils/dateUtils';
 import { getTlds } from '../api/tldApi';
 import { createDomain, getDomain } from '../api/domainApi';
-import { createDomainRequest } from '../api/domainRequestApi';
+import { createDomainRequest, getDomainRequests } from '../api/domainRequestApi';
 
 export default function DomainRequest() {
   // Lista de solicitudes de dominio ejemplo
   const [domainRequests, setDomainRequests] = useState([
-    { 
-      id: 1, 
-      name: "mybusiness", 
-      tld: ".com", 
-      status: "En Revision", 
-      date: "2025-08-01" 
+    {
+      id: 1,
+      name: "mybusiness",
+      tld: ".com",
+      status: "En Revision",
+      date: "2025-08-01"
     },
-    { 
-      id: 2, 
-      name: "coolproject", 
-      tld: ".dev", 
-      status: "Aprobado", 
-      date: "2025-07-28" 
+    {
+      id: 2,
+      name: "coolproject",
+      tld: ".dev",
+      status: "Aprobado",
+      date: "2025-07-28"
     },
-    { 
-      id: 3, 
-      name: "storechibcha", 
-      tld: ".store", 
-      status: "Rechazado", 
-      date: "2025-07-15" 
+    {
+      id: 3,
+      name: "storechibcha",
+      tld: ".store",
+      status: "Rechazado",
+      date: "2025-07-15"
     }
   ]);
 
@@ -77,6 +77,32 @@ export default function DomainRequest() {
     }
     return [clientId, distributorId];
   };
+
+  const fetchDomainRequests = async () => {
+    const result = await getDomainRequests();
+    if (result.exito) {
+      console.log("specificId vs usuarioiD", specificId, result.data[0].idUsuario)
+      const solicitudesFiltradas = result.data.filter(
+        (solicitud) => solicitud.idUsuario === specificId
+      );
+      console.log("res", solicitudesFiltradas);
+
+      setDomainRequests(solicitudesFiltradas);
+    }
+    else {
+      showAlert(result.mensaje, "error");
+    }
+  }
+  useEffect(() => {
+    if (specificId) {
+
+      fetchDomainRequests();
+      console.log("specificId vs usuarioiD", specificId, domainRequests[0].idUsuario)
+
+    }
+  }, [specificId]);
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -125,22 +151,23 @@ export default function DomainRequest() {
 
         if (response.exito) {
           showAlert("Domain request submitted successfully!", "success");
-          setDomainRequests(prev => [...prev, { 
-            id: Date.now(), 
-            name: domainName, 
-            tld: domainTld, 
-            status: "En Revision", 
-            date: todayDate 
-          }]);
+          // setDomainRequests(prev => [...prev, {
+          //   id: Date.now(),
+          //   name: domainName,
+          //   tld: domainTld,
+          //   status: "En Revision",
+          //   date: todayDate
+          // }]);
+          await fetchDomainRequests();
           setFormData({ domainName: '', domainTld: '' });
           setOpenDialog(false);
+
         } else {
           showAlert(response.message || "Failed to submit domain request", "error");
         }
       } else {
         showAlert("Domain is active and in use", "error");
       }
-
     } catch (error) {
       console.error("Error submitting domain request:", error);
       showAlert("Something went wrong", "error");
@@ -213,22 +240,22 @@ export default function DomainRequest() {
               </TableHead>
               <TableBody>
                 {domainRequests.map((req) => (
-                  <TableRow key={req.id}>
-                    <TableCell>{req.name}</TableCell>
-                    <TableCell>{req.tld}</TableCell>
+                  <TableRow key={req.idSolicitud}>
+                    <TableCell>{req.dominio.nombreDominio}</TableCell>
+                    <TableCell>{req.dominio.tld}</TableCell>
                     <TableCell>
                       <Chip
-                        label={req.status}
+                        label={req.estado}
                         color={
-                          req.status === "En Revision"
+                          req.estado === "En Revision"
                             ? "warning"
-                            : req.status === "Aprobado"
-                            ? "success"
-                            : "default"
+                            : req.estado === "Aprobada"
+                              ? "success"
+                              : "default"
                         }
                       />
                     </TableCell>
-                    <TableCell>{req.date}</TableCell>
+                    <TableCell>{req.fechaCreacion}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
