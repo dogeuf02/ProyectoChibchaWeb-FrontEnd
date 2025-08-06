@@ -161,7 +161,7 @@ export default function CheckoutPage() {
         try {
             showLoader();
 
-            // await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 1000));
             const response = await createPlanAdquirido(payload);
             console.log('✅ Plan registered:', response.data);
             localStorage.removeItem('checkoutData');

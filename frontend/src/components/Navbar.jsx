@@ -187,7 +187,7 @@ export default function NavbarMUI() {
 
                 )}
                 {role === ROLE.EMPLOYEE && (
-                  <MenuItem onClick={() => { navigate('/'); handleMenuClose(); }}>
+                  <MenuItem onClick={() => { navigate('Employee/ManageTickets'); handleMenuClose(); }}>
                     Employee panel
                   </MenuItem>
                 )}

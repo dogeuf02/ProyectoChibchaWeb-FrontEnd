@@ -67,3 +67,34 @@ export const deactivateUser = async (correo) => {
   }
 };
 
+
+export const getTechnicianOptions = async (employeeRole) => {
+  const { exito, empleados, mensaje } = await getEmployees();
+  if (!exito) return [];
+
+  let nivelesPermitidos = [];
+
+  switch (employeeRole) {
+    case "Coordinador nv 1":
+      nivelesPermitidos = ["Tecnico nv 1", "Tecnico nv 2", "Tecnico nv 3"];
+      break;
+    case "Coordinador nv 2":
+      nivelesPermitidos = ["Tecnico nv 2"];
+      break;
+    case "Coordinador nv 3":
+      nivelesPermitidos = ["Tecnico nv 3"];
+      break;
+    default:
+      nivelesPermitidos = [];
+  }
+
+  return empleados
+    .filter(emp => nivelesPermitidos.includes(emp.position))
+    .map(emp => ({
+      id: emp.id,
+      value: emp.email,
+      label: `${emp.firstName} ${emp.lastName} - ${emp.email}`
+    }));
+};
+
+
