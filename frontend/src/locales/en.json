@@ -247,7 +247,7 @@
         "deleteCard": "Delete card"
     },
     "util":{
-        "dolarCoin":"US"
+        "dolarCoin":"USD"
     },
     "alert": {
         "success": {

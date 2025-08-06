@@ -72,12 +72,22 @@ export default function MyDomainsPage() {
 
   return (
     <Box sx={{ maxWidth: 1000, mx: "auto", mt: 10 }}>
-      <Typography
-        variant="h4"
-        sx={{ fontWeight: "bold", color: "#212121", mb: 6 }}
+      {/* Header con título alineado a la izquierda */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 6,
+        }}
       >
-        My Domains
-      </Typography>
+        <Typography
+          variant="h4"
+          sx={{ fontWeight: "bold", color: "#212121" }}
+        >
+          My Domains
+        </Typography>
+      </Box>
 
       <TableContainer component={Paper}>
         <Table>
@@ -110,7 +120,10 @@ export default function MyDomainsPage() {
                   <TableCell>{domain.name}</TableCell>
                   <TableCell>{domain.tld}</TableCell>
                   <TableCell>
-                    <Chip label={domain.status} color={getStatusColor(domain.status)} />
+                    <Chip
+                      label={domain.status}
+                      color={getStatusColor(domain.status)}
+                    />
                   </TableCell>
                   <TableCell align="center">
                     {isExpired ? (
@@ -130,7 +143,7 @@ export default function MyDomainsPage() {
                       <Chip
                         label="Pending Transfer"
                         variant="outlined"
-                        color="warning" 
+                        color="warning"
                         sx={{ fontWeight: "bold" }}
                       />
                     ) : (

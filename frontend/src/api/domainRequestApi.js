@@ -1,5 +1,6 @@
 import api from './axiosInstance';
 import { getDistributorById } from './distributorApi';
+import { getDomainById } from './domainApi';
 import { getClientById } from './clientApi';
 import { ROLE } from '../enum/roleEnum';
 
@@ -37,10 +38,14 @@ export const getDomainRequests = async () => {
           }
         }
 
+        const domain = await getDomainById(request.dominio, request.tld);
+        if (!domain) {
+          return null; 
+        }
+        console.log("dom",domain);
         return {
           idSolicitud: request.idSolicitud,
-          nombreDominio: request.nombreDominio,
-          tld: request.tld,
+          dominio: domain,
           estado: request.estadoSolicitud,
           fechaCreacion: request.fechaSolicitud,
           idUsuario: request.cliente || request.distribuidor,

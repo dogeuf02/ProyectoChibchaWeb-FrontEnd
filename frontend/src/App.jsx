@@ -28,6 +28,10 @@ import VerifyEmail from './components/VerifyEmail.jsx'
 import Checkout from './pages/Checkout.jsx'
 import { LoadingProvider } from './context/LoadingContext';
 import GlobalLoader from './components/common/GlobalLoader';
+import AdminManagePlans from './pages/AdminManagePlans.jsx'
+import AdminManageDomains from './pages/AdminManageDomains.jsx'
+import FAQSection from './pages/FAQSection.jsx'
+import MyTickets from './pages/MyTickets.jsx'
 
 function App() {
   return (
@@ -40,6 +44,7 @@ function App() {
               <DomainsInfo />
               <PlansInfo />
               <DistributorInfo />
+              <FAQSection />
             </MainLayout>
           } />
 
@@ -88,6 +93,8 @@ function App() {
             <Route path="ManageDistributorRequests" element={<AdminManageDistributorRequests />} />
             <Route path="ManageDomainRequests" element={<AdminManageDomainRequests />} />
             <Route path="ManageClients" element={<AdminManageClients />} />
+            <Route path="ManagePlans" element={<AdminManagePlans />} />
+            <Route path="ManageDomains" element={<AdminManageDomains />} />
           </Route>
 
           {/* Client Dashboard */}
@@ -98,6 +105,7 @@ function App() {
             <Route path="MyPlans" element={<MyPlans />} />
             <Route path="MyDomains" element={<MyDomains />} />
             <Route path="DomainRequest" element={<DomainRequest />} />
+            <Route path="MyTickets" element={<MyTickets />} />
             <Route path="Checkout" element={<Checkout />} />
           </Route>
 
@@ -108,6 +116,7 @@ function App() {
             <Route path="PaymentManagement" element={<PaymentManagement />} />
             <Route path="MyDomains" element={<MyDomains />} />
             <Route path="DomainRequest" element={<DomainRequest />} />
+            <Route path="MyTickets" element={<MyTickets />} />
           </Route>
 
           {/* Employee Dashboard */}

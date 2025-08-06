@@ -5,12 +5,14 @@ import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
 import { getDomainRequests } from "../api/domainRequestApi";
 import { useTranslation } from "react-i18next";
+import { useAuth } from '../context/AuthContext';
 
 export default function AdminManageDomainRequests() {
   useScrollToTop();
   const { t } = useTranslation();
   const { showAlert } = useGlobalAlert();
-
+  const { specificId, email, userData } = useAuth();
+  
   // Simulated current admin
   const currentAdmin = {
     name: "Admin Laura",
@@ -23,6 +25,7 @@ export default function AdminManageDomainRequests() {
 
     const fetchDomainRequests = async () => {
       const result = await getDomainRequests();
+      console.log("res",result);
       if (result.exito) {
         setDomainRequests(result.data);
       }
@@ -69,7 +72,7 @@ export default function AdminManageDomainRequests() {
   };
 
   return (
-    <Box sx={{ maxWidth: 1000, mx: "auto", mt: 10 }}>
+    <Box sx={{ maxWidth: 1000, mx: "auto", mt: 10}}>
       <Typography variant="h4" sx={{ fontWeight: "bold", color: "#212121", mb: 4 }}>
         {t('domainRequestsManagement.title')}
       </Typography>
