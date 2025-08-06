@@ -67,13 +67,13 @@ export default function MyDomainsPage() {
     }
     console.log("em - taem", email, targetEmail);
     if (email === targetEmail) {
-      alert("Has ingresado tu propio correo cabeza de mondá");
+      showAlert("No se puede transferir al mismo correo.");
       return;
     }
     //const result = await fetchRoleAndId(targetEmail);
     const result = await getRoleAndId(targetEmail);
     console.log("roleAndId", result);
-    if (result) {
+    if (result && result.exito) {
       //setTargetOwnerData(result.data);
       let idCliente = null;
       let idDistribuidor = null;
@@ -98,22 +98,13 @@ export default function MyDomainsPage() {
     } else if (!result) {
       showAlert("Email isn't registered", "error");
       return;
+    }else{
+      showAlert(result.mensaje, "error");
     }
-
-
-
-    // Cambiar estado a pending
-    setDomains((prevDomains) =>
-      prevDomains.map((d) =>
-        d.idDominio === selectedDomain.idDominio ? { ...d, estado: "pending" } : d
-      )
-    );
-
     setOpenDialog(false);
     setTargetEmail("");
     setEmailError(false);
     setSelectedDomain(null);
-    alert("Transfer request sent successfully.");
   };
 
   useEffect(() => {
