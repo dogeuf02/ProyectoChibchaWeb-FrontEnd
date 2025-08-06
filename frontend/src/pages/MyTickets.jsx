@@ -11,67 +11,107 @@ import {
   DialogActions,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import TicketsViewList from "../components/TicketsViewList";
 import { useGlobalAlert } from "../context/AlertContext";
+import { getAllTickets, getTicketWithHistory, createTicket } from "../api/ticketApi";
+import TicketsList from "../components/Tickets/TicketsList"
+import { statusOptions, levelOptions } from "../components/Tickets/ticketOptions";
+import { useAuth } from "../context/AuthContext";
 
 export default function MyTickets() {
+
+  const { role, specificId } = useAuth();
   const { showAlert } = useGlobalAlert();
   const [tickets, setTickets] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [newTicket, setNewTicket] = useState({ subject: "", description: "" });
 
   useEffect(() => {
-    // Datos de ejemplo
-    setTickets([
-      {
-        ticket_id: "TCK-1001",
-        subject: "Website down",
-        description: "My website is not loading since last night.",
-        status: "Open",
-        level: "Level 2",
-        comments: ["Initial investigation started."],
-        employee_id: "EMP-001",
-        employee_name: "Alice Tech",
-      },
-      {
-        ticket_id: "TCK-1002",
-        subject: "Email setup",
-        description: "I need help configuring my email.",
-        status: "In Progress",
-        level: "Level 1",
-        comments: [],
-        employee_id: "EMP-002",
-        employee_name: "Bob Tech",
-      },
-    ]);
-  }, []);
+    fetchTickets();
+  }, [role, specificId]);
 
-  const handleAddTicket = () => {
+  const fetchTickets = async () => {
+    try {
+      const allTickets = await getAllTickets();
+
+      // Filtrar por cliente o distribuidor
+      const userTickets = allTickets.filter((ticket) => {
+        if (role === "Cliente") return ticket.cliente == specificId;
+        if (role === "Distribuidor") return ticket.distribuidor == specificId;
+        return false;
+      });
+
+      // Para cada ticket, traer historial (opcional: solo el último)
+      const enrichedTickets = await Promise.all(
+        userTickets.map(async (ticket) => {
+          const result = await getTicketWithHistory(ticket.idTicket);
+          const historial = result?.historial || [];
+
+
+          // Tomar el último historial si existe
+          const lastAction = historial.sort(
+            (a, b) => new Date(b.fechaAccion) - new Date(a.fechaAccion)
+          )[0];
+
+          return {
+            ticket_id: ticket.idTicket,
+            subject: ticket.asunto,
+            description: ticket.descripcion,
+            status: ticket.estado,
+            level: ticket.nivelComplejidad,
+            fechaCreacion: ticket.fechaCreacion,
+            fechaCierre: ticket.fechaCierre,
+            client_id: ticket.cliente,
+            distributor_id: ticket.distribuidor,
+            assigned_to: lastAction?.empleadoReceptor || null,
+            history: historial
+          };
+
+
+        })
+
+      );
+
+
+
+      setTickets(enrichedTickets);
+    } catch (error) {
+      console.error("Error loading user tickets:", error);
+      showAlert("Failed to load your tickets", "error");
+    }
+  };
+
+  const handleAddTicket = async () => {
     if (!newTicket.subject || !newTicket.description) {
       showAlert("Please fill in all fields", "warning");
       return;
     }
 
-    const newId = `TCK-${Math.floor(Math.random() * 9000) + 1000}`;
-    const ticketToAdd = {
-      ticket_id: newId,
-      subject: newTicket.subject,
-      description: newTicket.description,
-      status: "Open",
-      level: "Level 1",
-      comments: [],
-      employee_id: null,
-      employee_name: null,
+    const now = new Date().toISOString();
+
+    const payload = {
+      asunto: newTicket.subject,
+      descripcion: newTicket.description,
+      nivelComplejidad: "nivel-1",
+      estado: "Abierto",
+      fechaCreacion: now,
+      fechaCierre: null,
+      distribuidor: role === "Distribuidor" ? parseInt(specificId) : null,
+      cliente: role === "Cliente" ? parseInt(specificId) : null,
     };
 
-    setTickets((prev) => [...prev, ticketToAdd]);
-    setNewTicket({ subject: "", description: "" });
-    setOpenDialog(false);
-    showAlert(
-      "Your request has been submitted. We'll keep you informed.",
-      "success"
-    );
+    try {
+      await createTicket(payload);
+      await fetchTickets();
+
+      setNewTicket({ subject: "", description: "" });
+      setOpenDialog(false);
+      showAlert("Your request has been submitted. We'll keep you informed.", "success");
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+      showAlert("There was an error submitting your ticket", "error");
+    }
   };
+
 
   const disableSave = !newTicket.subject || !newTicket.description;
 
@@ -121,7 +161,17 @@ export default function MyTickets() {
           </Typography>
         </Paper>
       ) : (
-        <TicketsViewList tickets={tickets} />
+        <TicketsList
+          tickets={tickets}
+          role={role}
+          showAlert={showAlert}
+          statusOptions={statusOptions}
+          levelOptions={levelOptions}
+          employeeMap={{}} // puedes conectar esto si tienes empleados disponibles
+          availableTechnicians={[]} // igual que arriba
+          employeeRole={role}
+          readOnly={true}
+        />
       )}
 
       {/* Dialog para agregar ticket */}

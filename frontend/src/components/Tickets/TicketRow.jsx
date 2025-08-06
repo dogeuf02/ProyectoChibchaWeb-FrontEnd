@@ -6,6 +6,7 @@ import {
     Collapse,
     Box,
     Chip,
+    Typography
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -14,6 +15,7 @@ import TicketHistory from "./TicketHistory";
 import TicketActions from "./TicketActions";
 import { getTicketWithHistory, updateTicket } from "../../api/ticketApi";
 import { createHistorialEntry } from "../../api/ticketHistoryApi";
+
 
 
 export default function TicketRow({
@@ -26,6 +28,7 @@ export default function TicketRow({
     onUpdateTicket,
     showAlert,
     employeeRole,
+    readOnly = false,
 
 }) {
     const [open, setOpen] = useState(false);
@@ -42,7 +45,7 @@ export default function TicketRow({
 
     const toggleOpen = async () => {
         setOpen(!open);
-        if (!open && history.length === 0) {
+        if (!open && history.length === 0 && !readOnly) {
             const fullTicket = await getTicketWithHistory(ticket.ticket_id);
             const sortedHistory = [...(fullTicket.historial || [])].sort(
                 (a, b) => new Date(a.fechaAccion) - new Date(b.fechaAccion)
@@ -98,9 +101,11 @@ export default function TicketRow({
                 estado: tempStatus,
                 fechaCreacion: ticket.fechaCreacion,
                 fechaCierre: tempStatus === "Cerrado" ? new Date().toISOString() : null,
-                distribuidor: ticket.distribuidor,
+                distribuidor: ticket.distributor_id,
                 cliente: ticket.client_id,
             };
+
+            console.log(ticket)
 
             await updateTicket(ticket.ticket_id, updatedTicket);
 
@@ -180,13 +185,17 @@ export default function TicketRow({
         <>
             <TableRow hover sx={{ "& td": { borderColor: "#e0e0e0" } }}>
                 <TableCell>
-                    <IconButton size="small" onClick={toggleOpen}>
-                        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                    </IconButton>
+                    {!readOnly && (
+                        <IconButton size="small" onClick={toggleOpen}>
+                            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                        </IconButton>
+                    )}
                 </TableCell>
                 <TableCell>{ticket.ticket_id}</TableCell>
-                <TableCell>{ticket.client_id}</TableCell>
+                {!readOnly && <TableCell>{ticket.client_id}</TableCell>}
+                {!readOnly && <TableCell>{ticket.distributor_id || <i>-</i>}</TableCell>}
                 <TableCell>{ticket.subject}</TableCell>
+                {readOnly && <TableCell>{ticket.description}</TableCell>}
                 <TableCell>
                     <Chip
                         label={ticket.status}
@@ -209,28 +218,42 @@ export default function TicketRow({
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box sx={{ margin: 2 }}>
-                            <TicketActions
-                                isClosed={isClosed}
-                                tempStatus={tempStatus}
-                                tempLevel={tempLevel}
-                                tempAssignedTech={tempAssignedTech}
-                                comment={comment}
-                                statusOptions={statusOptions}
-                                levelOptions={levelOptions}
-                                availableTechnicians={availableTechnicians}
-                                onChangeStatus={setTempStatus}
-                                onChangeLevel={setTempLevel}
-                                onChangeTechnician={setTempAssignedTech}
-                                onChangeComment={setComment}
-                                onSave={handleSaveChanges}
-                                employeeRole= {employeeRole}
-                                onClose={() => onCloseTicket(ticket.ticket_id)}
-                            />
+                            {/* ✅ Siempre mostrar descripción */}
+                            <Typography variant="subtitle2" gutterBottom>
+                                Description:
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                {ticket.description}
+                            </Typography>
 
-                            <TicketHistory
-                                history={history}
-                                availableTechnicians={availableTechnicians}
-                            />
+                            {/* 🔒 Solo si no es readOnly se muestran las acciones */}
+                            {!readOnly && (
+                                <TicketActions
+                                    isClosed={isClosed}
+                                    tempStatus={tempStatus}
+                                    tempLevel={tempLevel}
+                                    tempAssignedTech={tempAssignedTech}
+                                    comment={comment}
+                                    statusOptions={statusOptions}
+                                    levelOptions={levelOptions}
+                                    availableTechnicians={availableTechnicians}
+                                    onChangeStatus={setTempStatus}
+                                    onChangeLevel={setTempLevel}
+                                    onChangeTechnician={setTempAssignedTech}
+                                    onChangeComment={setComment}
+                                    onSave={handleSaveChanges}
+                                    employeeRole={employeeRole}
+                                    onClose={() => onCloseTicket(ticket.ticket_id)}
+                                />
+                            )}
+
+                            {/* 🔒 Solo si no es readOnly se muestra historial */}
+                            {!readOnly && (
+                                <TicketHistory
+                                    history={history}
+                                    availableTechnicians={availableTechnicians}
+                                />
+                            )}
                         </Box>
                     </Collapse>
                 </TableCell>

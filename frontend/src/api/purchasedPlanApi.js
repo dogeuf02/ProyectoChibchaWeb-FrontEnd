@@ -1,5 +1,6 @@
 import api from './axiosInstance';
 
+
 // 🔍 Obtener todos los planes adquiridos
 export const getAllPlanesAdquiridos = () => {
   return api.get('/planAdquirido');
@@ -23,4 +24,9 @@ export const updatePlanAdquirido = (id, data) => {
 // ❌ Eliminar plan adquirido
 export const deletePlanAdquirido = (id) => {
   return api.delete(`/planAdquirido/${id}`);
+};
+
+export const getPlansByClientId = async (clientId) => {
+  const response = await api.get(`/planAdquirido/by-cliente/${clientId}`);
+  return response.data;
 };

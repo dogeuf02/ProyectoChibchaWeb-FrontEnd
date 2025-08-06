@@ -31,6 +31,7 @@ export default function TicketsList({
   onUpdateTicket,
   showAlert,
   employeeRole,
+  readOnly,
 
 }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -62,9 +63,11 @@ export default function TicketsList({
           <TableHead>
             <TableRow sx={{ bgcolor: "#fff3e0" }}>
               <TableCell />
-              <TableCell><b>Ticket ID</b></TableCell>
-              <TableCell><b>Client ID</b></TableCell>
+              <TableCell><b>ID Ticket</b></TableCell>
+              {!readOnly && <TableCell><b>Client ID</b></TableCell>}        
+              {!readOnly && <TableCell><b>Distributor ID</b></TableCell>}
               <TableCell><b>Subject</b></TableCell>
+              {readOnly && <TableCell><b>Description</b></TableCell>}
               <TableCell><b>Status</b></TableCell>
               <TableCell><b>Level</b></TableCell>
               {isCoordinator && <TableCell><b>Assigned To</b></TableCell>}
@@ -96,6 +99,7 @@ export default function TicketsList({
                   onUpdateTicket={onUpdateTicket}
                   showAlert={showAlert}
                   employeeRole={employeeRole}
+                  readOnly={readOnly}
                 />
               ))}
           </TableBody>

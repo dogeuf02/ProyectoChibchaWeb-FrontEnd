@@ -3,74 +3,101 @@ import {
   Box,
   Typography,
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Stack,
-  TextField,
-  MenuItem,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import ConfirmDialog from "../components/ConfirmDialog";
 import PlanList from "../components/PlanList";
 import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
-import { useNavigate } from "react-router-dom"; // 👈 Import para navegación
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { getPlansByClientId } from "../api/purchasedPlanApi";
+import { getPlansInfo } from "../api/planApi";
 
 // Planes base disponibles
-const availablePlans = [
-  {
-    type: "CHIBCHAPLATA",
-    prices: { monthly: 5, semiAnnual: 25, annual: 45 },
-    features: [
-      "2 websites",
-      "20 databases",
-      "20 GB NVMe SSD storage",
-      "20 email accounts",
-      "Website builder",
-      "2 SSL certificates, https",
-      "Email Marketing",
-    ],
-  },
-  {
-    type: "CHIBCHAPLATINO",
-    prices: { monthly: 8, semiAnnual: 40, annual: 72 },
-    features: [
-      "3 websites",
-      "40 databases",
-      "40 GB NVMe SSD storage",
-      "40 email accounts",
-      "Website builder",
-      "3 SSL certificates, https",
-      "Email Marketing",
-    ],
-  },
-  {
-    type: "CHIBCHAORO",
-    prices: { monthly: 11, semiAnnual: 55, annual: 99 },
-    features: [
-      "5 websites",
-      "Unlimited databases",
-      "60 GB NVMe SSD storage",
-      "60 email accounts",
-      "Website builder",
-      "5 SSL certificates, https",
-      "Email Marketing",
-    ],
-  },
-];
 
 export default function MyPlansPage() {
   useScrollToTop();
   const { showAlert } = useGlobalAlert();
-  const [plans, setPlans] = useState([
-    { id: "P1", ...availablePlans[0], billingCycle: "monthly" },
-    { id: "P2", ...availablePlans[2], billingCycle: "annual" },
-  ]);
+  const { specificId } = useAuth();
+  const [plans, setPlans] = useState([]);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const resAdquiridos = await getPlansByClientId(specificId); // array
+        const resInfoPlanes = await getPlansInfo(); // { data: [...] }
+
+        const acquiredPlans = Array.isArray(resAdquiridos) ? resAdquiridos : [];
+        const infoPlans = Array.isArray(resInfoPlanes.data) ? resInfoPlanes.data : [];
+
+        if (acquiredPlans.length === 0 || infoPlans.length === 0) {
+          console.warn("Some plan data was missing", { acquiredPlans, infoPlans });
+          showAlert("Could not load your plan details.", "warning");
+          return;
+        }
+
+        const adapted = acquiredPlans.map((p) => {
+          const planInfo = infoPlans.find(
+            (pi) =>
+              pi.planCliente.idPlanCliente === p.planCliente &&
+              pi.planPago.idPlanPago === p.planPago
+          );
+
+          const normalizeBilling = (interval) => {
+            if (!interval) return "monthly";
+            const clean = interval.toLowerCase();
+            if (clean.includes("mensual")) return "monthly";
+            if (clean.includes("semestral")) return "semiAnnual";
+            if (clean.includes("anual")) return "annual";
+            return "monthly";
+          };
+
+
+          const billing = normalizeBilling(planInfo?.planPago?.intervaloPago);
+
+
+          return {
+            id: p.idPlanAdquirido,
+            type: planInfo?.planCliente?.nombrePlanCliente || "CUSTOM",
+            billingCycle: billing,
+            prices: {
+              monthly: planInfo?.precio || parseFloat(p.precioPlanAdquirido),
+              semiAnnual: planInfo?.precio || parseFloat(p.precioPlanAdquirido),
+              annual: planInfo?.precio || parseFloat(p.precioPlanAdquirido),
+            },
+            features: [
+              `${planInfo?.planCliente?.numeroWebs} websites`,
+              `${planInfo?.planCliente?.numeroBaseDatos} databases`,
+              `${planInfo?.planCliente?.almacenamientoNvme} GB NVMe SSD`,
+              `${planInfo?.planCliente?.numeroCuentasCorreo} email accounts`,
+              planInfo?.planCliente?.creadorWeb ? "Website builder" : null,
+              `${planInfo?.planCliente?.numeroCertificadoSslHttps} SSL certificates`,
+              planInfo?.planCliente?.emailMarketing ? "Email marketing" : null,
+              `Status: ${p.estadoPlan}`,
+              `Purchased: ${p.fechaCompra}`,
+              `Expires: ${p.fechaExpiracion}`,
+            ].filter(Boolean)
+
+          };
+        });
+
+        setPlans(adapted);
+      } catch (err) {
+        console.error("❌ Error loading plan data:", err);
+        showAlert("There was a problem loading your plans", "error");
+      }
+    };
+
+
+    if (specificId) fetchPlans();
+  }, [specificId]);
+
+
 
   const navigate = useNavigate(); // 👈 Hook para redirigir
 
@@ -123,10 +150,12 @@ export default function MyPlansPage() {
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         onConfirm={handleConfirmDelete}
-        title="Delete Plan"
-        message="Are you sure you want to delete this plan?"
-        confirmText="Confirm Delete"
+        title="Cancel Plan"
+        message="Are you sure you want to cancel this plan?"
+        confirmText="Confirm Cancelation"
       />
     </Box>
+
+
   );
 }

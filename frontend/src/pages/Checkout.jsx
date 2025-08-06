@@ -16,6 +16,8 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import { deletePayMethod } from '../api/payMethodApi';
 import { getBanks } from '../api/payMethodApi';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function CheckoutPage() {
     // Mock plan
@@ -43,6 +45,8 @@ export default function CheckoutPage() {
     const { role, specificId } = useAuth();
     const { showAlert } = useGlobalAlert();
     const { showLoader, hideLoader } = useGlobalLoading();
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         const checkoutData = JSON.parse(localStorage.getItem('checkoutData'));
@@ -163,14 +167,16 @@ export default function CheckoutPage() {
 
             await new Promise(resolve => setTimeout(resolve, 1000));
             const response = await createPlanAdquirido(payload);
-            console.log('✅ Plan registered:', response.data);
             localStorage.removeItem('checkoutData');
             showAlert('Payment successful!', 'success');
+            navigate('/client/MyPlans'); 
+
         } catch (error) {
             console.error('❌ Error during payment:', error);
             showAlert('There was a problem processing your payment.', 'error');
         } finally {
             hideLoader();
+
         }
     };
 

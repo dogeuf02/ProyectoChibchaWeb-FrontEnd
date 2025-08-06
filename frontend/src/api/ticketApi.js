@@ -20,3 +20,9 @@ export const getTicketWithHistory = async (ticketId) => {
   const response = await axios.get(`/ticket/obtenerHistorial/${ticketId}`);
   return response.data;
 };
+
+export const createTicket = async (ticketData) => {
+  const response = await axios.post('/ticket', ticketData);
+  return response.data;
+};
+

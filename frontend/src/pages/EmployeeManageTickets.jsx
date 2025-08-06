@@ -62,6 +62,7 @@ export default function EmployeeManageTickets() {
             return {
               ticket_id: full.idTicket,
               client_id: full.cliente?.toString(),
+              distributor_id:full.distribuidor?.toString(),
               subject: full.asunto,
               description: full.descripcion,
               status: full.estado,
@@ -84,7 +85,7 @@ export default function EmployeeManageTickets() {
         } else if (isCoordinator) {
           switch (employeeRole) {
             case "Coordinador nv 1":
-              filtered = ticketsWithHistory; // ve todos los tickets
+              filtered = ticketsWithHistory.filter(t => t.level === "nivel-1");
               break;
             case "Coordinador nv 2":
               filtered = ticketsWithHistory.filter(t => t.level === "nivel-2");
@@ -184,7 +185,7 @@ export default function EmployeeManageTickets() {
       estado: "Cerrado",
       fechaCreacion: ticketToClose.fechaCreacion,
       fechaCierre: new Date().toISOString(),
-      distribuidor: ticketToClose.distribuidor,
+      distribuidor: ticketToClose.distributor_id,
       cliente: ticketToClose.client_id,
     };
 
