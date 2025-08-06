@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -17,14 +17,11 @@ import {
   DialogActions,
   TextField,
 } from "@mui/material";
-
+import { getActiveDomains } from "../api/domainOwnApi";
+import { useAuth } from "../context/AuthContext"
 export default function MyDomainsPage() {
-  const [domains, setDomains] = useState([
-    { id: 1, name: "chibchaweb", tld: ".com", status: "active" },
-    { id: 2, name: "tiendachibcha", tld: ".store", status: "expired" },
-    { id: 3, name: "portafolio", tld: ".dev", status: "active" },
-    { id: 4, name: "miempresa", tld: ".org", status: "pending" },
-  ]);
+  const { role, specificId } = useAuth();
+  const [domains, setDomains] = useState([]);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedDomain, setSelectedDomain] = useState(null);
@@ -33,7 +30,7 @@ export default function MyDomainsPage() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "active":
+      case "En Uso":
         return "success";
       case "expired":
         return "error";
@@ -69,6 +66,21 @@ export default function MyDomainsPage() {
     setSelectedDomain(null);
     alert("Transfer request sent successfully.");
   };
+
+  useEffect(() => {
+    const fetchDomains = async () => {
+ 
+      const result = await getActiveDomains(role, specificId);
+      console.log("domaData", result);
+      if (result) {
+        setDomains(result);
+      }
+    }
+
+    fetchDomains();
+
+
+  }, [role, specificId]);
 
   return (
     <Box sx={{ maxWidth: 1000, mx: "auto", mt: 10 }}>
@@ -112,17 +124,17 @@ export default function MyDomainsPage() {
 
           <TableBody>
             {domains.map((domain) => {
-              const isExpired = domain.status === "expired";
-              const isPending = domain.status === "pending";
+              const isExpired = domain.estado === "expired";
+              const isPending = domain.estado === "pending";
 
               return (
-                <TableRow key={domain.id} hover>
-                  <TableCell>{domain.name}</TableCell>
+                <TableRow key={domain.idDominio} hover>
+                  <TableCell>{domain.nombreDominio}</TableCell>
                   <TableCell>{domain.tld}</TableCell>
                   <TableCell>
                     <Chip
-                      label={domain.status}
-                      color={getStatusColor(domain.status)}
+                      label={domain.estado}
+                      color={getStatusColor(domain.estado)}
                     />
                   </TableCell>
                   <TableCell align="center">
