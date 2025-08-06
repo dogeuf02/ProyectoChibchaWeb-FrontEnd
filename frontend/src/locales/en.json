@@ -305,6 +305,7 @@
         "domainRequest": "Domain Request",
         "myTickets": "My Tickets",
         "myPlans": "My Plans",
+        "logout": "Logout",
         "manage": "Manage",
         "clients": "Clients",
         "distributors": "Distributors",
@@ -314,7 +315,7 @@
         "domains": "Domains",
         "plans": "Plans",
         "administrators": "Administrators",
-        "logout": "Logout"
+        "manageTickets": "Manage Tickets"
     },
     "navbar": {
         "myProfile": "My Profile",

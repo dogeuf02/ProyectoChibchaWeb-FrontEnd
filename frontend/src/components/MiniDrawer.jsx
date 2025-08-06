@@ -131,7 +131,7 @@ export default function MiniDrawer() {
   ];
 
   const employeeOnlyItems = [
-    { text: 'Manage Tickets', icon: <ConfirmationNumberIcon />, path: '/Employee/ManageTickets' },
+    { text: t('drawer.manageTickets'), icon: <ConfirmationNumberIcon />, path: '/Employee/ManageTickets' },
   ];
 
   const handleLogout = () => {
