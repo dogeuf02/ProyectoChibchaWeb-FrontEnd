@@ -1,13 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import Zoom from '@mui/material/Zoom';
 import {
-    Container,
-    TextField,
-    Typography,
-    Box,
-    Paper,
-    Button,
-
+  Container,
+  TextField,
+  Typography,
+  Box,
+  Paper,
+  Button,
 } from '@mui/material';
 
 import useScrollToTop from '../hooks/useScrollToTop';
@@ -15,588 +14,320 @@ import { useGlobalAlert } from "../context/AlertContext";
 import ConfirmDialog from "../components/ConfirmDialog";
 import { useAuth } from "../context/AuthContext";
 import {
-    getUserProfile,
-    updateClientProfile,
-    updateEmployeeProfile,
-    updateDistributorProfile,
-    updateAdminProfile,
-    deactivateUserById
+  getUserProfile,
+  updateClientProfile,
+  updateEmployeeProfile,
+  updateDistributorProfile,
+  updateAdminProfile,
+  deactivateUserById,
+  changePassword
 } from '../api/userApi';
 import { useNavigate } from 'react-router-dom';
 import { ROLE } from '../enum/roleEnum';
 import { auth } from '../api/authApi';
-import { changePassword } from '../api/userApi';
 import ReCAPTCHA from 'react-google-recaptcha';
+import { useTranslation } from 'react-i18next';
 
 export default function ManageProfile() {
-    const recaptchaRef = useRef();
-    useScrollToTop();
+  const { t } = useTranslation();
+  const recaptchaRef = useRef();
+  useScrollToTop();
 
-    const navigate = useNavigate();
-    const [captchaToken, setCaptchaToken] = useState(null);
-    const { role, logout, userId } = useAuth();
-    const [passwordData, setPasswordData] = useState({
-        currentPassword: '',
-        newPassword: ''
-    });
+  const navigate = useNavigate();
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const { role, logout, userId } = useAuth();
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: ''
+  });
 
-    const { showAlert } = useGlobalAlert();
-    const [profile, setProfile] = useState({
-        email: '',
-        firstName: '',
-        lastName: '',
-        phone: '',
-        birthDate: '',
-        roleName: '',
-        position: '',
-    });
-    const [editMode, setEditMode] = useState(false);
-    const [originalProfile, setOriginalProfile] = useState({});
+  const { showAlert } = useGlobalAlert();
+  const [profile, setProfile] = useState({
+    email: '',
+    firstName: '',
+    lastName: '',
+    phone: '',
+    birthDate: '',
+    roleName: '',
+    position: '',
+  });
+  const [editMode, setEditMode] = useState(false);
+  const [originalProfile, setOriginalProfile] = useState({});
+  const [openDialog, setOpenDialog] = useState(false);
 
-    const handleCaptchaChange = (value) => {
-        setCaptchaToken(value);
+  const handleCaptchaChange = (value) => {
+    setCaptchaToken(value);
+  };
+
+  const activateEdit = () => {
+    setOriginalProfile(profile);
+    setEditMode(true);
+  };
+
+  const cancelEdit = () => {
+    setProfile(originalProfile);
+    setEditMode(false);
+  };
+
+  const handleChange = (e) => {
+    setProfile({ ...profile, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!captchaToken) {
+      showAlert(t("manageProfile.completeCaptcha"), 'warning');
+      recaptchaRef.current?.reset();
+      return;
+    }
+
+    let requiredFields = [];
+    switch (role) {
+      case ROLE.CLIENT:
+        requiredFields = ['firstName', 'lastName', 'phone', 'birthDate'];
+        break;
+      case ROLE.EMPLOYEE:
+        requiredFields = ['firstName', 'lastName'];
+        break;
+      case ROLE.ADMIN:
+        requiredFields = ['firstName', 'lastName', 'birthDate'];
+        break;
+      default:
+        requiredFields = [];
+    }
+
+    const friendlyNames = {
+      email: t("manageProfile.email"),
+      firstName: t("manageProfile.firstName"),
+      lastName: t("manageProfile.lastName"),
+      phone: t("manageProfile.phoneNumber"),
+      birthDate: t("manageProfile.birthDate"),
     };
 
-    const activateEdit = () => {
-        setOriginalProfile(profile);
-        setEditMode(true);
-    };
+    for (const field of requiredFields) {
+      if (!profile[field]) {
+        showAlert(`${t("manageProfile.fieldRequired")} "${friendlyNames[field]}"`, 'warning');
+        return;
+      }
+    }
 
-    const cancelEdit = () => {
-        setProfile(originalProfile);
+    try {
+      const loginResult = await auth({
+        correo: profile.email,
+        contrasena: passwordData.currentPassword,
+        captchaToken: captchaToken
+      });
+
+      if (!loginResult.autenticado) {
+        showAlert(t("manageProfile.incorrectPassword"), "error");
+        recaptchaRef.current?.reset();
+        return;
+      }
+
+      if (passwordData.newPassword) {
+        const passwordRes = await changePassword(profile.email, passwordData.newPassword);
+        if (!(passwordRes.status === 200 || passwordRes.data.exito)) {
+          showAlert(t("manageProfile.errorUpdatingPassword"), "error");
+          recaptchaRef.current?.reset();
+          return;
+        }
+      }
+
+      let updateFunction;
+      let id = profile.id;
+      const formattedData = {
+        nombreCliente: profile.firstName,
+        apellidoCliente: profile.lastName,
+        telefono: profile.phone,
+        fechaNacimientoCliente: profile.birthDate,
+      };
+
+      switch (role) {
+        case ROLE.CLIENT:
+          updateFunction = updateClientProfile;
+          break;
+        case ROLE.EMPLOYEE:
+          updateFunction = updateEmployeeProfile;
+          formattedData.nombreEmpleado = profile.firstName;
+          formattedData.apellidoEmpleado = profile.lastName;
+          formattedData.fechaNacimientoEmpleado = profile.birthDate;
+          delete formattedData.nombreCliente;
+          delete formattedData.apellidoCliente;
+          delete formattedData.fechaNacimientoCliente;
+          break;
+        case ROLE.DISTRIBUTOR:
+          updateFunction = updateDistributorProfile;
+          break;
+        case ROLE.ADMIN:
+          updateFunction = updateAdminProfile;
+          formattedData.nombreAdmin = profile.firstName;
+          formattedData.apellidoAdmin = profile.lastName;
+          formattedData.fechaNacimientoAdmin = profile.birthDate;
+          delete formattedData.nombreCliente;
+          delete formattedData.apellidoCliente;
+          delete formattedData.fechaNacimientoCliente;
+          break;
+        default:
+          showAlert(t("manageProfile.unsupportedRole"), "error");
+          return;
+      }
+
+      const res = await updateFunction(id, formattedData);
+
+      if (res && res.status === 200) {
         setEditMode(false);
+        showAlert(t("manageProfile.updateSuccess"), "success");
+        recaptchaRef.current?.reset();
+        setPasswordData({ currentPassword: '', newPassword: '' });
+      } else {
+        showAlert(t("manageProfile.updateError"), "error");
+        recaptchaRef.current?.reset();
+      }
+
+    } catch (err) {
+      console.error("❌ Error actualizando perfil:", err);
+      showAlert(t("manageProfile.updateError"), "error");
+      recaptchaRef.current?.reset();
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    const res = await deactivateUserById(userId);
+    if (res.exito) {
+      showAlert(t("manageProfile.deleteSuccess"), "success");
+      setOpenDialog(false);
+      logout();
+      setTimeout(() => navigate('/'), 500);
+    } else {
+      showAlert(t("manageProfile.deleteError"), "error");
+      setOpenDialog(false);
+    }
+  };
+
+  const handleOpenDialog = () => setOpenDialog(true);
+  const handleCloseDialog = () => setOpenDialog(false);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!userId || !role) return;
+      const res = await getUserProfile(role, userId);
+      if (res.exito) {
+        const data = res.data;
+        setProfile({
+          id: data.idCliente || data.idEmpleado || data.idDistribuidor || data.idAdmin || '',
+          email: data.email || '',
+          firstName: data.nombreEmpleado || data.nombreCliente || data.nombreAdmin || '',
+          lastName: data.apellidoEmpleado || data.apellidoCliente || data.apellidoAdmin || '',
+          phone: data.telefono || '',
+          birthDate: data.fechaNacimientoEmpleado || data.fechaNacimientoCliente || data.fechaNacimientoAdmin || '',
+          roleName: role,
+          position: data.cargoEmpleado || '',
+          documentType: data.nombreTipoDoc || '',
+          companyName: data.nombreEmpresa || '',
+          companyAddress: data.direccionEmpresa || '',
+          companyNumber: data.numeroDocEmpresa || ''
+        });
+      } else {
+        showAlert(res.mensaje, "error");
+      }
     };
-
-    const handleChange = (e) => {
-        setProfile({ ...profile, [e.target.name]: e.target.value });
-    };
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!captchaToken) {
-            showAlert('Please complete the captcha', 'warning');
-            recaptchaRef.current?.reset();
-            return;
-        }
-
-        let requiredFields = [];
-
-        switch (role) {
-            case ROLE.CLIENT:
-                requiredFields = ['firstName', 'lastName', 'phone', 'birthDate'];
-                break;
-            case ROLE.EMPLOYEE:
-                requiredFields = ['firstName', 'lastName'];
-                break;
-            case ROLE.ADMIN:
-                requiredFields = ['firstName', 'lastName', 'birthDate'];
-                break;
-            case ROLE.DISTRIBUTOR:
-                requiredFields = []; // No validación
-                break;
-            default:
-                requiredFields = [];
-        }
-
-        const friendlyNames = {
-            email: 'Email',
-            firstName: 'First Name',
-            lastName: 'Last Name',
-            phone: 'Phone',
-            birthDate: 'Birth Date',
-        };
-
-        for (const field of requiredFields) {
-            if (!profile[field]) {
-                showAlert(`The field "${friendlyNames[field]}" is required.`, 'warning');
-                return;
-            }
-        }
-
-        try {
-            const loginResult = await auth({
-                correo: profile.email,
-                contrasena: passwordData.currentPassword,
-                captchaToken: captchaToken
-            });
-
-            if (!loginResult.autenticado) {
-                showAlert("Current password is incorrect", "error");
-                recaptchaRef.current?.reset();
-                return;
-            }
-            if (passwordData.newPassword) {
-                const passwordRes = await changePassword(profile.email, passwordData.newPassword);
-
-                if (!(passwordRes.status === 200 || passwordRes.data.exito)) {
-                    showAlert("Error updating password", "error");
-                    recaptchaRef.current?.reset();
-
-                    return;
-                }
-            }
-
-            try {
-                let updateFunction;
-                let id = profile.id;
-
-                const formattedData = {
-                    nombreCliente: profile.firstName,
-                    apellidoCliente: profile.lastName,
-                    telefono: profile.phone,
-                    fechaNacimientoCliente: profile.birthDate,
-                };
-
-                switch (role) {
-                    case ROLE.CLIENT:
-                        updateFunction = updateClientProfile;
-                        break;
-                    case ROLE.EMPLOYEE:
-                        updateFunction = updateEmployeeProfile;
-                        formattedData.nombreEmpleado = profile.firstName;
-                        formattedData.apellidoEmpleado = profile.lastName;
-                        formattedData.fechaNacimientoEmpleado = profile.birthDate;
-                        delete formattedData.nombreCliente;
-                        delete formattedData.apellidoCliente;
-                        delete formattedData.fechaNacimientoCliente;
-                        break;
-                    case ROLE.DISTRIBUTOR:
-                        updateFunction = updateDistributorProfile;
-                        // agrega los campos si vas a permitir edición para distribuidores
-                        break;
-                    case ROLE.ADMIN:
-                        updateFunction = updateAdminProfile;
-                        formattedData.nombreAdmin = profile.firstName;
-                        formattedData.apellidoAdmin = profile.lastName;
-                        formattedData.fechaNacimientoAdmin = profile.birthDate;
-                        delete formattedData.nombreCliente;
-                        delete formattedData.apellidoCliente;
-                        delete formattedData.fechaNacimientoCliente;
-                        break;
-                    default:
-                        showAlert("Not supported rol", "error");
-                        return;
-                }
-
-                const res = await updateFunction(id, formattedData);
-
-                if (res && res.status === 200) {
-                    setEditMode(false);
-                    showAlert("Profile updated successfully", "success");
-                    recaptchaRef.current?.reset();
-
-                    setPasswordData({ currentPassword: '', newPassword: '' });
-                } else {
-                    showAlert("There was a problem updating the profile", "error");
-                    recaptchaRef.current?.reset();
-
-                }
-
-            } catch (err) {
-                console.error("❌ Error actualizando perfil:", err);
-                showAlert("Error updating profile", "error");
-                recaptchaRef.current?.reset();
-
-            }
-        } catch (err) {
-            console.error("❌ Error autenticando o cambiando contraseña:", err);
-            showAlert("Error updating profile", "error");
-            recaptchaRef.current?.reset();
-
-        }
-    };
-
-
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-    const handleSnackbarClose = (event, reason) => {
-        if (reason === 'clickaway') return;
-        setSnackbarOpen(false);
-    };
-    const [openDialog, setOpenDialog] = useState(false);
-
-    const handleOpenDialog = () => setOpenDialog(true);
-    const handleCloseDialog = () => setOpenDialog(false);
-
-    const handleConfirmDelete = async () => {
-
-        const res = await deactivateUserById(userId);
-
-        if (res.exito) {
-            showAlert("Account Succesfully Deleted", "success");
-
-            setOpenDialog(false);
-
-            logout();
-
-            setTimeout(() => {
-                navigate('/');
-            }, 500);
-        } else {
-            showAlert("Error Deleting Acount", "error");
-            setOpenDialog(false);
-        }
-    };
-
-
-
-    useEffect(() => {
-        const fetchProfile = async () => {
-            //const userId = specificId;
-            const userRole = role; // desde useAuth()
-
-            if (!userId || !userRole) return;
-
-            const res = await getUserProfile(userRole, userId);
-            console.log("Profile data:", res);
-
-            if (res.exito) {
-                const data = res.data;
-
-                setProfile({
-                    id: data.idCliente || data.idEmpleado || data.idDistribuidor || data.idAdmin || '',
-                    email: data.email || '',
-                    firstName: data.nombreEmpleado || data.nombreCliente || data.nombreAdmin || '',
-                    lastName: data.apellidoEmpleado || data.apellidoCliente || data.apellidoAdmin || '',
-                    phone: data.telefono || '',
-                    birthDate: data.fechaNacimientoEmpleado || data.fechaNacimientoCliente || data.fechaNacimientoAdmin || '',
-                    roleName: userRole,
-                    position: data.cargoEmpleado || '',
-                    documentType: data.nombreTipoDoc || '',
-                    companyName: data.nombreEmpresa || '',
-                    companyAddress: data.direccionEmpresa || '',
-                    companyNumber: data.numeroDocEmpresa || ''
-                });
-
-            } else {
-                showAlert(res.mensaje, "error");
-
-            }
-        };
-
-        fetchProfile();
-    }, []);
-
-    return (
-        <>
-            <Zoom in={true} timeout={800}>
-                <Container maxWidth="sm" sx={{ mt: 6 }}>
-                    <Paper elevation={3} sx={{ p: 4, bgcolor: '#fafafa' }}>
-                        <Typography variant="h5" gutterBottom sx={{ color: '#212121' }}>
-                            Manage Profile
-                        </Typography>
-
-                        <Box component="form" onSubmit={handleSubmit} noValidate >
-
-                            <TextField
-                                label="Email"
-                                name="email"
-                                value={profile.email}
-                                fullWidth
-                                margin="normal"
-                                disabled
-                            />
-
-
-                            {profile.roleName === ROLE.ADMIN && (
-                                <>
-
-                                    <TextField
-                                        label="First Name"
-                                        name="firstName"
-                                        value={profile.firstName}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled={!editMode}
-                                    />
-                                    <TextField
-                                        label="Last Name"
-                                        name="lastName"
-                                        value={profile.lastName}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled={!editMode}
-                                    />
-
-                                    <TextField
-                                        label="Birth Date"
-                                        name="birthDate"
-                                        type="date"
-                                        value={profile.birthDate}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        InputLabelProps={{ shrink: true }}
-                                        disabled={!editMode}
-                                    />
-
-
-
-
-
-                                </>)}
-
-                            {profile.roleName === 'Distribuidor' && (
-                                <>
-                                    <TextField
-
-                                        label="Document type"
-                                        name="documentType"
-                                        value={profile.documentType || ''}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled
-
-                                    />
-                                    <TextField
-                                        label="Company number"
-                                        name="companyNumber"
-                                        value={profile.companyNumber}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled
-                                    />
-                                    <TextField
-                                        label="Company name"
-                                        name="companyName"
-                                        value={profile.companyName}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled
-                                    />
-                                    <TextField
-                                        label="Company address"
-                                        name="companyAddress"
-                                        value={profile.companyAddress}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled
-                                    />
-
-
-
-
-
-
-
-                                </>
-
-                            )}
-
-
-                            {profile.roleName === 'Cliente' && (
-                                <>
-
-                                    <TextField
-                                        label="First Name"
-                                        name="firstName"
-                                        value={profile.firstName}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled={!editMode}
-                                    />
-                                    <TextField
-                                        label="Last Name"
-                                        name="lastName"
-                                        value={profile.lastName}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled={!editMode}
-                                    />
-                                    <TextField
-                                        label="Phone Number"
-                                        name="phone"
-                                        value={profile.phone}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled={!editMode}
-                                    />
-                                    <TextField
-                                        label="Birth Date"
-                                        name="birthDate"
-                                        type="date"
-                                        value={profile.birthDate}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        InputLabelProps={{ shrink: true }}
-                                        disabled={!editMode}
-                                    />
-
-
-
-
-
-
-
-                                </>)}
-
-                            {profile.roleName === 'Empleado' && (
-                                <>
-
-                                    <TextField
-                                        label="First Name"
-                                        name="firstName"
-                                        value={profile.firstName}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled
-                                    />
-                                    <TextField
-                                        label="Last Name"
-                                        name="lastName"
-                                        value={profile.lastName}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        disabled
-                                    />
-
-
-                                </>)}
-
-
-                            <TextField
-                                label="Role"
-                                name="roleName"
-                                value={profile.roleName}
-                                fullWidth
-                                margin="normal"
-                                disabled
-                            />
-
-                            <TextField
-                                label="Current Password"
-                                name="currentPassword"
-                                type="password"
-                                value={passwordData.currentPassword}
-                                onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                                fullWidth
-                                margin="normal"
-                                disabled={!editMode}
-                            />
-
-                            <TextField
-                                label="New Password"
-                                name="newPassword"
-                                type="password"
-                                value={passwordData.newPassword}
-                                onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                                fullWidth
-                                margin="normal"
-                                disabled={!editMode}
-                            />
-
-                            <Box mt={3} display="flex" justifyContent="center">
-                                <ReCAPTCHA
-                                    sitekey="6LePn5krAAAAAAnj4Tz_1s9K7dZEYLVsdUeFqwqB"
-                                    onChange={handleCaptchaChange}
-                                    ref={recaptchaRef}
-
-                                />
-                            </Box>
-                            {!editMode && role !== ROLE.EMPLOYEE && (
-                                <Button
-                                    type="button"
-                                    onClick={activateEdit}
-                                    variant="contained"
-                                    fullWidth
-                                    sx={{
-                                        mt: 3,
-                                        mb: 2,
-                                        bgcolor: '#ff6f00',
-                                        borderRadius: 30,
-                                        '&:hover': { bgcolor: '#ffc107', color: '#212121' }
-                                    }}
-                                >
-                                    Edit Profile
-                                </Button>
-                            )}
-
-                            {/* Mostrar botones Save y Cancel solo si está editando y NO es Empleado */}
-                            {editMode && role !== ROLE.EMPLOYEE && (
-                                <Box display="flex" gap={2} mb={2}>
-                                    <Button
-                                        onClick={cancelEdit}
-                                        variant="outlined"
-                                        color="inherit"
-                                        sx={{
-                                            mt: 3,
-                                            mb: 2,
-                                            borderRadius: 30,
-                                        }}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        sx={{
-                                            bgcolor: '#ff6f00',
-                                            borderRadius: 30,
-                                            mt: 3,
-                                            mb: 2,
-                                            '&:hover': { bgcolor: '#ffc107', color: '#212121' }
-                                        }}
-                                    >
-                                        Save Changes
-                                    </Button>
-                                </Box>
-                            )}
-
-                            {/* Mostrar botón de eliminar solo si NO es Empleado */}
-                            {role !== ROLE.EMPLOYEE && (
-                                <>
-                                    <Box display="flex" justifyContent="center" mt={2} mb={1}>
-                                        <Button
-                                            variant="contained"
-                                            color="error"
-                                            sx={{
-                                                backgroundColor: "#f04507ff",
-                                                borderRadius: 30,
-                                                ":hover": {
-                                                    backgroundColor: "#FFBE02",
-                                                },
-                                            }}
-                                            onClick={handleOpenDialog}
-                                        >
-                                            DELETE ACCOUNT
-                                        </Button>
-                                    </Box>
-                                    <Typography variant="caption" color="textSecondary" align="center" sx={{ mt: 1 }}>
-                                        Deleting your account is irreversible.
-                                    </Typography>
-                                </>
-                            )}
-                        </Box>
-
-                    </Paper>
-                    <ConfirmDialog
-                        open={openDialog}
-                        onClose={handleCloseDialog}
-                        onConfirm={handleConfirmDelete}
-                        title="Delete Account"
-                        message="Are you sure you want to delete your account? This action cannot be undone."
-                        confirmText="Confirm Delete"
-                    />
-
-                </Container>
-
-            </Zoom>
-
-        </>
-
-
-    );
-
-
+    fetchProfile();
+  }, []);
+
+  return (
+    <Zoom in={true} timeout={800}>
+      <Container maxWidth="sm" sx={{ mt: 6 }}>
+        <Paper elevation={3} sx={{ p: 4, bgcolor: '#fafafa' }}>
+          <Typography variant="h5" gutterBottom sx={{ color: '#212121' }}>
+            {t('manageProfile.title')}
+          </Typography>
+
+          <Box component="form" onSubmit={handleSubmit} noValidate>
+            <TextField label={t("manageProfile.email")} name="email" value={profile.email} fullWidth margin="normal" disabled />
+
+            {profile.roleName === ROLE.ADMIN && (
+              <>
+                <TextField label={t("manageProfile.firstName")} name="firstName" value={profile.firstName} onChange={handleChange} fullWidth margin="normal" disabled={!editMode} />
+                <TextField label={t("manageProfile.lastName")} name="lastName" value={profile.lastName} onChange={handleChange} fullWidth margin="normal" disabled={!editMode} />
+                <TextField label={t("manageProfile.birthDate")} name="birthDate" type="date" value={profile.birthDate} onChange={handleChange} fullWidth margin="normal" InputLabelProps={{ shrink: true }} disabled={!editMode} />
+              </>
+            )}
+
+            {profile.roleName === 'Distribuidor' && (
+              <>
+                <TextField label={t("manageProfile.documentType")} name="documentType" value={profile.documentType || ''} fullWidth margin="normal" disabled />
+                <TextField label={t("manageProfile.companyNumber")} name="companyNumber" value={profile.companyNumber || ''} fullWidth margin="normal" disabled />
+                <TextField label={t("manageProfile.companyName")} name="companyName" value={profile.companyName || ''} fullWidth margin="normal" disabled />
+                <TextField label={t("manageProfile.companyAddress")} name="companyAddress" value={profile.companyAddress || ''} fullWidth margin="normal" disabled />
+              </>
+            )}
+
+            {profile.roleName === 'Cliente' && (
+              <>
+                <TextField label={t("manageProfile.firstName")} name="firstName" value={profile.firstName} onChange={handleChange} fullWidth margin="normal" disabled={!editMode} />
+                <TextField label={t("manageProfile.lastName")} name="lastName" value={profile.lastName} onChange={handleChange} fullWidth margin="normal" disabled={!editMode} />
+                <TextField label={t("manageProfile.phoneNumber")} name="phone" value={profile.phone} onChange={handleChange} fullWidth margin="normal" disabled={!editMode} />
+                <TextField label={t("manageProfile.birthDate")} name="birthDate" type="date" value={profile.birthDate} onChange={handleChange} fullWidth margin="normal" InputLabelProps={{ shrink: true }} disabled={!editMode} />
+              </>
+            )}
+
+            {profile.roleName === 'Empleado' && (
+              <>
+                <TextField label={t("manageProfile.firstName")} name="firstName" value={profile.firstName} fullWidth margin="normal" disabled />
+                <TextField label={t("manageProfile.lastName")} name="lastName" value={profile.lastName} fullWidth margin="normal" disabled />
+              </>
+            )}
+
+            <TextField label={t("manageProfile.role")} name="roleName" value={profile.roleName} fullWidth margin="normal" disabled />
+
+            <TextField label={t("manageProfile.currentPassword")} name="currentPassword" type="password" value={passwordData.currentPassword} onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })} fullWidth margin="normal" disabled={!editMode} />
+            <TextField label={t("manageProfile.newPassword")} name="newPassword" type="password" value={passwordData.newPassword} onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })} fullWidth margin="normal" disabled={!editMode} />
+
+            <Box mt={3} display="flex" justifyContent="center">
+              <ReCAPTCHA sitekey="6LePn5krAAAAAAnj4Tz_1s9K7dZEYLVsdUeFqwqB" onChange={handleCaptchaChange} ref={recaptchaRef} />
+            </Box>
+
+            {!editMode && role !== ROLE.EMPLOYEE && (
+              <Button type="button" onClick={activateEdit} variant="contained" fullWidth sx={{ mt: 3, mb: 2, bgcolor: '#ff6f00', borderRadius: 30, '&:hover': { bgcolor: '#ffc107', color: '#212121' } }}>
+                {t("manageProfile.editProfile")}
+              </Button>
+            )}
+
+            {editMode && role !== ROLE.EMPLOYEE && (
+              <Box display="flex" gap={2} mb={2}>
+                <Button onClick={cancelEdit} variant="outlined" color="inherit" sx={{ mt: 3, mb: 2, borderRadius: 30 }}>
+                  {t("manageProfile.cancel")}
+                </Button>
+                <Button type="submit" variant="contained" sx={{ bgcolor: '#ff6f00', borderRadius: 30, mt: 3, mb: 2, '&:hover': { bgcolor: '#ffc107', color: '#212121' } }}>
+                  {t("manageProfile.saveChanges")}
+                </Button>
+              </Box>
+            )}
+
+            {role !== ROLE.EMPLOYEE && (
+              <>
+                <Box display="flex" justifyContent="center" mt={2} mb={1}>
+                  <Button variant="contained" color="error" sx={{ backgroundColor: "#f04507ff", borderRadius: 30, ":hover": { backgroundColor: "#FFBE02" } }} onClick={handleOpenDialog}>
+                    {t("manageProfile.deleteAccount")}
+                  </Button>
+                </Box>
+                <Typography variant="caption" color="textSecondary" align="center" sx={{ mt: 1 }}>
+                  {t("manageProfile.deleteWarning")}
+                </Typography>
+              </>
+            )}
+          </Box>
+        </Paper>
+
+        <ConfirmDialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          onConfirm={handleConfirmDelete}
+          title={t("manageProfile.dialogTitle")}
+          message={t("manageProfile.dialogMessage")}
+          confirmText={t("manageProfile.dialogConfirm")}
+        />
+      </Container>
+    </Zoom>
+  );
 }

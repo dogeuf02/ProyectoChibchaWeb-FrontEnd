@@ -17,25 +17,23 @@
     "login": {
         "button": "Login"
     },
-    "domains": {
-        "domainsTitle": "Domains",
-        "domainInfo": {
-            "title": "Choose Your Domain",
-            "subtitle": "Select the perfect domain for your website",
+    "DomainsInfo": {
+        "carousel": {
+            "title": "Explore Our Domains",
+            "learnMore": "Learn More",
             "com": {
-                "title": "Domain .com",
-                "description": "Brief description of the first service."
+                "title": "Commercial",
+                "description": "The most globally recognized and trusted domain, ideal for businesses, online stores, and professional websites seeking a worldwide audience."
             },
             "net": {
-                "title": "Domain .net",
-                "description": "Brief description of the second service."
+                "title": "Network",
+                "description": "A professional domain often linked to technology and internet services, suitable for startups, software platforms, and hosting providers."
             },
             "org": {
-                "title": "Domain .org",
-                "description": "Brief description of the third service."
+                "title": "Organization",
+                "description": "A credible and trustworthy domain commonly used by non-profits, foundations, and community or educational projects."
             }
-        },
-        "moreInfo": "More information"
+        }
     },
     "hosting": {
         "hostingTitle": "Hosting Plans",
@@ -334,22 +332,28 @@
         "myTickets": "My Tickets",
         "ticketsManagement": "Tickets Management"
     },
-    "DomainsInfo": {
-        "carousel": {
-            "title": "Explore Our Domains",
-            "learnMore": "Learn More",
-            "com": {
-                "title": "Commercial",
-                "description": "The most globally recognized and trusted domain, ideal for businesses, online stores, and professional websites seeking a worldwide audience."
-            },
-            "net": {
-                "title": "Network",
-                "description": "A professional domain often linked to technology and internet services, suitable for startups, software platforms, and hosting providers."
-            },
-            "org": {
-                "title": "Organization",
-                "description": "A credible and trustworthy domain commonly used by non-profits, foundations, and community or educational projects."
-            }
+    "manageProfile": {
+        "title": "Manage Profile",
+        "email": "Email",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "phoneNumber": "Phone Number",
+        "birthDate": "Birth Date",
+        "documentType": "Document type",
+        "companyNumber": "Company number",
+        "companyName": "Company name",
+        "companyAddress": "Company address",
+        "role": "Role",
+        "currentPassword": "Current Password",
+        "newPassword": "New Password",
+        "editProfile": "Edit Profile",
+        "cancel": "Cancel",
+        "saveChanges": "Save Changes",
+        "deleteAccount": "DELETE ACCOUNT",
+        "deleteWarning": "Deleting your account is irreversible.",
+        "dialogTitle": "Delete Account",
+        "dialogMessage": "Are you sure you want to delete your account? This action cannot be undone.",
+        "dialogConfirm": "Confirm Delete"
         }
-    }
+
 }

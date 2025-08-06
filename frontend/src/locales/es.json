@@ -17,25 +17,23 @@
   "login": {
     "button": "Iniciar sesión"
   },
-  "domains": {
-    "domainsTitle": "Dominios",
-    "domainInfo": {
-      "title": "Elige tu dominio",
-      "subtitle": "Selecciona el dominio perfecto para tu sitio web",
+  "DomainsInfo": {
+    "carousel": {
+      "title": "Explora Nuestros Dominios",
+      "learnMore": "Más Información",
       "com": {
-        "title": "Dominio .com",
-        "description": "Descripción breve del primer servicio."
+        "title": "Comercial",
+        "description": "El dominio más reconocido y confiable a nivel mundial, ideal para empresas, tiendas en línea y sitios web profesionales que buscan una audiencia global."
       },
       "net": {
-        "title": "Dominio .net",
-        "description": "Descripción breve del segundo servicio."
+        "title": "Red",
+        "description": "Un dominio profesional comúnmente vinculado a servicios tecnológicos y de internet, adecuado para startups, plataformas de software y proveedores de hosting."
       },
       "org": {
-        "title": "Dominio .org",
-        "description": "Descripción breve del tercer servicio."
+        "title": "Organización",
+        "description": "Un dominio creíble y confiable, utilizado comúnmente por organizaciones sin fines de lucro, fundaciones y proyectos educativos o comunitarios."
       }
-    },
-    "moreInfo": "Más información"
+    }
   },
   "hosting": {
     "hostingTitle": "Planes de Hosting",
@@ -334,22 +332,27 @@
     "myTickets": "Mis Tickets",
     "ticketsManagement": "Gestión de Tickets"
   },
-  "DomainsInfo": {
-    "carousel": {
-      "title": "Explora Nuestros Dominios",
-      "learnMore": "Más Información",
-      "com": {
-        "title": "Comercial",
-        "description": "El dominio más reconocido y confiable a nivel mundial, ideal para empresas, tiendas en línea y sitios web profesionales que buscan una audiencia global."
-      },
-      "net": {
-        "title": "Red",
-        "description": "Un dominio profesional comúnmente vinculado a servicios tecnológicos y de internet, adecuado para startups, plataformas de software y proveedores de hosting."
-      },
-      "org": {
-        "title": "Organización",
-        "description": "Un dominio creíble y confiable, utilizado comúnmente por organizaciones sin fines de lucro, fundaciones y proyectos educativos o comunitarios."
-      }
-    }
+  "manageProfile": {
+    "title": "Gestionar Perfil",
+    "email": "Correo electrónico",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "phoneNumber": "Número de Teléfono",
+    "birthDate": "Fecha de Nacimiento",
+    "documentType": "Tipo de Documento",
+    "companyNumber": "Número de Empresa",
+    "companyName": "Nombre de la Empresa",
+    "companyAddress": "Dirección de la Empresa",
+    "role": "Rol",
+    "currentPassword": "Contraseña Actual",
+    "newPassword": "Nueva Contraseña",
+    "editProfile": "Editar Perfil",
+    "cancel": "Cancelar",
+    "saveChanges": "Guardar Cambios",
+    "deleteAccount": "ELIMINAR CUENTA",
+    "deleteWarning": "Eliminar tu cuenta es irreversible.",
+    "dialogTitle": "Eliminar Cuenta",
+    "dialogMessage": "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.",
+    "dialogConfirm": "Confirmar Eliminación"
   }
 }
