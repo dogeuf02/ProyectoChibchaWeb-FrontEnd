@@ -59,7 +59,7 @@ export default function AdminManageDomainRequests() {
         admin: specificId
 
       };
-      console.log("updREq", updatedRequest);
+      console.log("updREqAccept", updatedRequest);
       const resultUpdateDomainRequest = await updateDomainRequest(requestData.idSolicitud, updatedRequest);
 
       if (resultUpdateDomainRequest.exito) {
@@ -98,21 +98,40 @@ export default function AdminManageDomainRequests() {
       showAlert("Error inesperado al aprobar la solicitud", "error");
     }
   };
-  const handleReject = async (id) => {
-    setDomainRequests(prev =>
-      prev.map(req =>
-        req.id === id
-          ? {
-            ...req,
-            request_status: "denied",
-            domain_status: "unavailable",
-            reviewedBy: currentAdmin
-          }
-          : req
-      )
-    );
-    showAlert("Domain request denied", "warning");
-    await fetchDomainRequests();
+  const handleReject = async (requestData) => {
+    let idCliente = null;
+    let idDistribudor = null;
+
+    if (requestData.cliente !== null) {
+      idCliente = requestData.idUsuario;
+    } else {
+      idDistribudor = requestData.idUsuario;
+    }
+
+    const updatedRequest = {
+
+      idSolicitud: requestData.idSolicitud,
+      estadoSolicitud: "Rechazada",
+      fechaSolicitud: requestData.fechaCreacion,
+      fechaAprobacion: getTodayDate(),
+      cliente: idCliente,
+      distribuidor: idDistribudor,
+      dominio: requestData.dominio.idDominio,
+      admin: specificId
+
+    };
+    console.log("updREqAccept", updatedRequest);
+    try {
+      const resultUpdateDomainRequest = await updateDomainRequest(requestData.idSolicitud, updatedRequest);
+      if (resultUpdateDomainRequest.exito) {
+        showAlert("Petición denegada", "error");
+        await fetchDomainRequests();
+
+      }
+    } catch (error) {
+      showAlert("Unhandled error", "error")
+
+    }
   };
 
   return (

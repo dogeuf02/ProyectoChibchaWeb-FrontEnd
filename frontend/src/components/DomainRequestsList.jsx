@@ -39,7 +39,7 @@ function Row({ request, onAccept, onReject }) {
                 <TableCell>{request.dominio.estado}</TableCell>
                 <TableCell>{request.nombreUsuario || "-"}</TableCell>
                 <TableCell>{request.rolUsuario || "-"}</TableCell>
-                <TableCell>{request.nombreAdmin || "-"}</TableCell> {/* Placeholder for reviewedBy */}
+                <TableCell>{request.nombreAdmin || "-"}</TableCell> {/*Placeholder for reviewedBy */}
             </TableRow>
 
             <TableRow>
@@ -72,7 +72,7 @@ function Row({ request, onAccept, onReject }) {
                                         variant="contained"
                                         color="error"
                                         sx={{ borderRadius: 30 }}
-                                        onClick={() => onReject(request.idSolicitud)}
+                                        onClick={() => onReject(request)}
                                     >
                                         {t('domainRequestsManagement.list.reject')}
                                     </Button>
