@@ -26,7 +26,7 @@ import { ROLE } from '../enum/roleEnum';
 import getTodayDate from '../utils/dateUtils';
 import { getTlds } from '../api/tldApi';
 import { createDomain, getDomain } from '../api/domainApi';
-import { createDomainRequest, getDomainRequests } from '../api/domainRequestApi';
+import { createDomainRequest, getDomainRequestsById } from '../api/domainRequestApi';
 import { useTranslation } from 'react-i18next';
 
 export default function DomainRequest() {
@@ -56,12 +56,13 @@ export default function DomainRequest() {
   };
 
   const fetchDomainRequests = async () => {
-    const result = await getDomainRequests();
+    const result = await getDomainRequestsById(role, specificId);
     if (result.exito) {
-      const solicitudesFiltradas = result.data.filter(
-        (solicitud) => solicitud.idUsuario === specificId
-      );
-      setDomainRequests(solicitudesFiltradas);
+      // const solicitudesFiltradas = result.data.filter(
+      //   (solicitud) => solicitud.idUsuario === specificId
+      // );
+      console.log("donREs", result.data);
+      setDomainRequests(result.data);
     } else {
       showAlert(result.mensaje, "error");
     }

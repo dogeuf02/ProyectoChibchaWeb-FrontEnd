@@ -19,6 +19,20 @@ export const createDomainRequest = async (domain) => {
   }
 }
 
+export const getDomainRequestsById = async (role,id) => {
+  try {
+    const response = await api.get(`/solicitudDominio/${role.toLowerCase()}/${id}`);
+    return { exito: true, data: response.data };
+  } catch (error) {
+    if (error.response && error.response.data) {
+      const { exito, mensaje } = error.response.data;
+      return { exito, mensaje };
+    } else {
+      return { exito: false, mensaje: 'Server error.' };
+    }
+  }
+};
+
 export const getDomainRequests = async () => {
   try {
     const response = await api.get('/solicitudDominio');
