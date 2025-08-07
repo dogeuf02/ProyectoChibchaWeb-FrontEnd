@@ -698,5 +698,23 @@
             "noMethods": "You don’t have any saved payment methods.",
             "expires": "Expires"
         }
+    },
+    "adminPlans": {
+        "title": "Plans & Prices",
+        "plan": "Plan",
+        "interval": "Interval",
+        "price": "Price",
+        "websites": "Websites",
+        "databases": "Databases",
+        "storage": "Storage (GB NVMe)",
+        "emailAccounts": "Email Accounts",
+        "siteBuilder": "Site Builder",
+        "sslCerts": "SSL Certs",
+        "emailMarketing": "Email Marketing",
+        "unlimited": "Unlimited",
+        "yes": "Yes",
+        "no": "No",
+        "noData": "No plan info yet",
+        "loadError": "Error loading plans info"
     }
 }

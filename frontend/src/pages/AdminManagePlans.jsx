@@ -7,10 +7,12 @@ import {
 import { useGlobalAlert } from "../context/AlertContext";
 import { useGlobalLoading } from "../context/LoadingContext";
 import { getPlansInfo } from "../api/planApi";
+import { useTranslation } from "react-i18next";
 
-export default function AdminManageDomains() {
+export default function AdminManagePlans() {
   const { showAlert } = useGlobalAlert();
   const { showLoader, hideLoader } = useGlobalLoading();
+  const { t } = useTranslation();
 
   const [rows, setRows] = useState([]);
 
@@ -19,16 +21,16 @@ export default function AdminManageDomains() {
       showLoader();
       const res = await getPlansInfo();
       if (!res.exito) {
-        showAlert(res.mensaje || "Failed to load plans info", "error");
+        showAlert(res.mensaje || t("adminPlans.loadError"), "error");
         return;
       }
       const adapted = (res.data || []).map((item) => ({
-        id: item.id, // precio_plan id (PK)
+        id: item.id,
         price: Number(item.precio),
         planId: item.planCliente?.idPlanCliente,
         planName: item.planCliente?.nombrePlanCliente,
         websites: item.planCliente?.numeroWebs,
-        databases: item.planCliente?.numeroBaseDatos, // may be null if unlimited
+        databases: item.planCliente?.numeroBaseDatos,
         storageGb: item.planCliente?.almacenamientoNvme,
         emailAccounts: item.planCliente?.numeroCuentasCorreo,
         siteBuilder: Boolean(item.planCliente?.creadorWeb),
@@ -39,7 +41,7 @@ export default function AdminManageDomains() {
       }));
       setRows(adapted);
     } catch (e) {
-      showAlert("Error loading plans info", "error");
+      showAlert(t("adminPlans.loadError"), "error");
     } finally {
       hideLoader();
     }
@@ -47,7 +49,6 @@ export default function AdminManageDomains() {
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fmt = useMemo(
@@ -60,16 +61,14 @@ export default function AdminManageDomains() {
     []
   );
 
-  const yesNo = (v) => (v ? "Yes" : "No");
+  const yesNo = (v) => (v ? t("adminPlans.yes") : t("adminPlans.no"));
 
   return (
     <Box sx={{ p: 4 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", m: 6 }}>
         <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-          Plans & Prices
+          {t("adminPlans.title")}
         </Typography>
-
-
       </Box>
 
       <TableContainer component={Paper}>
@@ -77,16 +76,16 @@ export default function AdminManageDomains() {
           <TableHead>
             <TableRow sx={{ bgcolor: "#fff3e0" }}>
               <TableCell><b>#</b></TableCell>
-              <TableCell><b>Plan</b></TableCell>
-              <TableCell><b>Interval</b></TableCell>
-              <TableCell><b>Price</b></TableCell>
-              <TableCell><b>Websites</b></TableCell>
-              <TableCell><b>Databases</b></TableCell>
-              <TableCell><b>Storage (GB NVMe)</b></TableCell>
-              <TableCell><b>Email Accounts</b></TableCell>
-              <TableCell><b>Site Builder</b></TableCell>
-              <TableCell><b>SSL Certs</b></TableCell>
-              <TableCell><b>Email Marketing</b></TableCell>
+              <TableCell><b>{t("adminPlans.plan")}</b></TableCell>
+              <TableCell><b>{t("adminPlans.interval")}</b></TableCell>
+              <TableCell><b>{t("adminPlans.price")}</b></TableCell>
+              <TableCell><b>{t("adminPlans.websites")}</b></TableCell>
+              <TableCell><b>{t("adminPlans.databases")}</b></TableCell>
+              <TableCell><b>{t("adminPlans.storage")}</b></TableCell>
+              <TableCell><b>{t("adminPlans.emailAccounts")}</b></TableCell>
+              <TableCell><b>{t("adminPlans.siteBuilder")}</b></TableCell>
+              <TableCell><b>{t("adminPlans.sslCerts")}</b></TableCell>
+              <TableCell><b>{t("adminPlans.emailMarketing")}</b></TableCell>
             </TableRow>
           </TableHead>
 
@@ -94,7 +93,7 @@ export default function AdminManageDomains() {
             {rows.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={12} align="center" sx={{ py: 4, color: "text.secondary" }}>
-                  No plan info yet
+                  {t("adminPlans.noData")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -105,17 +104,14 @@ export default function AdminManageDomains() {
                   <TableCell>{r.interval}</TableCell>
                   <TableCell>{fmt.format(r.price || 0)}</TableCell>
                   <TableCell>{r.websites}</TableCell>
-                  <TableCell>{r.databases ?? "Unlimited"}</TableCell>
+                  <TableCell>{r.databases ?? t("adminPlans.unlimited")}</TableCell>
                   <TableCell>{r.storageGb}</TableCell>
                   <TableCell>{r.emailAccounts}</TableCell>
                   <TableCell>{yesNo(r.siteBuilder)}</TableCell>
                   <TableCell>{r.sslCerts}</TableCell>
                   <TableCell>{yesNo(r.emailMarketing)}</TableCell>
                   <TableCell align="right">
-                    {/* Placeholder for future edit/delete hooks if your API supports it */}
-                    <IconButton size="small" disabled>
-                      {/* actions would go here */}
-                    </IconButton>
+                    <IconButton size="small" disabled />
                   </TableCell>
                 </TableRow>
               ))
