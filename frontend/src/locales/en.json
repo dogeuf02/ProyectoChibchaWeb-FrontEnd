@@ -462,7 +462,7 @@
         "myTickets": "My Tickets",
         "ticketsManagement": "Tickets Management",
         "domainTitle": "Domains",
-        "hostingTitle": "Hosting Plans"
+        "logout": "Logout"
     },
     "manageProfile": {
         "title": "Manage Profile",
