@@ -330,7 +330,9 @@
     "myDomains": "Mis Dominios",
     "domainRequest": "Solicitud de Dominio",
     "myTickets": "Mis Tickets",
-    "ticketsManagement": "Gestión de Tickets"
+    "ticketsManagement": "Gestión de Tickets",
+    "domainTitle":"Dominios"
+    
   },
   "manageProfile": {
     "title": "Gestionar Perfil",

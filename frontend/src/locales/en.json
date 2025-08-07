@@ -330,7 +330,9 @@
         "myDomains": "My Domains",
         "domainRequest": "Domain Request",
         "myTickets": "My Tickets",
-        "ticketsManagement": "Tickets Management"
+        "ticketsManagement": "Tickets Management",
+        "domainTitle": "Domains",
+        "hostingTitle": "Hosting Plans"
     },
     "manageProfile": {
         "title": "Manage Profile",
@@ -354,6 +356,5 @@
         "dialogTitle": "Delete Account",
         "dialogMessage": "Are you sure you want to delete your account? This action cannot be undone.",
         "dialogConfirm": "Confirm Delete"
-        }
-
+    }
 }
