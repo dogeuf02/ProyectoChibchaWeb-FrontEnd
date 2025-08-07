@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import DomainRequestsList from "../components/DomainRequestsList";
 import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
-import { getDomainRequests, sendNotificationEmail } from "../api/domainRequestApi";
+import { getDomainRequests, sendNotificationEmail, generateRequestXML } from "../api/domainRequestApi";
 import { updateDomain } from "../api/domainApi";
 import { useTranslation } from "react-i18next";
 import { createDomainOwn } from "../api/domainOwnApi";
@@ -94,6 +94,30 @@ export default function AdminManageDomainRequests() {
     }
   };
 
+ const handleGenerateXML = async (requestId) => {
+  const result = await generateRequestXML(requestId);
+
+  if (result.exito) {
+    const blob = new Blob([result.data], { type: 'application/xml' });
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `solicitud_${requestId}.xml`; // Nombre del archivo
+    a.style.display = 'none';
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    showAlert("XML generado con éxito.", "success");
+  } else {
+    alert(`Error: ${result.mensaje}`);
+    showAlert("Error generando el archivo XML", "error");
+  }
+};
+
+
   return (
     <Box sx={{ maxWidth: 1000, mx: "auto", mt: 10 }}>
       <Typography
@@ -113,6 +137,7 @@ export default function AdminManageDomainRequests() {
         domainRequests={domainRequests}
         onAccept={handleAccept}
         onReject={handleReject}
+        onGenerateXml={handleGenerateXML}
       />
     </Box>
   );

@@ -21,7 +21,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useTranslation } from "react-i18next";
 
-function Row({ request, onAccept, onReject }) {
+function Row({ request, onAccept, onReject, onGenerateXml }) {
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const fullDomain = `${request.dominio.nombreDominio}${request.dominio.tld}`;
@@ -77,6 +77,17 @@ function Row({ request, onAccept, onReject }) {
                                         {t('domainRequestsManagement.list.reject')}
                                     </Button>
                                 </Box>
+                            )}{request.estado === 'Aprobada' && (
+                                <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        sx={{ borderRadius: 30 }}
+                                        onClick={() => onGenerateXml(request.idSolicitud)}
+                                    >
+                                        Generar XML
+                                    </Button>
+                                </Box>
                             )}
                         </Box>
                     </Collapse>
@@ -86,7 +97,7 @@ function Row({ request, onAccept, onReject }) {
     );
 }
 
-export default function DomainRequestsList({ domainRequests, onAccept, onReject }) {
+export default function DomainRequestsList({ domainRequests, onAccept, onReject, onGenerateXml }) {
     const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -136,6 +147,7 @@ export default function DomainRequestsList({ domainRequests, onAccept, onReject 
                                     request={req}
                                     onAccept={onAccept}
                                     onReject={onReject}
+                                    onGenerateXml={onGenerateXml}
                                 />
                             ))}
                     </TableBody>

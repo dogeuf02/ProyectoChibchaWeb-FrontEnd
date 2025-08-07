@@ -50,7 +50,7 @@ export const getDomainRequests = async () => {
         if (!domain) {
           return null;
         }
-        
+
         const response = {
           idSolicitud: request.idSolicitud,
           dominio: domain,
@@ -92,7 +92,7 @@ export const updateDomainRequest = async (id, requestData) => {
 }
 
 
-export const sendNotificationEmail = async (aproved, id, adminId ) =>{
+export const sendNotificationEmail = async (aproved, id, adminId) => {
   try {
     const response = await api.put(`/solicitudDominio/gestionarSolicitud/${id}?aprobar=${aproved}&idAdministrador=${adminId}`);
     return { exito: true, data: response.data };
@@ -105,3 +105,19 @@ export const sendNotificationEmail = async (aproved, id, adminId ) =>{
     }
   }
 }
+
+export const generateRequestXML = async (id) => {
+  try {
+    const response = await api.get(`/solicitudDominio/generarXML/${id}`, {
+      responseType: 'blob', // <- MUY IMPORTANTE
+    });
+    return { exito: true, data: response.data };
+  } catch (error) {
+    if (error.response && error.response.data) {
+      const { exito, mensaje } = error.response.data;
+      return { exito, mensaje };
+    } else {
+      return { exito: false, mensaje: 'Server error.' };
+    }
+  }
+};
