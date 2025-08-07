@@ -133,7 +133,6 @@ export default function TicketRow({
             setComment("");
             showAlert(t("tickets.alerts.updateSuccess"), "success");
         } catch (err) {
-            console.error("Error al guardar cambios:", err);
             showAlert(t("tickets.alerts.updateError"), "error");
         }
     };

@@ -23,7 +23,6 @@ export default function AdminManageDomainRequests() {
     else {
       showAlert(result.mensaje, "error");
     }
-    console.log(result);
   }
   useEffect(() => {
 
@@ -52,9 +51,7 @@ export default function AdminManageDomainRequests() {
         tld: requestData.dominio.tld
       }
 
-      const resultUpdateDomain = await updateDomain(requestData.dominio.idDominio, domain);
-      console.log("updDom", resultUpdateDomain);
-
+      await updateDomain(requestData.dominio.idDominio, domain);
 
       const domainOwn = {
         cliente: idCliente,
@@ -62,12 +59,9 @@ export default function AdminManageDomainRequests() {
         dominio: requestData.dominio.idDominio
       }
 
-      const resultCreateDomainOwn = await createDomainOwn(domainOwn);
-      if (resultCreateDomainOwn.exito) {
-        console.log("error");
-      }
+      await createDomainOwn(domainOwn);
+  
       const emailResponse = await sendNotificationEmail(true, requestData.idSolicitud, specificId);
-      console.log("emailRes", emailResponse)
       if (emailResponse.exito) {
         await fetchDomainRequests();
         showAlert(emailResponse.mensaje, "success");
@@ -77,7 +71,6 @@ export default function AdminManageDomainRequests() {
       }
 
     } catch (error) {
-      console.error("Error en handleAccept:", error);
       showAlert("Error inesperado al aprobar la solicitud", "error");
     }
   };

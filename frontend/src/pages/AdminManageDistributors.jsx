@@ -155,10 +155,8 @@ export default function AdminManageDistributors() {
       }
     } catch (error) {
       if (error.response) {
-        console.error("Error 400+ de la API:", error.response.data); // 🔍 Importante para el error 400
         showAlert(error.response.data?.mensaje || "Server error.", "error");
       } else {
-        console.error("Error inesperado:", error);
         showAlert("Uncaught error", "error");
       }
     }

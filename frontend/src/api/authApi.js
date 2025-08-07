@@ -13,7 +13,6 @@ export const auth = async (credentials) => {
       };
     }
   } catch (error) {
-    console.error("Error en auth:", error);
     return {
       autenticado: false,
       mensaje: error?.response?.data?.mensaje || "Error en el servidor."
@@ -27,7 +26,6 @@ export const auth = async (credentials) => {
 export const verifyEmailToken = async (token) => {
   try {
     const response = await api.get('/auth/activar?token=' + token);
-    console.log("Response from verifyEmailToken:", response);
 
     if (response.status !== 200) {
       throw new Error('Error al verificar el correo');
@@ -36,8 +34,6 @@ export const verifyEmailToken = async (token) => {
     const data = response.data;
     return { success: true, message: data };
   } catch (error) {
-    console.error("verifyEmailToken error:", error);
-
     // Verifica si es un error de Axios con respuesta del servidor
     if (error.response) {
       return {
@@ -59,7 +55,6 @@ export const apiLogout = async (token) => {
     const response = await api.post('/auth/logout', { token });
     return { success: true, message: response.data };
   } catch (error) {
-    console.error("logout error:", error);
     return {
       success: false,
       message: error?.response?.data?.mensaje || "Error en el servidor."

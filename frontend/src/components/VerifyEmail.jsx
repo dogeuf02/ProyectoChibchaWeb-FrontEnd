@@ -15,7 +15,6 @@ const VerifyEmail = () => {
         const verify = async () => {
             if (token) {
                 const result = await verifyEmailToken(token);
-                console.log("result from comp:", result);
                 showAlert(result.message, result.success ? "success" : "error");
 
             }

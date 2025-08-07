@@ -67,7 +67,6 @@ export default function MyTickets() {
 
       setTickets(enrichedTickets);
     } catch (error) {
-      console.error("Error loading user tickets:", error);
       showAlert(t("tickets.alerts.loadError"), "error");
     }
   };

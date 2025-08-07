@@ -92,7 +92,6 @@ export default function AdminManageClients() {
         showAlert(result.mensaje || t('clientManagement.alerts.deactivateError'), "error");
       }
     } catch (error) {
-      console.error("❌ Error al desactivar usuario:", error);
       showAlert(t('clientManagement.alerts.unexpectedDeactivate'), "error");
     } finally {
       setOpenDialog(false);
@@ -163,7 +162,6 @@ export default function AdminManageClients() {
         showAlert(response.mensaje || t('clientManagement.alerts.addError'), "error");
       }
     } catch (error) {
-      console.error("❌ Error inesperado al crear cliente:", error);
       showAlert(t('clientManagement.alerts.unexpectedAdd'), "error");
     }
   };

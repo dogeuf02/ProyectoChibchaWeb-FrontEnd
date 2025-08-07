@@ -3,7 +3,6 @@ import { ROLE } from '../enum/roleEnum';
 
 export const createDistributor = async (distributor) => {
     try {
-        console.log("Payload enviado al backend:", distributor); // 🔍 Verifica el formato exacto
         const response = await api.post('/distribuidor/registroDistribuidor', distributor);
 
         return { exito: true, data: response.data };
@@ -92,9 +91,6 @@ export const getPendingDistributors = async () => {
             company_name: d.nombreEmpresa,
             company_address: d.direccionEmpresa,
         }));
-
-        console.log("Adaptados" + adaptados)
-
         return {
             exito: true,
             distribuidores: adaptados
@@ -117,7 +113,6 @@ export const getPendingDistributors = async () => {
 export const getDistributorById = async (id) => {
     try {
         const response = await api.get(`/distribuidor/${id}`);
-        console.log("Distributor data:", response.data);
         return {
             exito: true,
             distribuidor: response.data

@@ -62,7 +62,6 @@ export default function AdminManageEmployees() {
       setOpenDialog(false);
       return;
     }
-    console.log(employeeToDelete.email)
 
     try {
       const result = await deactivateUser(employeeToDelete.email);
@@ -78,7 +77,6 @@ export default function AdminManageEmployees() {
       }
 
     } catch (error) {
-      console.error("❌ Error al desactivar usuario:", error);
       showAlert("Unexpected error during deactivation", "error");
     } finally {
       setOpenDialog(false);
@@ -118,19 +116,16 @@ export default function AdminManageEmployees() {
       };
 
       const response = await createEmployee(employee);
-      console.log("🔍 Respuesta al crear empleado:", response);
 
       if (response.exito) {
         // Obtener la lista actualizada
         const updated = await getEmployees();
-        console.log("🔄 Lista actualizada de empleados:", updated);
 
         if (updated.exito && Array.isArray(updated.empleados)) {
           setEmployees(updated.empleados);
           showAlert("Employee added successfully", "success");
         } else {
           showAlert("Failed to refresh employee list", "warning");
-          console.warn("⚠️ Error al actualizar lista de empleados:", updated);
         }
 
         // Limpiar formulario y cerrar modal
@@ -145,7 +140,6 @@ export default function AdminManageEmployees() {
         showAlert(response.mensaje || "Error adding employee", "error");
       }
     } catch (error) {
-      console.error("Unexpected error creating employee:", error);
       showAlert("Unexpected error adding employee", "error");
     }
   };

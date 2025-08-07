@@ -41,7 +41,6 @@ export const getDomainRequests = async () => {
 
         if (request.admin) {
           const adminResult = await getAdminProfile(request.admin);
-          console.log("adminResult", adminResult);
           if (adminResult.exito && adminResult.data) {
             adminName = adminResult.data.nombreAdmin;
           }
@@ -51,7 +50,6 @@ export const getDomainRequests = async () => {
         if (!domain) {
           return null;
         }
-        console.log("dom", domain);
         
         const response = {
           idSolicitud: request.idSolicitud,
@@ -64,7 +62,6 @@ export const getDomainRequests = async () => {
           idAdmin: request.admin,
           nombreAdmin: adminName,
         };
-        console.log("responseRe", response);
         return response;
       })
     );

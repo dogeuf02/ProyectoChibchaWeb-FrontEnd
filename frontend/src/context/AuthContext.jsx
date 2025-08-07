@@ -22,7 +22,6 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       saveToken(token);
       const decoded = decodeToken(token);
-      console.log(decoded)
       if (decoded) {
         setUserData(decoded);
         setUserId(decoded.idUsuario);
@@ -49,7 +48,6 @@ export const AuthProvider = ({ children }) => {
         return { success: false, message: response.mensaje };
       }
     } catch (error) {
-      console.error("Error en login:", error);
       return { success: false, message: "Fallo inesperado durante el login." };
     }
   };

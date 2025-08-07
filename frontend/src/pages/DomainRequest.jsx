@@ -127,7 +127,6 @@ export default function DomainRequest() {
         showAlert(t("domainRequest.alerts.domainActive"), "error");
       }
     } catch (error) {
-      console.error("Error submitting domain request:", error);
       showAlert(t("domainRequest.alerts.generalError"), "error");
     }
   };

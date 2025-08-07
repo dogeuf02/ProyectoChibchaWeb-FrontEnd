@@ -26,7 +26,6 @@ export const decodeToken = (token) => {
         const decode = jwtDecode(token); // Esto decodifica y retorna el payload del token
         return decode;
     } catch (error) {
-        console.error("Error decoding token:", error);
         return null;
     }
 };

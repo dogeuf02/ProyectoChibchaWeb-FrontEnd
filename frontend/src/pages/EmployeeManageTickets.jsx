@@ -194,7 +194,6 @@ export default function EmployeeManageTickets() {
 
       showAlert(t("tickets.alerts.closeSuccess"), "success");
     } catch (error) {
-      console.error("Error closing ticket:", error);
       showAlert(t("tickets.alerts.closeError"), "error");
     } finally {
       setOpenDialog(false);

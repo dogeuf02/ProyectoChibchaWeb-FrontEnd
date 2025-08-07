@@ -123,7 +123,6 @@ export default function RegisterDistributor() {
         showAlert(result.mensaje || 'Error al registrar el distribuidor', 'error');
       }
     } catch (err) {
-      console.error(err);
       showAlert('Error inesperado al registrar el distribuidor', 'error');
     } finally {
       hideLoader();

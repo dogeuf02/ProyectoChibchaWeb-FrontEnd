@@ -6,7 +6,6 @@ export const getUserProfile = async (role, userId) => {
     // 1. Obtener el usuario general por su ID
     const userRes = await api.get(`/usuario/${userId}`);
     const user = userRes.data;
-    console.log(user)
     // 2. Determinar el ID relacionado según el rol
     let relatedId;
     let endpoint = '';
@@ -31,12 +30,10 @@ export const getUserProfile = async (role, userId) => {
         endpoint = `/distribuidor/${relatedId}`;
         break;
       default:
-        console.warn("❌ Rol no válido:", role);
         return { exito: false, mensaje: 'Rol no válido' };
     }
 
     if (!relatedId) {
-      console.warn("⚠️ No se encontró relación con entidad específica del usuario");
       return {
         exito: false,
         mensaje: 'No se encontró relación con entidad específica del usuario'
@@ -45,15 +42,10 @@ export const getUserProfile = async (role, userId) => {
 
     // 4. Obtener el perfil específico
     const profileRes = await api.get(endpoint);
-    console.log("profile res")
     profileRes.data.email = user.correoUsuario; // Aseguramos que el email del usuario esté presente en el perfil
-    console.log(profileRes.data)
-
     return { exito: true, data: profileRes.data };
 
   } catch (error) {
-    console.error("❌ Error completo:", error);
-
     if (error.response?.status === 404) {
       return { exito: false, mensaje: 'Perfil no encontrado (404)' };
     }
@@ -109,7 +101,6 @@ export const getAllAdmins = async () => {
     const res = await api.get("/administrador/obtenerAdministradores");
     return { exito: true, administradores: res.data };
   } catch (err) {
-    console.error("❌ Error al obtener administradores:", err);
     return { exito: false, mensaje: "Error al obtener administradores" };
   }
 };
@@ -119,7 +110,6 @@ export const registerAdmin = async (data) => {
     const res = await api.post("/administrador/registroAdministrador", data);
     return { exito: true, data: res.data };
   } catch (error) {
-    console.error("❌ Error al registrar administrador:", error);
     return {
       exito: false,
       mensaje: error.response?.data?.mensaje || "Error al registrar administrador"
@@ -159,7 +149,6 @@ export const changePassword = async (correo, nuevaContrasena) => {
 
     return res;
   } catch (err) {
-    console.error("Error al cambiar contraseña:", err);
     throw err;
   }
 };
@@ -168,7 +157,6 @@ export const getRoleAndId = async (email) => {
   try {
     const response = await api.get(`/usuario/identificarRol?correo=${email}`);
     const user = response.data;
-    console.log("User data:", user);
 
     if (!user) {
       return { exito: false, mensaje: 'Usuario no encontrado' };
@@ -193,7 +181,6 @@ export const getRoleAndId = async (email) => {
       },
     };
   } catch (error) {
-    console.error('Error fetching user role and ID:', error);
     return { exito: false, mensaje: 'Error al obtener rol e ID del usuario' };
   }
 }
