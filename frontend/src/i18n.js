@@ -1,20 +1,25 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
 
 import en from './locales/en.json';
 import es from './locales/es.json';
 
 i18n
-  .use(initReactI18next) // conecta i18n con React
+  .use(LanguageDetector) // 🔥 Añade el detector
+  .use(initReactI18next)
   .init({
     resources: {
       en: { translation: en },
       es: { translation: es }
     },
-    lng: 'en', // idioma por defecto
-    fallbackLng: 'es', // si falta traducción, usa inglés
+    fallbackLng: 'en', // En caso de que no detecte o falte idioma
     interpolation: {
-      escapeValue: false // para que React maneje XSS
+      escapeValue: false
+    },
+    detection: {
+      order: ['localStorage', 'navigator'], // primero localStorage
+      caches: ['localStorage'] // guarda el idioma en localStorage
     }
   });
 

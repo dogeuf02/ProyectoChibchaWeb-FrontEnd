@@ -8,11 +8,14 @@ import { updateDomain } from "../api/domainApi";
 import { useTranslation } from "react-i18next";
 import { createDomainOwn } from "../api/domainOwnApi";
 import { useAuth } from "../context/AuthContext"
+import { useGlobalLoading } from '../context/LoadingContext';
+
 export default function AdminManageDomainRequests() {
   useScrollToTop();
   const { t } = useTranslation();
   const { showAlert } = useGlobalAlert();
   const { specificId } = useAuth();
+  const { showLoader, hideLoader } = useGlobalLoading();
 
   const [domainRequests, setDomainRequests] = useState([]);
   const fetchDomainRequests = async () => {
@@ -25,9 +28,9 @@ export default function AdminManageDomainRequests() {
     }
   }
   useEffect(() => {
-
+    showLoader();
     fetchDomainRequests();
-
+    hideLoader();
   }, []);
 
   const handleAccept = async (requestData) => {
@@ -50,6 +53,7 @@ export default function AdminManageDomainRequests() {
         estado: "En Uso",
         tld: requestData.dominio.tld
       }
+      showLoader();
 
       await updateDomain(requestData.dominio.idDominio, domain);
 
@@ -60,7 +64,7 @@ export default function AdminManageDomainRequests() {
       }
 
       await createDomainOwn(domainOwn);
-  
+
       const emailResponse = await sendNotificationEmail(true, requestData.idSolicitud, specificId);
       if (emailResponse.exito) {
         await fetchDomainRequests();
@@ -69,6 +73,7 @@ export default function AdminManageDomainRequests() {
         showAlert(emailResponse.mensaje, "error");
 
       }
+      hideLoader();
 
     } catch (error) {
       showAlert("Error inesperado al aprobar la solicitud", "error");

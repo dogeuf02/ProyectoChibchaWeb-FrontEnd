@@ -1,7 +1,7 @@
 import './App.css'
 import MainLayout from './layout/MainLayout.jsx'
 import RegisterAccount from './pages/RegisterAccount.jsx'
-import { redirect, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import RegisterDistributor from './pages/RegisterDistributor.jsx'
 import Login from './pages/Login.jsx'
 import ManageProfile from './pages/ManageProfile.jsx'

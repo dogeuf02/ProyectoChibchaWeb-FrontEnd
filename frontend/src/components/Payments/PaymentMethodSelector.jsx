@@ -123,10 +123,7 @@ export default function PaymentMethodSelector({
                     <Typography variant="subtitle1">{method.cardType.toUpperCase()}</Typography>
                     <Typography variant="body2" color="text.secondary">
                       **** **** **** {method.cardNumber.slice(-4)}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {t('checkout.paymentMethodSelector.expires')}: {method.expiryDate}
-                    </Typography>
+                    </Typography>                  
                   </Box>
                 }
               />
