@@ -12,9 +12,10 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { useGlobalAlert } from '../context/AlertContext';
 import ConfirmDialog from '../components/ConfirmDialog';
-
+import { useTranslation } from 'react-i18next';
 
 export default function PaymentManagement() {
+  const { t } = useTranslation();
   const { specificId, role } = useAuth();
   const normalizedRole = role?.toLowerCase();
 
@@ -31,8 +32,7 @@ export default function PaymentManagement() {
     numeroTarjetaCuenta: '',
     correoPse: '',
     banco: null,
-    fechaExpiracion: new Date().toISOString().slice(0, 7), // "YYYY-MM"
-
+    fechaExpiracion: new Date().toISOString().slice(0, 7),
   });
 
   const fetchPayments = async () => {
@@ -40,16 +40,16 @@ export default function PaymentManagement() {
     if (response.exito && Array.isArray(response.data)) {
       setPayments(response.data);
     } else {
-      console.error('No se pudieron cargar los métodos de pago:', response.mensaje);
+      console.error(t('paymentManagement.alerts.loadError'), response.mensaje);
     }
   };
 
   const fetchBanks = async () => {
     const response = await getBanks();
     if (response.exito) {
-      setBankOptions(response.data); // [{ idBanco, nombreBanco }]
+      setBankOptions(response.data);
     } else {
-      console.error('Error al cargar bancos:', response.mensaje);
+      console.error(t('paymentManagement.alerts.bankLoadError'), response.mensaje);
     }
   };
 
@@ -60,12 +60,10 @@ export default function PaymentManagement() {
       cliente: specificId,
     };
 
-
-
     const response = await createPayMethod(nuevoMetodo);
     if (response.exito) {
       await fetchPayments();
-      showAlert('Payment method added successfully', 'success');
+      showAlert(t('paymentManagement.alerts.addSuccess'), 'success');
       setShowForm(false);
       setNewCard({
         tipoMedioPago: 'visa',
@@ -75,7 +73,7 @@ export default function PaymentManagement() {
         banco: null,
       });
     } else {
-      showAlert(response.mensaje || 'Failed to add payment method', 'error');
+      showAlert(response.mensaje || t('paymentManagement.alerts.addError'), 'error');
     }
   };
 
@@ -83,10 +81,10 @@ export default function PaymentManagement() {
     if (!selectedIdToDelete) return;
     const response = await deletePayMethod(selectedIdToDelete);
     if (response.exito) {
-      showAlert('Payment method deleted successfully', 'success');
+      showAlert(t('paymentManagement.alerts.deleteSuccess'), 'success');
       await fetchPayments();
     } else {
-      showAlert(response.mensaje || 'Failed to delete payment method', 'error');
+      showAlert(response.mensaje || t('paymentManagement.alerts.deleteError'), 'error');
     }
     setConfirmOpen(false);
     setSelectedIdToDelete(null);
@@ -104,7 +102,6 @@ export default function PaymentManagement() {
     setConfirmOpen(true);
   };
 
-
   useEffect(() => {
     if (specificId && role) {
       fetchPayments();
@@ -115,7 +112,7 @@ export default function PaymentManagement() {
   return (
     <Box sx={{ p: 4 }}>
       <Typography variant="h4" gutterBottom align="center">
-        My Payment Methods
+        {t('paymentManagement.title')}
       </Typography>
 
       <PaymentManagementTable payments={payments} onDelete={handleDelete} />
@@ -132,13 +129,13 @@ export default function PaymentManagement() {
             }}
             onClick={() => setShowForm(true)}
           >
-            Add Payment Method
+            {t('paymentManagement.addButton')}
           </Button>
         </Box>
       ) : (
         <Paper sx={{ p: 3, bgcolor: '#FAFAFA', mt: 2 }} elevation={3}>
           <Typography variant="h6" gutterBottom>
-            New Payment Method
+            {t('paymentManagement.newPaymentMethod')}
           </Typography>
 
           <PaymentCardForm
@@ -148,7 +145,7 @@ export default function PaymentManagement() {
             isNew
             disableSave={disableSave}
             bankOptions={bankOptions}
-            onDelete={() => handleDelete(data.idMedioPago)}
+            onDelete={() => handleDelete(newCard.idMedioPago)}
           />
         </Paper>
       )}
@@ -157,18 +154,11 @@ export default function PaymentManagement() {
         open={confirmOpen}
         onClose={() => setConfirmOpen(false)}
         onConfirm={handleConfirmDelete}
-        title="Delete Payment Method"
-        message="Are you sure you want to delete this payment method? This action cannot be undone."
-        confirmText="Delete"
-        cancelText="Cancel"
+        title={t('paymentManagement.deleteDialog.title')}
+        message={t('paymentManagement.deleteDialog.message')}
+        confirmText={t('paymentManagement.deleteDialog.confirmText')}
+        cancelText={t('paymentManagement.deleteDialog.cancelText')}
       />
-
-
     </Box>
-
-
-
   );
-
-
 }
