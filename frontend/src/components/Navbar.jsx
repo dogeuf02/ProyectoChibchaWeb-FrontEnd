@@ -197,7 +197,7 @@ export default function NavbarMUI() {
                     </MenuItem>
                   ))}
 
-                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                  <MenuItem onClick={handleLogout}>{t('navbar.logout')}</MenuItem>
                 </Menu>
               </>
             )}

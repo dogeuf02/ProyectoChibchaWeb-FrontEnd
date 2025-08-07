@@ -461,8 +461,8 @@
     "domainRequest": "Solicitud de Dominio",
     "myTickets": "Mis Tickets",
     "ticketsManagement": "Gestión de Tickets",
-    "domainTitle":"Dominios"
-    
+    "domainTitle":"Dominios",
+    "logout": "Cerrar Sesión"
   },
   "manageProfile": {
     "title": "Gestionar Perfil",
