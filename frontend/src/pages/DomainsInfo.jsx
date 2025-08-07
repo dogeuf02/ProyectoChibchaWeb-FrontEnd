@@ -37,7 +37,7 @@ export default function DomainsCarousel() {
   ];
 
   return (
-    <Box sx={{ bgcolor: '#FAFAFA', py: 8 }}>
+    <Box id="Domains" sx={{ bgcolor: '#FAFAFA', py: 8 }}>
       <Container maxWidth="lg">
         <Typography
           variant="h3"
