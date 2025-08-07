@@ -14,9 +14,11 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import PlansAdminList from "../components/PlanManageList";
 import { useGlobalAlert } from "../context/AlertContext";
+import { useTranslation } from "react-i18next";
 
 export default function PlansAdminPage() {
   const { showAlert } = useGlobalAlert();
+  const { t } = useTranslation();
 
   const [plans, setPlans] = useState([
     {
@@ -99,43 +101,44 @@ export default function PlansAdminPage() {
     setPlans((prev) => {
       const exists = prev.find((p) => p.id === editingPlan.id);
       if (exists) {
+        showAlert(t("plansManagement.alerts.saved"), "success");
         return prev.map((p) => (p.id === editingPlan.id ? editingPlan : p));
       } else {
+        showAlert(t("plansManagement.alerts.added"), "success");
         return [...prev, editingPlan];
       }
     });
-    showAlert(editingPlan ? "Plan saved successfully!" : "Plan added!", "success");
     handleCloseDialog();
   };
 
   const handleDeletePlan = (id) => {
     setPlans((prev) => prev.filter((p) => p.id !== id));
-    showAlert("Plan deleted successfully", "info");
+    showAlert(t("plansManagement.alerts.deleted"), "info");
   };
 
   return (
     <Box sx={{ p: 4 }}>
       <Box
         sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            m: 6,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          m: 6,
         }}
-        >
+      >
         <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-            Manage Hosting Plans
+          {t("plansManagement.title")}
         </Typography>
 
         <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => handleOpenDialog()}
-            sx={{ borderRadius: 30, bgcolor: "#FF6400", "&:hover": { bgcolor: "#FFBE02" } }}
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => handleOpenDialog()}
+          sx={{ borderRadius: 30, bgcolor: "#FF6400", "&:hover": { bgcolor: "#FFBE02" } }}
         >
-            Add Plan
+          {t("plansManagement.addPlanButton")}
         </Button>
-        </Box>
+      </Box>
 
       <PlansAdminList
         plans={plans}
@@ -144,17 +147,21 @@ export default function PlansAdminPage() {
       />
 
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>{editingPlan?.id && plans.some(p=>p.id===editingPlan.id) ? "Edit Plan" : "Add Plan"}</DialogTitle>
+        <DialogTitle>
+          {editingPlan?.id && plans.some((p) => p.id === editingPlan.id)
+            ? t("plansManagement.dialog.editTitle")
+            : t("plansManagement.dialog.addTitle")}
+        </DialogTitle>
         <DialogContent dividers>
           <TextField
-            label="Plan Name"
+            label={t("plansManagement.dialog.nameField")}
             fullWidth
             margin="dense"
             value={editingPlan?.name || ""}
             onChange={(e) => handleChange("name", e.target.value)}
           />
           <TextField
-            label="Monthly Price (US)"
+            label={t("plansManagement.dialog.monthlyField")}
             fullWidth
             margin="dense"
             type="number"
@@ -162,7 +169,7 @@ export default function PlansAdminPage() {
             onChange={(e) => handleChange("monthly", e.target.value)}
           />
           <TextField
-            label="Semi-Annual Price (US)"
+            label={t("plansManagement.dialog.semiAnnualField")}
             fullWidth
             margin="dense"
             type="number"
@@ -170,7 +177,7 @@ export default function PlansAdminPage() {
             onChange={(e) => handleChange("semiAnnual", e.target.value)}
           />
           <TextField
-            label="Annual Price (US)"
+            label={t("plansManagement.dialog.annualField")}
             fullWidth
             margin="dense"
             type="number"
@@ -178,35 +185,35 @@ export default function PlansAdminPage() {
             onChange={(e) => handleChange("annual", e.target.value)}
           />
           <TextField
-            label="Number of Websites"
+            label={t("plansManagement.dialog.websField")}
             fullWidth
             margin="dense"
             value={editingPlan?.webs || ""}
             onChange={(e) => handleChange("webs", e.target.value)}
           />
           <TextField
-            label="Databases"
+            label={t("plansManagement.dialog.databasesField")}
             fullWidth
             margin="dense"
             value={editingPlan?.databases || ""}
             onChange={(e) => handleChange("databases", e.target.value)}
           />
           <TextField
-            label="Storage (NVMe SSD)"
+            label={t("plansManagement.dialog.storageField")}
             fullWidth
             margin="dense"
             value={editingPlan?.storage || ""}
             onChange={(e) => handleChange("storage", e.target.value)}
           />
           <TextField
-            label="Email Accounts"
+            label={t("plansManagement.dialog.emailsField")}
             fullWidth
             margin="dense"
             value={editingPlan?.emails || ""}
             onChange={(e) => handleChange("emails", e.target.value)}
           />
           <TextField
-            label="SSL Certificates"
+            label={t("plansManagement.dialog.sslField")}
             fullWidth
             margin="dense"
             value={editingPlan?.ssl || ""}
@@ -219,7 +226,7 @@ export default function PlansAdminPage() {
                 onChange={(e) => handleChange("webBuilder", e.target.checked)}
               />
             }
-            label="Web Builder"
+            label={t("plansManagement.dialog.webBuilderField")}
           />
           <FormControlLabel
             control={
@@ -228,13 +235,13 @@ export default function PlansAdminPage() {
                 onChange={(e) => handleChange("emailMarketing", e.target.checked)}
               />
             }
-            label="Email Marketing"
+            label={t("plansManagement.dialog.emailMarketingField")}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={handleCloseDialog}>{t("plansManagement.dialog.cancelButton")}</Button>
           <Button variant="contained" onClick={handleSavePlan} sx={{ bgcolor: "#FF6400" }}>
-            Save
+            {t("plansManagement.dialog.saveButton")}
           </Button>
         </DialogActions>
       </Dialog>

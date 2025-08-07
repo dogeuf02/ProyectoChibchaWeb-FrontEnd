@@ -136,7 +136,16 @@ export default function AdminManageDomainRequests() {
 
   return (
     <Box sx={{ maxWidth: 1000, mx: "auto", mt: 10 }}>
-      <Typography variant="h4" sx={{ fontWeight: "bold", color: "#212121", mb: 4 }}>
+      <Typography
+        variant="h4"
+        sx={{
+          fontWeight: "bold",
+          color: "#212121",
+          mb: 4,
+          textAlign: "left", 
+          width: "100%",     
+        }}
+      >
         {t('domainRequestsManagement.title')}
       </Typography>
 

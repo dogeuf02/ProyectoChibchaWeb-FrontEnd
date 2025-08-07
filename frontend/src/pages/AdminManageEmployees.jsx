@@ -34,9 +34,7 @@ export default function AdminManageEmployees() {
     "Coordinador nv 2",
     "Coordinador nv 3"
   ];
-
-
-
+  
   useEffect(() => {
     const fetchEmployees = async () => {
       const response = await getEmployees();

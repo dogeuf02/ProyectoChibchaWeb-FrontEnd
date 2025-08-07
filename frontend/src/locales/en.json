@@ -18,6 +18,7 @@
         "button": "Login"
     },
     "DomainsInfo": {
+        "title": "Explore Our Domains",
         "carousel": {
             "title": "Explore Our Domains",
             "learnMore": "Learn More",
@@ -240,7 +241,7 @@
             "confirmText": "Confirm Denial"
         },
         "list": {
-            "domain": "domain",
+            "domain": "Domain",
             "fullDomain": "Full Domain",
             "applicant": "Applicant",
             "applicantInfo": "Applicant Info",
@@ -272,6 +273,110 @@
             "email": "Email",
             "status": "Status",
             "role": "Role"
+        }
+    },
+    "domainsManagement": {
+        "title": "Manage Domains",
+        "addDomainButton": "Add Domain",
+        "list": {
+            "name": "Name",
+            "tld": "TLD",
+            "price": "Price (USD/year)",
+            "actions": "Actions",
+            "empty": "No domains available. Click \"Add Domain\" to create one."
+        },
+        "dialog": {
+            "addTitle": "Add Domain",
+            "editTitle": "Edit Domain",
+            "nameField": "Name",
+            "tldField": "TLD (e.g., .com)",
+            "priceField": "Price (USD/year)",
+            "cancelButton": "Cancel",
+            "saveButton": "Save"
+        },
+        "alerts": {
+            "requiredFields": "All fields are required",
+            "added": "Domain added successfully",
+            "updated": "Domain updated successfully",
+            "deleted": "Domain deleted successfully"
+        }
+    },
+    "plansManagement": {
+        "title": "Manage Hosting Plans",
+        "addPlanButton": "Add Plan",
+        "dialog": {
+            "addTitle": "Add Plan",
+            "editTitle": "Edit Plan",
+            "nameField": "Plan Name",
+            "monthlyField": "Monthly Price (USD)",
+            "semiAnnualField": "Semi-Annual Price (USD)",
+            "annualField": "Annual Price (USD)",
+            "websField": "Number of Websites",
+            "databasesField": "Databases",
+            "storageField": "Storage (NVMe SSD)",
+            "emailsField": "Email Accounts",
+            "sslField": "SSL Certificates",
+            "webBuilderField": "Web Builder",
+            "emailMarketingField": "Email Marketing",
+            "cancelButton": "Cancel",
+            "saveButton": "Save"
+        },
+        "alerts": {
+            "added": "Plan added successfully!",
+            "saved": "Plan saved successfully!",
+            "deleted": "Plan deleted successfully!"
+        },
+        "list": {
+            "name": "Name",
+            "monthly": "Monthly (USD)",
+            "semiAnnual": "Semi-Annual (USD)",
+            "annual": "Annual (USD)",
+            "actions": "Actions",
+            "details": "Plan Details",
+            "websites": "Websites",
+            "databases": "Databases",
+            "storage": "Storage",
+            "emails": "Email Accounts",
+            "ssl": "SSL Certificates",
+            "webBuilder": "Web Builder",
+            "emailMarketing": "Email Marketing",
+            "yes": "Yes",
+            "no": "No"
+        }
+    },
+    "administratorManagement": {
+        "title": "Administrator Management",
+        "addAdminButton": "ADD ADMINISTRATOR",
+        "alerts": {
+        "deactivated": "Administrator successfully deactivated",
+        "deactivateError": "Failed to deactivate administrator",
+        "added": "Administrator added successfully",
+        "addError": "Failed to add administrator",
+        "requiredField": "The field is required"
+        },
+        "deleteDialog": {
+        "title": "Deactivate Administrator",
+        "message": "Are you sure you want to deactivate this administrator?",
+        "confirmText": "Confirm"
+        },
+        "addAdminDialog": {
+        "title": "Add New Administrator",
+        "firstNameField": "First Name",
+        "lastnameField": "Last Name",
+        "emailField": "Email",
+        "birthDateField": "Birthdate",
+        "cancelButton": "Cancel",
+        "saveButton": "Save"
+        },
+        "list": {
+        "fullName": "Full Name",
+        "email": "Email",
+        "status": "Status",
+        "details": "Administrator Details",
+        "id": "Administrator ID",
+        "birthdate": "Birthdate",
+        "deleteButton": "Delete Administrator",
+        "searchField": "Search by ID"
         }
     },
     "payment": {
@@ -354,6 +459,6 @@
         "dialogTitle": "Delete Account",
         "dialogMessage": "Are you sure you want to delete your account? This action cannot be undone.",
         "dialogConfirm": "Confirm Delete"
-        }
+    }
 
 }
