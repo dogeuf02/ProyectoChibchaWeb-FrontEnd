@@ -486,8 +486,6 @@
         "dialogTitle": "Delete Account",
         "dialogMessage": "Are you sure you want to delete your account? This action cannot be undone.",
         "dialogConfirm": "Confirm Delete"
-<<<<<<< HEAD
-=======
     },
     "myPlans": {
         "title": "My Plans",
@@ -700,6 +698,5 @@
             "noMethods": "You don’t have any saved payment methods.",
             "expires": "Expires"
         }
->>>>>>> fb18995bafb8c6cd91f7b5be68e2a6c843a57bdd
     }
 }
