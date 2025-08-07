@@ -1,4 +1,3 @@
-// components/Tickets/TicketsList.jsx
 import {
   Box,
   Table,
@@ -43,7 +42,7 @@ export default function TicketsList({
         <TextField
           variant="outlined"
           size="small"
-          placeholder={t("tickets.table.search")}
+          placeholder={t("tickets.list.searchPlaceholder")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
@@ -62,14 +61,22 @@ export default function TicketsList({
           <TableHead>
             <TableRow sx={{ bgcolor: "#fff3e0" }}>
               <TableCell />
-              <TableCell><b>{t("tickets.table.ticketId")}</b></TableCell>
-              {!readOnly && <TableCell><b>{t("tickets.table.clientId")}</b></TableCell>}
-              {!readOnly && <TableCell><b>{t("tickets.table.distributorId")}</b></TableCell>}
-              <TableCell><b>{t("tickets.table.subject")}</b></TableCell>
-              {readOnly && <TableCell><b>{t("tickets.table.description")}</b></TableCell>}
-              <TableCell><b>{t("tickets.table.status")}</b></TableCell>
-              <TableCell><b>{t("tickets.table.level")}</b></TableCell>
-              {isCoordinator && <TableCell><b>{t("tickets.table.assignedTo")}</b></TableCell>}
+              <TableCell><b>{t("tickets.list.headers.id")}</b></TableCell>
+              {!readOnly && (
+                <TableCell><b>{t("tickets.list.headers.client")}</b></TableCell>
+              )}
+              {!readOnly && (
+                <TableCell><b>{t("tickets.list.headers.distributor")}</b></TableCell>
+              )}
+              <TableCell><b>{t("tickets.list.headers.subject")}</b></TableCell>
+              {readOnly && (
+                <TableCell><b>{t("tickets.list.headers.description")}</b></TableCell>
+              )}
+              <TableCell><b>{t("tickets.list.headers.status")}</b></TableCell>
+              <TableCell><b>{t("tickets.list.headers.level")}</b></TableCell>
+              {isCoordinator && (
+                <TableCell><b>{t("tickets.list.headers.assignedTo")}</b></TableCell>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>

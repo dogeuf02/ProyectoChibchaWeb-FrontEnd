@@ -37,7 +37,9 @@ export default function TicketHistory({ history = [], availableTechnicians = [] 
           </Typography>
           {entry.empleadoReceptor && (
             <Typography variant="body2" color="text.secondary">
-              {t("tickets.history.assignedTo", { tech: getReceptorEmail(entry.empleadoReceptor) })}
+              {t("tickets.history.assignedTo", {
+                email: getReceptorEmail(entry.empleadoReceptor),
+              })}
             </Typography>
           )}
         </Box>

@@ -67,13 +67,13 @@ export default function MyTickets() {
 
       setTickets(enrichedTickets);
     } catch (error) {
-      showAlert(t("tickets.alerts.loadError"), "error");
+      showAlert(t("tickets.myTickets.alerts.createError"), "error");
     }
   };
 
   const handleAddTicket = async () => {
     if (!newTicket.subject || !newTicket.description) {
-      showAlert(t("tickets.alerts.fillFields"), "warning");
+      showAlert(t("tickets.myTickets.alerts.fillFields"), "warning");
       return;
     }
 
@@ -94,10 +94,10 @@ export default function MyTickets() {
       await fetchTickets();
       setNewTicket({ subject: "", description: "" });
       setOpenDialog(false);
-      showAlert(t("tickets.alerts.submitSuccess"), "success");
+      showAlert(t("tickets.myTickets.alerts.createSuccess"), "success");
     } catch (error) {
       console.error("Error creating ticket:", error);
-      showAlert(t("tickets.alerts.submitError"), "error");
+      showAlert(t("tickets.myTickets.alerts.createError"), "error");
     }
   };
 
@@ -114,7 +114,7 @@ export default function MyTickets() {
         }}
       >
         <Typography variant="h4" sx={{ fontWeight: "bold", color: "#212121" }}>
-          {t("tickets.title")}
+          {t("tickets.myTickets.title")}
         </Typography>
 
         <Button
@@ -127,7 +127,7 @@ export default function MyTickets() {
           }}
           onClick={() => setOpenDialog(true)}
         >
-          {t("tickets.addTicket")}
+          {t("tickets.myTickets.addTicket")}
         </Button>
       </Box>
 
@@ -137,10 +137,10 @@ export default function MyTickets() {
           elevation={2}
         >
           <Typography variant="h6" color="text.secondary">
-            {t("tickets.empty.title")}
+            {t("tickets.myTickets.emptyTitle")}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            {t("tickets.empty.subtitle")}
+            {t("tickets.myTickets.emptyDescription")}
           </Typography>
         </Paper>
       ) : (
@@ -159,11 +159,11 @@ export default function MyTickets() {
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth maxWidth="sm">
         <DialogTitle sx={{ fontWeight: "bold" }}>
-          {t("tickets.dialog.title")}
+          {t("tickets.myTickets.newTicketDialog.title")}
         </DialogTitle>
         <DialogContent>
           <TextField
-            label={t("tickets.dialog.subject")}
+            label={t("tickets.myTickets.newTicketDialog.subject")}
             fullWidth
             margin="normal"
             value={newTicket.subject}
@@ -172,7 +172,7 @@ export default function MyTickets() {
             }
           />
           <TextField
-            label={t("tickets.dialog.description")}
+            label={t("tickets.myTickets.newTicketDialog.description")}
             fullWidth
             multiline
             rows={4}
@@ -189,7 +189,7 @@ export default function MyTickets() {
             sx={{ borderRadius: 30 }}
             onClick={() => setOpenDialog(false)}
           >
-            {t("tickets.dialog.cancel")}
+            {t("tickets.myTickets.newTicketDialog.cancel")}
           </Button>
           <Button
             variant="contained"
@@ -201,7 +201,7 @@ export default function MyTickets() {
             onClick={handleAddTicket}
             disabled={disableSave}
           >
-            {t("tickets.dialog.submit")}
+            {t("tickets.myTickets.newTicketDialog.submit")}
           </Button>
         </DialogActions>
       </Dialog>
