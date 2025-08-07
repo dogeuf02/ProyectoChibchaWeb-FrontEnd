@@ -610,5 +610,36 @@
             "saveChanges": "Save Changes",
             "closeTicket": "Close Ticket"
         }
+    },
+    "checkout": {
+        "title": "Checkout Summary",
+        "selectedPlan": "Selected Plan",
+        "plan": "Plan",
+        "billingCycle": "Billing Cycle",
+        "features": "Features",
+        "total": "Total",
+        "payNow": "Pay Now",
+        "alerts": {
+            "paymentSuccess": "Payment successful!",
+            "paymentError": "There was a problem processing your payment.",
+            "selectMethod": "Please select a payment method.",
+            "deleteSuccess": "Payment method deleted successfully",
+            "deleteError": "Failed to delete payment method",
+            "addSuccess": "Payment method added successfully",
+            "addError": "Failed to add payment method",
+            "fillFields": "Please fill in all required fields"
+        },
+        "confirmDialog": {
+            "deleteTitle": "Delete Payment Method",
+            "deleteMessage": "Are you sure you want to delete this payment method? This action cannot be undone.",
+            "confirm": "Delete",
+            "cancel": "Cancel"
+        },
+        "paymentMethodSelector": {
+            "select": "Select a Payment Method",
+            "add": "Add a Payment Method",
+            "noMethods": "You don’t have any saved payment methods.",
+            "expires": "Expires"
+        }
     }
 }

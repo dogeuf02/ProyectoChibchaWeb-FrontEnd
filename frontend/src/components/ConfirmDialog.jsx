@@ -11,13 +11,15 @@ export default function ConfirmDialog({
   open,
   onClose,
   onConfirm,
-  title = "Are you sure?",
-  message = "This action cannot be undone.",
-  confirmText = "Confirm",
-  cancelText = "Cancel"
+  title,
+  message,
+  confirmText,
+  cancelText
 }) {
   return (
-    <Dialog open={open} onClose={onClose}
+    <Dialog
+      open={open}
+      onClose={onClose}
       PaperProps={{
         sx: {
           backgroundColor: "#FAFAFA",

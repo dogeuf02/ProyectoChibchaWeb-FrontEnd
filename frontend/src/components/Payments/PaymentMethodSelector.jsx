@@ -7,15 +7,13 @@ import {
   Radio,
   FormControlLabel,
   RadioGroup,
-  Divider,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PaymentCardForm from './PaymentCardForm';
 import { useAuth } from '../../context/AuthContext';
 import { createPayMethod, getPayMethodsByUserId } from '../../api/payMethodApi';
 import { useGlobalAlert } from '../../context/AlertContext';
-
-
+import { useTranslation } from 'react-i18next';
 
 export default function PaymentMethodSelector({
   methods = [],
@@ -25,7 +23,6 @@ export default function PaymentMethodSelector({
   onAdd,
   bankOptions = []
 }) {
-
   const [newMethod, setNewMethod] = useState({
     tipoMedioPago: 'visa',
     nombreTitular: '',
@@ -33,23 +30,13 @@ export default function PaymentMethodSelector({
     banco: null,
   });
 
-
-  const disableSave =
-    !newMethod.numeroTarjetaCuenta ||
-    !newMethod.nombreTitular ||
-    !newMethod.banco;
-
-
   const { specificId, role } = useAuth();
   const { showAlert } = useGlobalAlert();
-
+  const { t } = useTranslation();
 
   const handleAdd = async () => {
-    if (
-      !newMethod.numeroTarjetaCuenta ||
-      !newMethod.banco
-    ) {
-      showAlert('Please fill in all required fields', 'warning');
+    if (!newMethod.numeroTarjetaCuenta || !newMethod.banco) {
+      showAlert(t('checkout.alerts.fillFields'), 'warning');
       return;
     }
 
@@ -62,8 +49,6 @@ export default function PaymentMethodSelector({
       fechaRegistro: new Date().toISOString(),
       cliente: specificId,
     };
-
-
 
     try {
       const response = await createPayMethod(nuevoMetodo);
@@ -79,65 +64,48 @@ export default function PaymentMethodSelector({
             expiryDate: p.fechaExpiracion || 'N/A',
           }));
           onAdd && onAdd(adapted[adapted.length - 1]);
-          showAlert('Payment method added successfully', 'success');
+          showAlert(t('checkout.alerts.addSuccess'), 'success');
         }
       } else {
-        showAlert(response.mensaje || 'Failed to add method', 'error');
+        showAlert(response.mensaje || t('checkout.alerts.addError'), 'error');
       }
-    } catch (err) {
-      showAlert('Error adding payment method', 'error');
+    } catch {
+      showAlert(t('checkout.alerts.addError'), 'error');
     }
 
-    setNewMethod({
-      cardType: 'visa',
-      cardNumber: '',
-      nombreTitular: '',
-      banco: null,
-    });
+    setNewMethod({ tipoMedioPago: 'visa', numeroTarjetaCuenta: '', nombreTitular: '', banco: null });
   };
-
-
-  const handleChange = (e) => {
-    onChange({ ...data, [e.target.name]: e.target.value });
-  };
-
 
   return (
     <Paper sx={{ p: 3, bgcolor: '#FAFAFA' }} elevation={3}>
       <Typography variant="h6" gutterBottom>
-        {methods.length > 0 ? 'Select a Payment Method' : 'Add a Payment Method'}
+        {methods.length > 0
+          ? t('checkout.paymentMethodSelector.select')
+          : t('checkout.paymentMethodSelector.add')}
       </Typography>
 
-      {/* Agregar nuevo incluso si ya hay uno */}
       {methods.length === 0 ? (
         <Box>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            You don’t have any saved payment methods.
+            {t('checkout.paymentMethodSelector.noMethods')}
           </Typography>
           <PaymentCardForm
             data={newMethod}
             onChange={setNewMethod}
             onSave={handleAdd}
             isNew
-            disableSave={
-              !newMethod.numeroTarjetaCuenta ||
-              !newMethod.nombreTitular ||
-              !newMethod.banco
-            }
-
-
+            disableSave={!newMethod.numeroTarjetaCuenta || !newMethod.nombreTitular || !newMethod.banco}
             bankOptions={bankOptions}
           />
         </Box>
       ) : (
-        <RadioGroup value={selectedId?.toString()} onChange={handleChange}>
+        <RadioGroup value={selectedId?.toString()} onChange={(e) => onSelect(parseInt(e.target.value))}>
           {methods.map((method) => (
             <Box
               key={method.id}
               sx={{
                 border: '1px solid',
-                borderColor:
-                  method.id === selectedId ? '#FF6400' : 'transparent',
+                borderColor: method.id === selectedId ? '#FF6400' : 'transparent',
                 borderRadius: 2,
                 p: 2,
                 mb: 2,
@@ -152,14 +120,12 @@ export default function PaymentMethodSelector({
                 control={<Radio />}
                 label={
                   <Box>
-                    <Typography variant="subtitle1">
-                      {method.cardType.toUpperCase()}
-                    </Typography>
+                    <Typography variant="subtitle1">{method.cardType.toUpperCase()}</Typography>
                     <Typography variant="body2" color="text.secondary">
                       **** **** **** {method.cardNumber.slice(-4)}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Expires: {method.expiryDate}
+                      {t('checkout.paymentMethodSelector.expires')}: {method.expiryDate}
                     </Typography>
                   </Box>
                 }
@@ -173,7 +139,6 @@ export default function PaymentMethodSelector({
           ))}
         </RadioGroup>
       )}
-
     </Paper>
   );
 }

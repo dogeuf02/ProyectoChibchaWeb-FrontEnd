@@ -610,5 +610,36 @@
       "saveChanges": "Guardar cambios",
       "closeTicket": "Cerrar ticket"
     }
+  },
+  "checkout": {
+    "title": "Resumen de Compra",
+    "selectedPlan": "Plan Seleccionado",
+    "plan": "Plan",
+    "billingCycle": "Ciclo de Facturación",
+    "features": "Características",
+    "total": "Total",
+    "payNow": "Pagar Ahora",
+    "alerts": {
+      "paymentSuccess": "¡Pago realizado con éxito!",
+      "paymentError": "Hubo un problema al procesar tu pago.",
+      "selectMethod": "Por favor selecciona un método de pago.",
+      "deleteSuccess": "Método de pago eliminado correctamente",
+      "deleteError": "Error al eliminar el método de pago",
+      "addSuccess": "Método de pago agregado correctamente",
+      "addError": "Error al agregar el método de pago",
+      "fillFields": "Por favor completa todos los campos requeridos"
+    },
+    "confirmDialog": {
+      "deleteTitle": "Eliminar Método de Pago",
+      "deleteMessage": "¿Estás seguro de que deseas eliminar este método de pago? Esta acción no se puede deshacer.",
+      "confirm": "Eliminar",
+      "cancel": "Cancelar"
+    },
+    "paymentMethodSelector": {
+      "select": "Selecciona un Método de Pago",
+      "add": "Agregar un Método de Pago",
+      "noMethods": "No tienes métodos de pago guardados.",
+      "expires": "Vence"
+    }
   }
 }
