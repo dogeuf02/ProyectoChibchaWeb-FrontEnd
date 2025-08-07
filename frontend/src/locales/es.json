@@ -519,7 +519,7 @@
       "expires": "Expira: {{date}}"
     },
     "alerts": {
-      "loadWarning": "No se pudieron cargar los detalles de tu plan.",
+      "loadWarning": "No tienes planes activos.",
       "loadError": "Hubo un problema al cargar tus planes",
       "deleteSuccess": "Plan eliminado exitosamente"
     }

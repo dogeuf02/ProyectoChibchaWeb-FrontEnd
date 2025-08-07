@@ -45,16 +45,16 @@ export default function AdminManageDistributorRequests() {
     }
 
     try {
-      const result = await updateState(distributor.email, "ACTIVO");
+      const result = await updateState(id, true);
 
-      if (result.exito) {
-        showAlert("Distribuitor disabled succesfully.", "success");
+      if (result) {
+        showAlert(result, "success");
         const updated = await getPendingDistributors();
         if (updated.exito) {
           setDistributors(updated.distribuidores);
         }
       } else {
-        showAlert(result.mensaje || "Error disabling distributor", "error");
+        showAlert(result || "Error disabling distributor", "error");
       }
     } catch (error) {
       showAlert("Server error trying to disable a distributor", "error");
@@ -69,15 +69,25 @@ export default function AdminManageDistributorRequests() {
     setOpenDialog(true);
   };
 
-  const handleConfirmDeny = () => {
-    setDistributors(prev =>
-      prev.map(dist =>
-        dist.distributor_id === selectedId ? { ...dist, status: "Denied" } : dist
-      )
-    );
-    setOpenDialog(false);
-    setSelectedId(null);
-    showAlert("Distributor request denied", "info");
+  const handleConfirmDeny = async (id) => {
+    try {
+      const result = await updateState(id, false);
+
+      if (result) {
+        showAlert(result, "success");
+        const updated = await getPendingDistributors();
+        if (updated.exito) {
+          setDistributors(updated.distribuidores);
+        }
+      } else {
+        showAlert(result || "Error disabling distributor", "error");
+      }
+    } catch (error) {
+      showAlert("Server error trying to disable a distributor", "error");
+    } finally {
+      setOpenDialog(false);
+      setSelectedId(null);
+    }
   };
 
   return (
@@ -97,7 +107,7 @@ export default function AdminManageDistributorRequests() {
       <ConfirmDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
-        onConfirm={handleConfirmDeny}
+        onConfirm={() => handleConfirmDeny(selectedId)}
         title={t('domainRequestsManagement.denyRequestDialog.title')}
         message={t('domainRequestsManagement.denyRequestDialog.message')}
         confirmText={t('domainRequestsManagement.denyRequestDialog.confirmText')}

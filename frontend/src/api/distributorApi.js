@@ -52,25 +52,12 @@ export const getDistributors = async () => {
     }
 };
 
-export const updateState = async (email, state) => {
+export const updateState = async (idDistributor, request) => {
     try {
-        const response = await api.put(`/usuario/correo/${email}`, {
-            estado: state
-        });
-
-        return { exito: true, data: response.data };
+        const response = await api.put(`/distribuidor/gestionarSolicitudRegistro/${idDistributor}?activar=${request}`);
+        return response;
     } catch (error) {
-        if (error.response && error.response.data) {
-            return {
-                exito: false,
-                mensaje: error.response.data.mensaje || "Error al desactivar el usuario"
-            };
-        } else {
-            return {
-                exito: false,
-                mensaje: "Error desconocido al desactivar el usuario"
-            };
-        }
+        return error;
     }
 };
 

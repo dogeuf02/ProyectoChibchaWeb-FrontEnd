@@ -192,21 +192,21 @@ export default function DomainRequest() {
               <TableBody>
                 {domainRequests.map((req) => (
                   <TableRow key={req.idSolicitud}>
-                    <TableCell>{req.dominio?.nombreDominio || "-"}</TableCell>
-                    <TableCell>{req.dominio?.tld || "-"}</TableCell>
+                    <TableCell>{req.nombreDominio || "-"}</TableCell>
+                    <TableCell>{req.tld || "-"}</TableCell>
                     <TableCell>
                       <Chip
-                        label={req.estado}
+                        label={req.estadoSolicitud}
                         color={
-                          req.estado === "En Revision"
+                          req.estadoSolicitud === "En Revision"
                             ? "warning"
-                            : req.estado === "Aprobada"
+                            : req.estadoSolicitud === "Aprobada"
                               ? "success"
                               : "default"
                         }
                       />
                     </TableCell>
-                    <TableCell>{req.fechaCreacion}</TableCell>
+                    <TableCell>{req.fechaSolicitud}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

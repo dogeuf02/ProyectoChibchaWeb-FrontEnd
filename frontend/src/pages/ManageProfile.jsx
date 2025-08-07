@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import Zoom from '@mui/material/Zoom';
 import {
   Container,
@@ -25,16 +25,13 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { ROLE } from '../enum/roleEnum';
 import { auth } from '../api/authApi';
-import ReCAPTCHA from 'react-google-recaptcha';
 import { useTranslation } from 'react-i18next';
 
 export default function ManageProfile() {
   const { t } = useTranslation();
-  const recaptchaRef = useRef();
   useScrollToTop();
 
   const navigate = useNavigate();
-  const [captchaToken, setCaptchaToken] = useState(null);
   const { role, logout, userId } = useAuth();
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
@@ -55,10 +52,6 @@ export default function ManageProfile() {
   const [originalProfile, setOriginalProfile] = useState({});
   const [openDialog, setOpenDialog] = useState(false);
 
-  const handleCaptchaChange = (value) => {
-    setCaptchaToken(value);
-  };
-
   const activateEdit = () => {
     setOriginalProfile(profile);
     setEditMode(true);
@@ -75,11 +68,6 @@ export default function ManageProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!captchaToken) {
-      showAlert(t("manageProfile.completeCaptcha"), 'warning');
-      recaptchaRef.current?.reset();
-      return;
-    }
 
     let requiredFields = [];
     switch (role) {
@@ -112,25 +100,27 @@ export default function ManageProfile() {
     }
 
     try {
-      const loginResult = await auth({
-        correo: profile.email,
-        contrasena: passwordData.currentPassword,
-        captchaToken: captchaToken
-      });
+      // const loginResult = await auth({
+      //   correo: profile.email,
+      //   contrasena: passwordData.currentPassword,
+      // });
 
-      if (!loginResult.autenticado) {
-        showAlert(t("manageProfile.incorrectPassword"), "error");
-        recaptchaRef.current?.reset();
-        return;
-      }
+      // if (!loginResult.autenticado) {
+      //   showAlert(t("manageProfile.incorrectPassword"), "error");
+      //   return;
+      // }
 
       if (passwordData.newPassword) {
         const passwordRes = await changePassword(profile.email, passwordData.newPassword);
-        if (!(passwordRes.status === 200 || passwordRes.data.exito)) {
+        console.log("passREs", passwordRes)
+        if (passwordRes.status !== 200) {
           showAlert(t("manageProfile.errorUpdatingPassword"), "error");
-          recaptchaRef.current?.reset();
           return;
+        } else {
+          showAlert("Password updated correctly.", "success");
         }
+        setPasswordData({ currentPassword: '', newPassword: '' });
+
       }
 
       let updateFunction;
@@ -142,6 +132,9 @@ export default function ManageProfile() {
         fechaNacimientoCliente: profile.birthDate,
       };
 
+      if (role === ROLE.DISTRIBUTOR) {
+        return;
+      }
       switch (role) {
         case ROLE.CLIENT:
           updateFunction = updateClientProfile;
@@ -154,9 +147,6 @@ export default function ManageProfile() {
           delete formattedData.nombreCliente;
           delete formattedData.apellidoCliente;
           delete formattedData.fechaNacimientoCliente;
-          break;
-        case ROLE.DISTRIBUTOR:
-          updateFunction = updateDistributorProfile;
           break;
         case ROLE.ADMIN:
           updateFunction = updateAdminProfile;
@@ -177,16 +167,13 @@ export default function ManageProfile() {
       if (res && res.status === 200) {
         setEditMode(false);
         showAlert(t("manageProfile.updateSuccess"), "success");
-        recaptchaRef.current?.reset();
         setPasswordData({ currentPassword: '', newPassword: '' });
       } else {
         showAlert(t("manageProfile.updateError"), "error");
-        recaptchaRef.current?.reset();
       }
 
     } catch (err) {
       showAlert(t("manageProfile.updateError"), "error");
-      recaptchaRef.current?.reset();
     }
   };
 
@@ -281,10 +268,6 @@ export default function ManageProfile() {
 
             <TextField label={t("manageProfile.currentPassword")} name="currentPassword" type="password" value={passwordData.currentPassword} onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })} fullWidth margin="normal" disabled={!editMode} />
             <TextField label={t("manageProfile.newPassword")} name="newPassword" type="password" value={passwordData.newPassword} onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })} fullWidth margin="normal" disabled={!editMode} />
-
-            <Box mt={3} display="flex" justifyContent="center">
-              <ReCAPTCHA sitekey="6LePn5krAAAAAAnj4Tz_1s9K7dZEYLVsdUeFqwqB" onChange={handleCaptchaChange} ref={recaptchaRef} />
-            </Box>
 
             {!editMode && role !== ROLE.EMPLOYEE && (
               <Button type="button" onClick={activateEdit} variant="contained" fullWidth sx={{ mt: 3, mb: 2, bgcolor: '#ff6f00', borderRadius: 30, '&:hover': { bgcolor: '#ffc107', color: '#212121' } }}>

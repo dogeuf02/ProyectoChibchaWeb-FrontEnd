@@ -78,10 +78,10 @@ export default function TicketActions({
       />
 
       <FormControl size="small" sx={{ minWidth: 200 }} disabled={isClosed}>
-        <InputLabel>{t("tickets.actions.assignTechnician")}</InputLabel>
+        <InputLabel>{t("tickets.actions.assignTech")}</InputLabel>
         <Select
           value={tempAssignedTech}
-          label={t("tickets.actions.assignTechnician")}
+          label={t("tickets.actions.assignTech")}
           onChange={(e) => onChangeTechnician(e.target.value)}
         >
           {availableTechnicians.map((opt) => (
