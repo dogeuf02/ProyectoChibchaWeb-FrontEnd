@@ -105,7 +105,6 @@ export default function RegisterAccount() {
     try {
       showLoader();
       const res = await createClient(client);
-      console.log(res);
       if (res.exito) {
         showAlert('Register success', 'success');
         setTimeout(() => {

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { auth } from "../api/authApi";
+import { apiLogout, auth } from "../api/authApi";
 import { useGlobalAlert } from "../context/AlertContext";
 import { TOKEN_KEY, saveToken, decodeToken } from "../utils/authToken";
 
@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
 
   const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY));
   const [authenticated, setAuthenticated] = useState(() => localStorage.getItem("authenticated") === "true");
+  const [authLoading, setAuthLoading] = useState(true);
 
   const [userId, setUserId] = useState(null);
   const [specificId, setSpecificId] = useState(null);
@@ -17,21 +18,24 @@ export const AuthProvider = ({ children }) => {
   const [email, setEmail] = useState(null);
   const [userData, setUserData] = useState(null);
 
-  // Actualiza localStorage cada vez que el token cambie
   useEffect(() => {
     if (token) {
       saveToken(token);
       const decoded = decodeToken(token);
-      console.log(decoded)
       if (decoded) {
         setUserData(decoded);
         setUserId(decoded.idUsuario);
         setSpecificId(decoded.idRelacionado);
         setRole(decoded.rol);
         setEmail(decoded.sub);
+        setAuthenticated(true);
+      } else {
+        setAuthenticated(false);
       }
     }
+    setAuthLoading(false);
   }, [token]);
+
 
   useEffect(() => {
     localStorage.setItem("authenticated", authenticated);
@@ -49,12 +53,23 @@ export const AuthProvider = ({ children }) => {
         return { success: false, message: response.mensaje };
       }
     } catch (error) {
-      console.error("Error en login:", error);
       return { success: false, message: "Fallo inesperado durante el login." };
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    if (!token) {
+      return;
+    }
+    try {
+      const result = await apiLogout(token);
+      if (result) {
+        showAlert("Sesión cerrada", "success");
+      }
+
+    } catch (error) {
+      showAlert("Error al cerrar sesión", "error");
+    }
     setAuthenticated(false);
     setToken(null);
     setUserId(null);
@@ -62,9 +77,8 @@ export const AuthProvider = ({ children }) => {
     setRole(null);
     setEmail(null);
     setUserData(null);
-
+    setAuthLoading(false);
     localStorage.clear();
-    showAlert("Sesión cerrada", "success");
   };
 
   return (
@@ -78,6 +92,7 @@ export const AuthProvider = ({ children }) => {
       role,
       email,
       userData,
+      authLoading
     }}>
       {children}
     </AuthContext.Provider>

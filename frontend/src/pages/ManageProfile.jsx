@@ -185,7 +185,6 @@ export default function ManageProfile() {
       }
 
     } catch (err) {
-      console.error("❌ Error actualizando perfil:", err);
       showAlert(t("manageProfile.updateError"), "error");
       recaptchaRef.current?.reset();
     }

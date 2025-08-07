@@ -19,6 +19,20 @@ export const createDomainRequest = async (domain) => {
   }
 }
 
+export const getDomainRequestsById = async (role,id) => {
+  try {
+    const response = await api.get(`/solicitudDominio/${role.toLowerCase()}/${id}`);
+    return { exito: true, data: response.data };
+  } catch (error) {
+    if (error.response && error.response.data) {
+      const { exito, mensaje } = error.response.data;
+      return { exito, mensaje };
+    } else {
+      return { exito: false, mensaje: 'Server error.' };
+    }
+  }
+};
+
 export const getDomainRequests = async () => {
   try {
     const response = await api.get('/solicitudDominio');
@@ -41,7 +55,6 @@ export const getDomainRequests = async () => {
 
         if (request.admin) {
           const adminResult = await getAdminProfile(request.admin);
-          console.log("adminResult", adminResult);
           if (adminResult.exito && adminResult.data) {
             adminName = adminResult.data.nombreAdmin;
           }
@@ -51,8 +64,7 @@ export const getDomainRequests = async () => {
         if (!domain) {
           return null;
         }
-        console.log("dom", domain);
-        
+
         const response = {
           idSolicitud: request.idSolicitud,
           dominio: domain,
@@ -64,7 +76,6 @@ export const getDomainRequests = async () => {
           idAdmin: request.admin,
           nombreAdmin: adminName,
         };
-        console.log("responseRe", response);
         return response;
       })
     );
@@ -95,9 +106,9 @@ export const updateDomainRequest = async (id, requestData) => {
 }
 
 
-export const sendNotificationEmail = async (aproved, id ) =>{
+export const sendNotificationEmail = async (aproved, id, adminId) => {
   try {
-    const response = await api.put(`/solicitudDominio/gestionarSolicitud/${id}?aprobar=${aproved}`);
+    const response = await api.put(`/solicitudDominio/gestionarSolicitud/${id}?aprobar=${aproved}&idAdministrador=${adminId}`);
     return { exito: true, data: response.data };
   } catch (error) {
     if (error.response && error.response.data) {
@@ -108,3 +119,19 @@ export const sendNotificationEmail = async (aproved, id ) =>{
     }
   }
 }
+
+export const generateRequestXML = async (id) => {
+  try {
+    const response = await api.get(`/solicitudDominio/generarXML/${id}`, {
+      responseType: 'blob', // <- MUY IMPORTANTE
+    });
+    return { exito: true, data: response.data };
+  } catch (error) {
+    if (error.response && error.response.data) {
+      const { exito, mensaje } = error.response.data;
+      return { exito, mensaje };
+    } else {
+      return { exito: false, mensaje: 'Server error.' };
+    }
+  }
+};

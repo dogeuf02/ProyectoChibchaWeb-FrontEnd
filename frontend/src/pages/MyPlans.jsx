@@ -83,7 +83,6 @@ export default function MyPlansPage() {
 
         setPlans(adapted);
       } catch (err) {
-        console.error("❌ Error loading plan data:", err);
         showAlert(t("myPlans.alerts.loadError"), "error");
       }
     };

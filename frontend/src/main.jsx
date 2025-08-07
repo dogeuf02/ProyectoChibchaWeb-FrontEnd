@@ -9,7 +9,7 @@ import "./i18n";
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <AlertProvider>         {/* 👈 Aquí lo ponemos arriba */}
+      <AlertProvider>       
         <AuthProvider>
           <App />
         </AuthProvider>

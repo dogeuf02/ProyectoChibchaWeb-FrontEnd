@@ -48,11 +48,9 @@ export const hasPayMethods = async (userType, id) => {
 
     if (response.exito && Array.isArray(response.data)) {
         const hasMethods = response.data.length > 0;
-        console.log(`El usuario ${userType} con ID ${id} ${hasMethods ? 'sí' : 'no'} tiene métodos de pago.`);
         return hasMethods;
     }
 
-    console.warn(`No se pudo verificar métodos de pago: ${response.mensaje}`);
     return false;
 };
 

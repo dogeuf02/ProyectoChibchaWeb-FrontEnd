@@ -6,7 +6,6 @@ export const getDocumentTypes = async () => {
     const response = await axiosInstance.get('/tipoDocumentoEmp');
     return response.data;
   } catch (error) {
-    console.error('Error fetching document types:', error);
     return [];
   }
 };

@@ -70,7 +70,6 @@ export const deactivateUser = async (correo) => {
 export const getClientById = async (id) => {
   try {
     const response = await api.get(`/clienteDirecto/${id}`);
-    console.log("Client data:", response.data);
     return { exito: true, data: response.data };
   } catch (error) {
     if (error.response && error.response.data) {

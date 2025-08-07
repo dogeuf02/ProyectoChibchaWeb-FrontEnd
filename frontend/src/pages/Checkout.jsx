@@ -142,7 +142,6 @@ export default function CheckoutPage() {
       showAlert(t('checkout.alerts.paymentSuccess'), 'success');
       navigate('/client/MyPlans');
     } catch (error) {
-      console.error('❌ Error during payment:', error);
       showAlert(t('checkout.alerts.paymentError'), 'error');
     } finally {
       hideLoader();

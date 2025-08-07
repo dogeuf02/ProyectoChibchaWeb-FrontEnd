@@ -38,7 +38,6 @@ export default function AdminManageDistributorRequests() {
   const handleRequestAccept = async (id) => {
     setSelectedId(id);
     const distributor = distributors.find(dist => dist.distributor_id === id);
-    console.log(selectedId)
     if (!distributor) {
       showAlert("Distributor not found.", "error");
       setOpenDialog(false);
@@ -52,7 +51,6 @@ export default function AdminManageDistributorRequests() {
         showAlert("Distribuitor disabled succesfully.", "success");
         const updated = await getPendingDistributors();
         if (updated.exito) {
-          console.log("sexito")
           setDistributors(updated.distribuidores);
         }
       } else {

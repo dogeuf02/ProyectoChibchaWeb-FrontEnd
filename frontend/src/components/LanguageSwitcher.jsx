@@ -16,12 +16,15 @@ const LanguageSwitcher = () => {
     };
 
     const handleClose = (lang) => {
-        if (lang) i18n.changeLanguage(lang);
+        if (lang) {
+            i18n.changeLanguage(lang);
+            localStorage.setItem('i18nextLng', lang); // <-- 💾 Guarda el idioma manualmente
+        }
         setAnchorEl(null);
     };
 
     return (
-        <Paper elevation={3} sx={{ bgcolor: 'white', borderRadius:1, p: 0.01 }}>
+        <Paper elevation={3} sx={{ bgcolor: 'white', borderRadius: 1, p: 0.01 }}>
             <Box>
                 <IconButton onClick={handleClick}>
                     <LanguageIcon />

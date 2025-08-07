@@ -3,37 +3,34 @@ import { Box, Typography } from "@mui/material";
 import DomainRequestsList from "../components/DomainRequestsList";
 import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
-import { getDomainRequests, updateDomainRequest, sendNotificationEmail } from "../api/domainRequestApi";
+import { getDomainRequests, sendNotificationEmail, generateRequestXML } from "../api/domainRequestApi";
 import { updateDomain } from "../api/domainApi";
 import { useTranslation } from "react-i18next";
-import { useAuth } from '../context/AuthContext';
-import getTodayDate from '../utils/dateUtils';
-import { ROLE } from '../enum/roleEnum';
 import { createDomainOwn } from "../api/domainOwnApi";
+import { useAuth } from "../context/AuthContext"
+import { useGlobalLoading } from '../context/LoadingContext';
 
 export default function AdminManageDomainRequests() {
   useScrollToTop();
   const { t } = useTranslation();
   const { showAlert } = useGlobalAlert();
-  const { specificId, userData, } = useAuth();
+  const { specificId } = useAuth();
+  const { showLoader, hideLoader } = useGlobalLoading();
 
   const [domainRequests, setDomainRequests] = useState([]);
   const fetchDomainRequests = async () => {
-    console.log("userData", userData);
     const result = await getDomainRequests();
-    console.log("res", result);
     if (result.exito) {
       setDomainRequests(result.data);
     }
     else {
       showAlert(result.mensaje, "error");
     }
-    console.log(result);
   }
   useEffect(() => {
-
+    showLoader();
     fetchDomainRequests();
-
+    hideLoader();
   }, []);
 
   const handleAccept = async (requestData) => {
@@ -56,11 +53,9 @@ export default function AdminManageDomainRequests() {
         estado: "En Uso",
         tld: requestData.dominio.tld
       }
+      showLoader();
 
-      const resultUpdateDomain = await updateDomain(requestData.dominio.idDominio, domain);
-      console.log("updDom", resultUpdateDomain);
-
-      console.log("Dominio actualizado");
+      await updateDomain(requestData.dominio.idDominio, domain);
 
       const domainOwn = {
         cliente: idCliente,
@@ -68,62 +63,60 @@ export default function AdminManageDomainRequests() {
         dominio: requestData.dominio.idDominio
       }
 
-      const resultCreateDomainOwn = await createDomainOwn(domainOwn);
-      console.log("createDomOwn", resultCreateDomainOwn);
-      if (resultCreateDomainOwn.exito) {
-        console.log("error");
-      }
-      const emailResponse = await sendNotificationEmail(true, requestData.idSolicitud);
-      console.log(emailResponse);
+      await createDomainOwn(domainOwn);
+
+      const emailResponse = await sendNotificationEmail(true, requestData.idSolicitud, specificId);
       if (emailResponse.exito) {
         await fetchDomainRequests();
-        showAlert("Solicitud aprobada correctamente", "success");
+        showAlert(emailResponse.mensaje, "success");
       } else {
         showAlert(emailResponse.mensaje, "error");
 
       }
+      hideLoader();
 
     } catch (error) {
-      console.error("Error en handleAccept:", error);
       showAlert("Error inesperado al aprobar la solicitud", "error");
     }
   };
+
   const handleReject = async (requestData) => {
-    let idCliente = null;
-    let idDistribudor = null;
-
-    if (requestData.cliente !== null) {
-      idCliente = requestData.idUsuario;
-    } else {
-      idDistribudor = requestData.idUsuario;
-    }
-
-    const updatedRequest = {
-
-      idSolicitud: requestData.idSolicitud,
-      estadoSolicitud: "Rechazada",
-      fechaSolicitud: requestData.fechaCreacion,
-      fechaAprobacion: getTodayDate(),
-      cliente: idCliente,
-      distribuidor: idDistribudor,
-      dominio: requestData.dominio.idDominio,
-      admin: specificId
-
-    };
-    console.log("updREqAccept", updatedRequest);
     try {
-      const resultUpdateDomainRequest = await updateDomainRequest(requestData.idSolicitud, updatedRequest);
-      if (resultUpdateDomainRequest.exito) {
-        showAlert("Petición denegada", "error");
-        await sendNotificationEmail(false, updatedRequest.idSolicitud);
+      const emailResponse = await sendNotificationEmail(false, requestData.idSolicitud, specificId);
+      if (emailResponse.exito) {
         await fetchDomainRequests();
-
+        showAlert(emailResponse.mensaje, "success");
+      } else {
+        showAlert(emailResponse.mensaje, "error");
       }
     } catch (error) {
-      showAlert("Unhandled error: " + error, "error")
-
+      showAlert(error, "error");
     }
   };
+
+ const handleGenerateXML = async (requestId) => {
+  const result = await generateRequestXML(requestId);
+
+  if (result.exito) {
+    const blob = new Blob([result.data], { type: 'application/xml' });
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `solicitud_${requestId}.xml`; // Nombre del archivo
+    a.style.display = 'none';
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    showAlert("XML generado con éxito.", "success");
+  } else {
+    alert(`Error: ${result.mensaje}`);
+    showAlert("Error generando el archivo XML", "error");
+  }
+};
+
 
   return (
     <Box sx={{ maxWidth: 1000, mx: "auto", mt: 10 }}>
@@ -144,6 +137,7 @@ export default function AdminManageDomainRequests() {
         domainRequests={domainRequests}
         onAccept={handleAccept}
         onReject={handleReject}
+        onGenerateXml={handleGenerateXML}
       />
     </Box>
   );
