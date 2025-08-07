@@ -1,250 +1,128 @@
-import { useState } from "react";
+// src/pages/AdminManageDomains.jsx
+import { useState, useEffect, useMemo } from "react";
 import {
-  Box,
-  Typography,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Switch,
-  FormControlLabel
+  Box, Typography, Button, Table, TableHead, TableBody,
+  TableRow, TableCell, TableContainer, Paper, IconButton
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import PlansAdminList from "../components/PlanManageList";
 import { useGlobalAlert } from "../context/AlertContext";
-import { useTranslation } from "react-i18next";
+import { useGlobalLoading } from "../context/LoadingContext";
+import { getPlansInfo } from "../api/planApi";
 
-export default function PlansAdminPage() {
+export default function AdminManageDomains() {
   const { showAlert } = useGlobalAlert();
-  const { t } = useTranslation();
+  const { showLoader, hideLoader } = useGlobalLoading();
 
-  const [plans, setPlans] = useState([
-    {
-      id: "1",
-      name: "Plan Plata",
-      monthly: 5,
-      semiAnnual: 25,
-      annual: 45,
-      webs: 2,
-      databases: 20,
-      storage: "20 GB",
-      emails: 20,
-      webBuilder: true,
-      ssl: 2,
-      emailMarketing: true
-    },
-    {
-      id: "2",
-      name: "Plan Platino",
-      monthly: 8,
-      semiAnnual: 40,
-      annual: 72,
-      webs: 3,
-      databases: 40,
-      storage: "40 GB",
-      emails: 40,
-      webBuilder: true,
-      ssl: 3,
-      emailMarketing: true
-    },
-    {
-      id: "3",
-      name: "Plan Oro",
-      monthly: 11,
-      semiAnnual: 55,
-      annual: 99,
-      webs: 5,
-      databases: "Ilimitadas",
-      storage: "60 GB",
-      emails: 60,
-      webBuilder: true,
-      ssl: 5,
-      emailMarketing: true
+  const [rows, setRows] = useState([]);
+
+  const load = async () => {
+    try {
+      showLoader();
+      const res = await getPlansInfo();
+      if (!res.exito) {
+        showAlert(res.mensaje || "Failed to load plans info", "error");
+        return;
+      }
+      const adapted = (res.data || []).map((item) => ({
+        id: item.id, // precio_plan id (PK)
+        price: Number(item.precio),
+        planId: item.planCliente?.idPlanCliente,
+        planName: item.planCliente?.nombrePlanCliente,
+        websites: item.planCliente?.numeroWebs,
+        databases: item.planCliente?.numeroBaseDatos, // may be null if unlimited
+        storageGb: item.planCliente?.almacenamientoNvme,
+        emailAccounts: item.planCliente?.numeroCuentasCorreo,
+        siteBuilder: Boolean(item.planCliente?.creadorWeb),
+        sslCerts: item.planCliente?.numeroCertificadoSslHttps,
+        emailMarketing: Boolean(item.planCliente?.emailMarketing),
+        payPlanId: item.planPago?.idPlanPago,
+        interval: item.planPago?.intervaloPago,
+      }));
+      setRows(adapted);
+    } catch (e) {
+      showAlert("Error loading plans info", "error");
+    } finally {
+      hideLoader();
     }
-  ]);
-
-  const [openDialog, setOpenDialog] = useState(false);
-  const [editingPlan, setEditingPlan] = useState(null);
-
-  const handleOpenDialog = (plan = null) => {
-    setEditingPlan(
-      plan || {
-        id: Date.now().toString(),
-        name: "",
-        monthly: "",
-        semiAnnual: "",
-        annual: "",
-        webs: "",
-        databases: "",
-        storage: "",
-        emails: "",
-        webBuilder: false,
-        ssl: "",
-        emailMarketing: false
-      }
-    );
-    setOpenDialog(true);
   };
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setEditingPlan(null);
-  };
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const handleChange = (field, value) => {
-    setEditingPlan((prev) => ({ ...prev, [field]: value }));
-  };
+  const fmt = useMemo(
+    () =>
+      new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 2,
+      }),
+    []
+  );
 
-  const handleSavePlan = () => {
-    setPlans((prev) => {
-      const exists = prev.find((p) => p.id === editingPlan.id);
-      if (exists) {
-        showAlert(t("plansManagement.alerts.saved"), "success");
-        return prev.map((p) => (p.id === editingPlan.id ? editingPlan : p));
-      } else {
-        showAlert(t("plansManagement.alerts.added"), "success");
-        return [...prev, editingPlan];
-      }
-    });
-    handleCloseDialog();
-  };
-
-  const handleDeletePlan = (id) => {
-    setPlans((prev) => prev.filter((p) => p.id !== id));
-    showAlert(t("plansManagement.alerts.deleted"), "info");
-  };
+  const yesNo = (v) => (v ? "Yes" : "No");
 
   return (
     <Box sx={{ p: 4 }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          m: 6,
-        }}
-      >
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", m: 6 }}>
         <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-          {t("plansManagement.title")}
+          Plans & Prices
         </Typography>
 
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => handleOpenDialog()}
-          sx={{ borderRadius: 30, bgcolor: "#FF6400", "&:hover": { bgcolor: "#FFBE02" } }}
-        >
-          {t("plansManagement.addPlanButton")}
-        </Button>
+
       </Box>
 
-      <PlansAdminList
-        plans={plans}
-        onEditPlan={handleOpenDialog}
-        onDeletePlan={handleDeletePlan}
-      />
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow sx={{ bgcolor: "#fff3e0" }}>
+              <TableCell><b>#</b></TableCell>
+              <TableCell><b>Plan</b></TableCell>
+              <TableCell><b>Interval</b></TableCell>
+              <TableCell><b>Price</b></TableCell>
+              <TableCell><b>Websites</b></TableCell>
+              <TableCell><b>Databases</b></TableCell>
+              <TableCell><b>Storage (GB NVMe)</b></TableCell>
+              <TableCell><b>Email Accounts</b></TableCell>
+              <TableCell><b>Site Builder</b></TableCell>
+              <TableCell><b>SSL Certs</b></TableCell>
+              <TableCell><b>Email Marketing</b></TableCell>
+            </TableRow>
+          </TableHead>
 
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>
-          {editingPlan?.id && plans.some((p) => p.id === editingPlan.id)
-            ? t("plansManagement.dialog.editTitle")
-            : t("plansManagement.dialog.addTitle")}
-        </DialogTitle>
-        <DialogContent dividers>
-          <TextField
-            label={t("plansManagement.dialog.nameField")}
-            fullWidth
-            margin="dense"
-            value={editingPlan?.name || ""}
-            onChange={(e) => handleChange("name", e.target.value)}
-          />
-          <TextField
-            label={t("plansManagement.dialog.monthlyField")}
-            fullWidth
-            margin="dense"
-            type="number"
-            value={editingPlan?.monthly || ""}
-            onChange={(e) => handleChange("monthly", e.target.value)}
-          />
-          <TextField
-            label={t("plansManagement.dialog.semiAnnualField")}
-            fullWidth
-            margin="dense"
-            type="number"
-            value={editingPlan?.semiAnnual || ""}
-            onChange={(e) => handleChange("semiAnnual", e.target.value)}
-          />
-          <TextField
-            label={t("plansManagement.dialog.annualField")}
-            fullWidth
-            margin="dense"
-            type="number"
-            value={editingPlan?.annual || ""}
-            onChange={(e) => handleChange("annual", e.target.value)}
-          />
-          <TextField
-            label={t("plansManagement.dialog.websField")}
-            fullWidth
-            margin="dense"
-            value={editingPlan?.webs || ""}
-            onChange={(e) => handleChange("webs", e.target.value)}
-          />
-          <TextField
-            label={t("plansManagement.dialog.databasesField")}
-            fullWidth
-            margin="dense"
-            value={editingPlan?.databases || ""}
-            onChange={(e) => handleChange("databases", e.target.value)}
-          />
-          <TextField
-            label={t("plansManagement.dialog.storageField")}
-            fullWidth
-            margin="dense"
-            value={editingPlan?.storage || ""}
-            onChange={(e) => handleChange("storage", e.target.value)}
-          />
-          <TextField
-            label={t("plansManagement.dialog.emailsField")}
-            fullWidth
-            margin="dense"
-            value={editingPlan?.emails || ""}
-            onChange={(e) => handleChange("emails", e.target.value)}
-          />
-          <TextField
-            label={t("plansManagement.dialog.sslField")}
-            fullWidth
-            margin="dense"
-            value={editingPlan?.ssl || ""}
-            onChange={(e) => handleChange("ssl", e.target.value)}
-          />
-          <FormControlLabel
-            control={
-              <Switch
-                checked={editingPlan?.webBuilder || false}
-                onChange={(e) => handleChange("webBuilder", e.target.checked)}
-              />
-            }
-            label={t("plansManagement.dialog.webBuilderField")}
-          />
-          <FormControlLabel
-            control={
-              <Switch
-                checked={editingPlan?.emailMarketing || false}
-                onChange={(e) => handleChange("emailMarketing", e.target.checked)}
-              />
-            }
-            label={t("plansManagement.dialog.emailMarketingField")}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>{t("plansManagement.dialog.cancelButton")}</Button>
-          <Button variant="contained" onClick={handleSavePlan} sx={{ bgcolor: "#FF6400" }}>
-            {t("plansManagement.dialog.saveButton")}
-          </Button>
-        </DialogActions>
-      </Dialog>
+          <TableBody>
+            {rows.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={12} align="center" sx={{ py: 4, color: "text.secondary" }}>
+                  No plan info yet
+                </TableCell>
+              </TableRow>
+            ) : (
+              rows.map((r) => (
+                <TableRow key={r.id} hover>
+                  <TableCell>{r.id}</TableCell>
+                  <TableCell>{r.planName}</TableCell>
+                  <TableCell>{r.interval}</TableCell>
+                  <TableCell>{fmt.format(r.price || 0)}</TableCell>
+                  <TableCell>{r.websites}</TableCell>
+                  <TableCell>{r.databases ?? "Unlimited"}</TableCell>
+                  <TableCell>{r.storageGb}</TableCell>
+                  <TableCell>{r.emailAccounts}</TableCell>
+                  <TableCell>{yesNo(r.siteBuilder)}</TableCell>
+                  <TableCell>{r.sslCerts}</TableCell>
+                  <TableCell>{yesNo(r.emailMarketing)}</TableCell>
+                  <TableCell align="right">
+                    {/* Placeholder for future edit/delete hooks if your API supports it */}
+                    <IconButton size="small" disabled>
+                      {/* actions would go here */}
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 }
