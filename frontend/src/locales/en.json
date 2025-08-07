@@ -517,7 +517,7 @@
         "expires": "Expires: {{date}}"
         },
         "alerts": {
-        "loadWarning": "Could not load your plan details.",
+        "loadWarning": "Yo have no active plans.",
         "loadError": "There was a problem loading your plans",
         "deleteSuccess": "Plan deleted successfully"
         }

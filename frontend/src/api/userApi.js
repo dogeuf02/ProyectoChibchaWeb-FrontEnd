@@ -75,6 +75,7 @@ export const updateEmployeeProfile = async (id, data) => {
 };
 
 export const updateDistributorProfile = async (id, data) => {
+  console.log(`Updating distributor profile with ID: ${id}`, data);
   return await api.put(`/distribuidor/${id}`, data);
 };
 
@@ -141,16 +142,14 @@ export const deactivateUser = async (correo) => {
 };
 
 export const changePassword = async (correo, nuevaContrasena) => {
-  try {
-    const res = await api.put(`/usuario/correo/${correo}`, {
-      contrasena: nuevaContrasena,
-      estado: 'ACTIVO'
-    });
 
-    return res;
-  } catch (err) {
-    throw err;
-  }
+  const res = await api.put(`/usuario/correo/${correo}`, {
+    contrasena: nuevaContrasena,
+    estado: 'ACTIVO'
+  });
+
+  return res;
+
 };
 
 export const getRoleAndId = async (email) => {

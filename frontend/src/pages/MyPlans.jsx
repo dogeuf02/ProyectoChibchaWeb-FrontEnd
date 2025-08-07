@@ -30,10 +30,11 @@ export default function MyPlansPage() {
       try {
         const resAdquiridos = await getPlansByClientId(specificId);
         const resInfoPlanes = await getPlansInfo();
-
+        console.log("ResAdq",resAdquiridos);
         const acquiredPlans = Array.isArray(resAdquiridos) ? resAdquiridos : [];
+        console.log("acqPLans",acquiredPlans);
         const infoPlans = Array.isArray(resInfoPlanes.data) ? resInfoPlanes.data : [];
-
+        console.log(acquiredPlans.length === 0 || infoPlans.length === 0);
         if (acquiredPlans.length === 0 || infoPlans.length === 0) {
           showAlert(t("myPlans.alerts.loadWarning"), "warning");
           return;
