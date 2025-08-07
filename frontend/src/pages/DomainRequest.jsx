@@ -111,7 +111,7 @@ export default function DomainRequest() {
           tld: domainTld,
           fechaSolicitud: todayDate,
           cliente: client,
-          distributor: distributor
+          distribuidor: distributor
         };
 
         const response = await createDomainRequest(domainRequest);

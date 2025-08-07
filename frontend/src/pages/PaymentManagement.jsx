@@ -13,7 +13,7 @@ import { useAuth } from '../context/AuthContext';
 import { useGlobalAlert } from '../context/AlertContext';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { useTranslation } from 'react-i18next';
-
+import { ROLE } from '../enum/roleEnum';
 export default function PaymentManagement() {
   const { t } = useTranslation();
   const { specificId, role } = useAuth();
@@ -54,10 +54,19 @@ export default function PaymentManagement() {
   };
 
   const handleAddPayment = async () => {
+    let clientId = null;
+    let distributorId = null;
+    console.log(role === ROLE.DISTRIBUTOR);
+    if(role === ROLE.CLIENT){
+      clientId = specificId;
+    }else if(role === ROLE.DISTRIBUTOR){
+      distributorId = specificId;
+    }
     const nuevoMetodo = {
       ...newCard,
       fechaRegistro: new Date().toISOString(),
-      cliente: specificId,
+      cliente: clientId,
+      distribuidor: distributorId
     };
 
     const response = await createPayMethod(nuevoMetodo);

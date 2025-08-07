@@ -10,17 +10,21 @@ export const createDomainOwn = async (domainOwn) => {
 export const getActiveDomains = async (role, id) => {
 
     const response = await api.get(`/perteneceDominio/${role.toLowerCase()}/${id}`);
-    const domainDetails = await Promise.all(
-        response.data.map(async (item) => {
-            const detalle = await getDomainById(item.dominio);
-            return {
-                ...detalle,
-                idPertenece: item.idPertenece,
-                cliente: item.cliente,
-                distribuidor: item.distribuidor,
-            };
-        })
-    );
+    console.log("active domains response", response);
+    if (response.data && response.data.registros) {
+        const domainDetails = await Promise.all(
+            response.data.registros.map(async (item) => {
+                const detalle = await getDomainById(item.dominio);
+                return {
+                    ...detalle,
+                    idPertenece: item.idPertenece,
+                    cliente: item.cliente,
+                    distribuidor: item.distribuidor,
+                };
+            })
+        );
 
-    return domainDetails;
+        return domainDetails;
+    }
+    return [];
 };

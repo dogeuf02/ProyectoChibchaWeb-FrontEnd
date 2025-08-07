@@ -30,7 +30,7 @@ export const getPayMethods = async () => {
 
 export const getPayMethodsByUserId = async (userType, id) => {
     try {
-        const endpoint = `/medioPago/${userType}/${id}`;
+        const endpoint = `/medioPago/${userType.toLowerCase()}/${id}`;
         const response = await api.get(endpoint);
 
         return { exito: true, data: response.data };
