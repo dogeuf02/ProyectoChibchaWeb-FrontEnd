@@ -584,31 +584,86 @@
     }
   },
   "tickets": {
-    "table": {
+    "myTickets": {
+      "title": "Mis Tickets de Soporte",
+      "emptyTitle": "Aún no has creado ningún ticket.",
+      "emptyDescription": "Haz clic en el botón de arriba para crear tu primer ticket de soporte.",
+      "addTicket": "Agregar Ticket",
+      "newTicketDialog": {
+        "title": "Nuevo Ticket",
+        "subject": "Asunto",
+        "description": "Descripción",
+        "cancel": "Cancelar",
+        "submit": "Enviar Ticket"
+      },
+      "alerts": {
+        "createSuccess": "Tu solicitud ha sido enviada. Te mantendremos informado.",
+        "createError": "Hubo un error al enviar tu ticket",
+        "fillFields": "Por favor completa todos los campos"
+      }
+    },
+
+    "list": {
+      "searchPlaceholder": "Buscar por ID de Ticket o Cliente",
+      "headers": {
+        "id": "ID Ticket",
+        "client": "ID Cliente",
+        "distributor": "ID Distribuidor",
+        "subject": "Asunto",
+        "description": "Descripción",
+        "status": "Estado",
+        "level": "Nivel",
+        "assignedTo": "Asignado a"
+      }
+    },
+
+    "row": {
+      "description": "Descripción:",
       "noAssigned": "Sin asignar"
     },
+
+    "actions": {
+      "changeStatus": "Cambiar Estado",
+      "changeLevel": "Cambiar Nivel",
+      "addComment": "Agregar Comentario",
+      "assignTech": "Asignar Técnico",
+      "saveChanges": "Guardar Cambios",
+      "closeTicket": "Cerrar Ticket"
+    },
+
     "history": {
       "title": "Historial",
-      "description": "Descripción:",
       "assigned": "Asignado",
       "reassigned": "Reasignado",
       "resolved": "Resuelto",
       "escalated": "Escalado",
       "comment": "Comentario",
-      "assignedTo": "Asignado a {{tech}}"
+      "closedManually": "Ticket cerrado manualmente",
+      "assignedTo": "Asignado a: {{email}}"
     },
+
     "alerts": {
-      "noChanges": "No se realizaron cambios",
-      "updateSuccess": "Ticket actualizado con éxito",
-      "updateError": "Hubo un error al actualizar el ticket"
+      "statusUpdated": "Estado actualizado a {{status}}",
+      "levelUpdated": "Nivel actualizado a {{level}}",
+      "assignedSuccess": "Ticket asignado correctamente",
+      "commentAdded": "Comentario agregado",
+      "closeSuccess": "Ticket cerrado con éxito",
+      "closeError": "Error al cerrar el ticket",
+      "noChanges": "No se realizaron cambios"
     },
-    "actions": {
-      "changeStatus": "Cambiar estado",
-      "changeLevel": "Cambiar nivel",
-      "addComment": "Agregar comentario",
-      "assignTechnician": "Asignar técnico",
-      "saveChanges": "Guardar cambios",
-      "closeTicket": "Cerrar ticket"
+
+    "manage": {
+      "title": "Gestionar Tickets (Vista {{view}})",
+      "views": {
+        "coordinator": "Coordinador",
+        "technician": "Técnico"
+      },
+      "confirmDialog": {
+        "title": "Cerrar Ticket",
+        "message": "¿Seguro que deseas cerrar este ticket? Esta acción no se puede deshacer.",
+        "confirm": "Cerrar Ticket",
+        "cancel": "Cancelar"
+      }
     }
   },
   "checkout": {
