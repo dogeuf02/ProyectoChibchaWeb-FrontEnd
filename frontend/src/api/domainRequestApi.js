@@ -95,9 +95,9 @@ export const updateDomainRequest = async (id, requestData) => {
 }
 
 
-export const sendNotificationEmail = async (aproved, id ) =>{
+export const sendNotificationEmail = async (aproved, id, adminId ) =>{
   try {
-    const response = await api.put(`/solicitudDominio/gestionarSolicitud/${id}?aprobar=${aproved}`);
+    const response = await api.put(`/solicitudDominio/gestionarSolicitud/${id}?aprobar=${aproved}&idAdministrador=${adminId}`);
     return { exito: true, data: response.data };
   } catch (error) {
     if (error.response && error.response.data) {

@@ -3,25 +3,20 @@ import { Box, Typography } from "@mui/material";
 import DomainRequestsList from "../components/DomainRequestsList";
 import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
-import { getDomainRequests, updateDomainRequest, sendNotificationEmail } from "../api/domainRequestApi";
+import { getDomainRequests, sendNotificationEmail } from "../api/domainRequestApi";
 import { updateDomain } from "../api/domainApi";
 import { useTranslation } from "react-i18next";
-import { useAuth } from '../context/AuthContext';
-import getTodayDate from '../utils/dateUtils';
-import { ROLE } from '../enum/roleEnum';
 import { createDomainOwn } from "../api/domainOwnApi";
-
+import { useAuth } from "../context/AuthContext"
 export default function AdminManageDomainRequests() {
   useScrollToTop();
   const { t } = useTranslation();
   const { showAlert } = useGlobalAlert();
-  const { specificId, userData, } = useAuth();
+  const { specificId } = useAuth();
 
   const [domainRequests, setDomainRequests] = useState([]);
   const fetchDomainRequests = async () => {
-    console.log("userData", userData);
     const result = await getDomainRequests();
-    console.log("res", result);
     if (result.exito) {
       setDomainRequests(result.data);
     }
@@ -60,7 +55,6 @@ export default function AdminManageDomainRequests() {
       const resultUpdateDomain = await updateDomain(requestData.dominio.idDominio, domain);
       console.log("updDom", resultUpdateDomain);
 
-      console.log("Dominio actualizado");
 
       const domainOwn = {
         cliente: idCliente,
@@ -69,15 +63,14 @@ export default function AdminManageDomainRequests() {
       }
 
       const resultCreateDomainOwn = await createDomainOwn(domainOwn);
-      console.log("createDomOwn", resultCreateDomainOwn);
       if (resultCreateDomainOwn.exito) {
         console.log("error");
       }
-      const emailResponse = await sendNotificationEmail(true, requestData.idSolicitud);
-      console.log(emailResponse);
+      const emailResponse = await sendNotificationEmail(true, requestData.idSolicitud, specificId);
+      console.log("emailRes", emailResponse)
       if (emailResponse.exito) {
         await fetchDomainRequests();
-        showAlert("Solicitud aprobada correctamente", "success");
+        showAlert(emailResponse.mensaje, "success");
       } else {
         showAlert(emailResponse.mensaje, "error");
 
@@ -88,40 +81,18 @@ export default function AdminManageDomainRequests() {
       showAlert("Error inesperado al aprobar la solicitud", "error");
     }
   };
+
   const handleReject = async (requestData) => {
-    let idCliente = null;
-    let idDistribudor = null;
-
-    if (requestData.cliente !== null) {
-      idCliente = requestData.idUsuario;
-    } else {
-      idDistribudor = requestData.idUsuario;
-    }
-
-    const updatedRequest = {
-
-      idSolicitud: requestData.idSolicitud,
-      estadoSolicitud: "Rechazada",
-      fechaSolicitud: requestData.fechaCreacion,
-      fechaAprobacion: getTodayDate(),
-      cliente: idCliente,
-      distribuidor: idDistribudor,
-      dominio: requestData.dominio.idDominio,
-      admin: specificId
-
-    };
-    console.log("updREqAccept", updatedRequest);
     try {
-      const resultUpdateDomainRequest = await updateDomainRequest(requestData.idSolicitud, updatedRequest);
-      if (resultUpdateDomainRequest.exito) {
-        showAlert("Petición denegada", "error");
-        await sendNotificationEmail(false, updatedRequest.idSolicitud);
+      const emailResponse = await sendNotificationEmail(false, requestData.idSolicitud, specificId);
+      if (emailResponse.exito) {
         await fetchDomainRequests();
-
+        showAlert(emailResponse.mensaje, "success");
+      } else {
+        showAlert(emailResponse.mensaje, "error");
       }
     } catch (error) {
-      showAlert("Unhandled error: " + error, "error")
-
+      showAlert(error, "error");
     }
   };
 

@@ -53,3 +53,16 @@ export const verifyEmailToken = async (token) => {
     };
   }
 };
+
+export const apiLogout = async (token) => {
+  try {
+    const response = await api.post('/auth/logout', { token });
+    return { success: true, message: response.data };
+  } catch (error) {
+    console.error("logout error:", error);
+    return {
+      success: false,
+      message: error?.response?.data?.mensaje || "Error en el servidor."
+    };
+  }
+};

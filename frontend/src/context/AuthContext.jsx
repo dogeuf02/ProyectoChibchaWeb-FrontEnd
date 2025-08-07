@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { auth } from "../api/authApi";
+import { apiLogout, auth } from "../api/authApi";
 import { useGlobalAlert } from "../context/AlertContext";
 import { TOKEN_KEY, saveToken, decodeToken } from "../utils/authToken";
 
@@ -54,7 +54,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    if (!token) {
+      return;
+    }
+    try {
+      const result = await apiLogout(token);
+      if (result) {
+        showAlert("Sesión cerrada", "success");
+      }
+
+    } catch (error) {
+      showAlert("Error al cerrar sesión", "error");
+    }
     setAuthenticated(false);
     setToken(null);
     setUserId(null);
@@ -64,7 +76,6 @@ export const AuthProvider = ({ children }) => {
     setUserData(null);
 
     localStorage.clear();
-    showAlert("Sesión cerrada", "success");
   };
 
   return (
