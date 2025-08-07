@@ -18,6 +18,7 @@
         "button": "Login"
     },
     "DomainsInfo": {
+        "title": "Domains",
         "carousel": {
             "title": "Explore Our Domains",
             "learnMore": "Learn More",
@@ -240,7 +241,7 @@
             "confirmText": "Confirm Denial"
         },
         "list": {
-            "domain": "domain",
+            "domain": "Domain",
             "fullDomain": "Full Domain",
             "applicant": "Applicant",
             "applicantInfo": "Applicant Info",
@@ -274,16 +275,145 @@
             "role": "Role"
         }
     },
-    "payment": {
-        "title": "Payment Information",
+    "domainsManagement": {
+        "title": "Manage Domains",
+        "addDomainButton": "Add Domain",
+        "list": {
+            "name": "Name",
+            "tld": "TLD",
+            "price": "Price (USD/year)",
+            "actions": "Actions",
+            "empty": "No domains available. Click \"Add Domain\" to create one."
+        },
+        "dialog": {
+            "addTitle": "Add Domain",
+            "editTitle": "Edit Domain",
+            "nameField": "Name",
+            "tldField": "TLD (e.g., .com)",
+            "priceField": "Price (USD/year)",
+            "cancelButton": "Cancel",
+            "saveButton": "Save"
+        },
+        "alerts": {
+            "requiredFields": "All fields are required",
+            "added": "Domain added successfully",
+            "updated": "Domain updated successfully",
+            "deleted": "Domain deleted successfully"
+        }
+    },
+    "plansManagement": {
+        "title": "Manage Hosting Plans",
+        "addPlanButton": "Add Plan",
+        "dialog": {
+            "addTitle": "Add Plan",
+            "editTitle": "Edit Plan",
+            "nameField": "Plan Name",
+            "monthlyField": "Monthly Price (USD)",
+            "semiAnnualField": "Semi-Annual Price (USD)",
+            "annualField": "Annual Price (USD)",
+            "websField": "Number of Websites",
+            "databasesField": "Databases",
+            "storageField": "Storage (NVMe SSD)",
+            "emailsField": "Email Accounts",
+            "sslField": "SSL Certificates",
+            "webBuilderField": "Web Builder",
+            "emailMarketingField": "Email Marketing",
+            "cancelButton": "Cancel",
+            "saveButton": "Save"
+        },
+        "alerts": {
+            "added": "Plan added successfully!",
+            "saved": "Plan saved successfully!",
+            "deleted": "Plan deleted successfully!"
+        },
+        "list": {
+            "name": "Name",
+            "monthly": "Monthly (USD)",
+            "semiAnnual": "Semi-Annual (USD)",
+            "annual": "Annual (USD)",
+            "actions": "Actions",
+            "details": "Plan Details",
+            "websites": "Websites",
+            "databases": "Databases",
+            "storage": "Storage",
+            "emails": "Email Accounts",
+            "ssl": "SSL Certificates",
+            "webBuilder": "Web Builder",
+            "emailMarketing": "Email Marketing",
+            "yes": "Yes",
+            "no": "No"
+        }
+    },
+    "administratorManagement": {
+        "title": "Administrator Management",
+        "addAdminButton": "ADD ADMINISTRATOR",
+        "alerts": {
+        "deactivated": "Administrator successfully deactivated",
+        "deactivateError": "Failed to deactivate administrator",
+        "added": "Administrator added successfully",
+        "addError": "Failed to add administrator",
+        "requiredField": "The field is required"
+        },
+        "deleteDialog": {
+        "title": "Deactivate Administrator",
+        "message": "Are you sure you want to deactivate this administrator?",
+        "confirmText": "Confirm"
+        },
+        "addAdminDialog": {
+        "title": "Add New Administrator",
+        "firstNameField": "First Name",
+        "lastnameField": "Last Name",
+        "emailField": "Email",
+        "birthDateField": "Birthdate",
+        "cancelButton": "Cancel",
+        "saveButton": "Save"
+        },
+        "list": {
+        "fullName": "Full Name",
+        "email": "Email",
+        "status": "Status",
+        "details": "Administrator Details",
+        "id": "Administrator ID",
+        "birthdate": "Birthdate",
+        "deleteButton": "Delete Administrator",
+        "searchField": "Search by ID"
+        }
+    },
+    "paymentManagement": {
+        "title": "My Payment Methods",
+        "addButton": "Add Payment Method",
+        "newPaymentMethod": "New Payment Method",
+        "addMethod": "Add Method",
+        "saveChanges": "Save Changes",
+        "noMethods": "No saved payment methods.",
         "cardType": "Card Type",
         "cardNumber": "Card Number",
-        "cvc": "CVC",
-        "expiryDate": "Exp. Date (MM/YY)",
-        "saveButton": "SAVE PAYMENT METHOD",
-        "addMethod": "Add payment method",
-        "expires": "Expires",
-        "deleteCard": "Delete card"
+        "cardholderLabel": "Cardholder Name",
+        "pseEmailLabel": "PSE Email",
+        "bank": "Bank",
+        "maskedCard": "**** **** **** {{last4}}",
+        "cardholder": "Cardholder: {{name}}",
+        "pseEmail": "PSE Email: {{email}}",
+        "registered": "Registered: {{date}}",
+        "cardTypes": {
+        "debito": "Debit",
+        "credito": "Credit",
+        "pse": "PSE"
+        },
+        "alerts": {
+        "addSuccess": "Payment method added successfully",
+        "addError": "Failed to add payment method",
+        "deleteSuccess": "Payment method deleted successfully",
+        "deleteError": "Failed to delete payment method",
+        "loadError": "Failed to load payment methods",
+        "bankLoadError": "Failed to load banks"
+        },
+        "deleteDialog": {
+        "title": "Delete Payment Method",
+        "message": "Are you sure you want to delete this payment method? This action cannot be undone.",
+        "confirmText": "Delete",
+        "cancelText": "Cancel"
+        }
     },
     "util": {
         "dolarCoin": "USD"
@@ -356,5 +486,220 @@
         "dialogTitle": "Delete Account",
         "dialogMessage": "Are you sure you want to delete your account? This action cannot be undone.",
         "dialogConfirm": "Confirm Delete"
+<<<<<<< HEAD
+=======
+    },
+    "myPlans": {
+        "title": "My Plans",
+        "addButton": "Add Plan",
+        "dialog": {
+        "title": "Cancel Plan",
+        "message": "Are you sure you want to cancel this plan?",
+        "confirm": "Confirm Cancellation"
+        },
+        "table": {
+        "planType": "Plan Type",
+        "billing": "Billing",
+        "price": "Price"
+        },
+        "billing": {
+        "monthly": "Monthly",
+        "semiAnnual": "Semi-Annual",
+        "annual": "Annual"
+        },
+        "features": {
+        "title": "Plan Features",
+        "websites": "{{count}} websites",
+        "databases": "{{count}} databases",
+        "storage": "{{size}} GB NVMe SSD",
+        "emails": "{{count}} email accounts",
+        "builder": "Website builder",
+        "ssl": "{{count}} SSL certificates",
+        "marketing": "Email marketing",
+        "status": "Status: {{status}}",
+        "purchased": "Purchased: {{date}}",
+        "expires": "Expires: {{date}}"
+        },
+        "alerts": {
+        "loadWarning": "Could not load your plan details.",
+        "loadError": "There was a problem loading your plans",
+        "deleteSuccess": "Plan deleted successfully"
+        }
+    },
+    "myDomains": {
+        "title": "My Domains",
+        "table": {
+            "domainName": "Domain Name",
+            "tld": "TLD",
+            "status": "Status",
+            "transfer": "Domain Transfer"
+        },
+        "actions": {
+            "transfer": "Transfer",
+            "pendingTransfer": "Pending Transfer"
+        },
+        "status": {
+            "inUse": "In Use",
+            "expired": "Expired",
+            "pending": "Pending"
+        },
+        "dialog": {
+            "title": "Transfer Domain",
+            "instruction": "Enter the email of the user to transfer {{domain}} to:",
+            "emailField": "Recipient Email",
+            "emailError": "Please enter a valid email address",
+            "cancel": "Cancel",
+            "confirm": "Confirm Transfer"
+        },
+        "alerts": {
+            "sameEmail": "You cannot transfer to your own email.",
+            "transferSuccess": "Domain transfer request sent successfully.",
+            "emailNotRegistered": "Email isn't registered"
+        }
+    },
+    "domainRequest": {
+        "title": "Domain Requests",
+        "addRequest": "Add Request",
+        "empty": {
+            "title": "You haven't created any domain requests yet.",
+            "subtitle": "Click the button above to submit your first request."
+        },
+        "table": {
+            "domainName": "Domain Name",
+            "tld": "TLD",
+            "status": "Status",
+            "requestDate": "Request Date"
+        },
+        "dialog": {
+            "title": "New Domain Request",
+            "domainName": "Domain Name",
+            "tld": "TLD",
+            "cost": "Cost for {{domain}}: ${{price}}",
+            "selectDomain": "Select a domain to see its cost",
+            "cancel": "Cancel",
+            "submit": "Submit Request"
+        },
+        "alerts": {
+            "fillFields": "Please fill in all fields",
+            "requestSuccess": "Domain request submitted successfully!",
+            "requestFail": "Failed to submit domain request",
+            "domainActive": "Domain is active and in use",
+            "generalError": "Something went wrong"
+        }
+    },
+    "tickets": {
+        "myTickets": {
+            "title": "My Support Tickets",
+            "emptyTitle": "You haven't created any tickets yet.",
+            "emptyDescription": "Click the button above to create your first support ticket.",
+            "addTicket": "Add Ticket",
+            "newTicketDialog": {
+                "title": "New Ticket",
+                "subject": "Subject",
+                "description": "Description",
+                "cancel": "Cancel",
+                "submit": "Submit Ticket"
+            },
+            "alerts": {
+                "createSuccess": "Your request has been submitted. We'll keep you informed.",
+                "createError": "There was an error submitting your ticket",
+                "fillFields": "Please fill in all fields"
+            }
+        },
+
+        "list": {
+            "searchPlaceholder": "Search by Ticket or Client ID",
+            "headers": {
+                "id": "ID Ticket",
+                "client": "Client ID",
+                "distributor": "Distributor ID",
+                "subject": "Subject",
+                "description": "Description",
+                "status": "Status",
+                "level": "Level",
+                "assignedTo": "Assigned To"
+            }
+        },
+
+        "row": {
+        "description": "Description:",
+        "noAssigned": "No assigned"
+        },
+
+        "actions": {
+            "changeStatus": "Change Status",
+            "changeLevel": "Change Level",
+            "addComment": "Add Comment",
+            "assignTech": "Assign Technician",
+            "saveChanges": "Save Changes",
+            "closeTicket": "Close Ticket"
+        },
+
+        "history": {
+            "title": "History",
+            "assigned": "Assigned",
+            "reassigned": "Reassigned",
+            "resolved": "Resolved",
+            "escalated": "Escalated",
+            "comment": "Comment",
+            "closedManually": "Ticket closed manually",
+            "assignedTo": "Assigned to: {{email}}"
+        },
+
+        "alerts": {
+            "statusUpdated": "Status updated to {{status}}",
+            "levelUpdated": "Level updated to {{level}}",
+            "assignedSuccess": "Ticket assigned successfully",
+            "commentAdded": "Comment added",
+            "closeSuccess": "Ticket closed successfully",
+            "closeError": "Error closing ticket",
+            "noChanges": "No changes were made"
+        },
+
+        "manage": {
+            "title": "Manage Tickets ({{view}} View)",
+            "views": {
+                "coordinator": "Coordinator",
+                "technician": "Technician"
+            },
+            "confirmDialog": {
+                "title": "Close Ticket",
+                "message": "Are you sure you want to close this ticket? This action cannot be undone.",
+                "confirm": "Close Ticket",
+                "cancel": "Cancel"
+            }
+        }
+    },
+    "checkout": {
+        "title": "Checkout Summary",
+        "selectedPlan": "Selected Plan",
+        "plan": "Plan",
+        "billingCycle": "Billing Cycle",
+        "features": "Features",
+        "total": "Total",
+        "payNow": "Pay Now",
+        "alerts": {
+            "paymentSuccess": "Payment successful!",
+            "paymentError": "There was a problem processing your payment.",
+            "selectMethod": "Please select a payment method.",
+            "deleteSuccess": "Payment method deleted successfully",
+            "deleteError": "Failed to delete payment method",
+            "addSuccess": "Payment method added successfully",
+            "addError": "Failed to add payment method",
+            "fillFields": "Please fill in all required fields"
+        },
+        "confirmDialog": {
+            "deleteTitle": "Delete Payment Method",
+            "deleteMessage": "Are you sure you want to delete this payment method? This action cannot be undone.",
+            "confirm": "Delete",
+            "cancel": "Cancel"
+        },
+        "paymentMethodSelector": {
+            "select": "Select a Payment Method",
+            "add": "Add a Payment Method",
+            "noMethods": "You don’t have any saved payment methods.",
+            "expires": "Expires"
+        }
+>>>>>>> fb18995bafb8c6cd91f7b5be68e2a6c843a57bdd
     }
 }

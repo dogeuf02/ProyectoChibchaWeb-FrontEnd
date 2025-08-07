@@ -21,9 +21,11 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useGlobalAlert } from "../context/AlertContext";
+import { useTranslation } from "react-i18next";
 
 export default function DomainsAdminPage() {
   const { showAlert } = useGlobalAlert();
+  const { t } = useTranslation();
 
   const [domains, setDomains] = useState([
     { id: 1, name: "Commercial", tld: ".com", price: 12 },
@@ -46,7 +48,7 @@ export default function DomainsAdminPage() {
 
   const handleSaveDomain = () => {
     if (!editDomain.name || !editDomain.tld || !editDomain.price) {
-      showAlert("All fields are required", "warning");
+      showAlert(t("domainsManagement.alerts.requiredFields"), "warning");
       return;
     }
 
@@ -57,16 +59,14 @@ export default function DomainsAdminPage() {
     };
 
     if (normalizedDomain.id) {
-      // Edit existing domain
       setDomains((prev) =>
         prev.map((d) => (d.id === normalizedDomain.id ? normalizedDomain : d))
       );
-      showAlert("Domain updated successfully", "success");
+      showAlert(t("domainsManagement.alerts.updated"), "success");
     } else {
-      // Add new domain
       const newDomain = { ...normalizedDomain, id: Date.now() };
       setDomains((prev) => [...prev, newDomain]);
-      showAlert("Domain added successfully", "success");
+      showAlert(t("domainsManagement.alerts.added"), "success");
     }
 
     handleCloseDialog();
@@ -74,7 +74,7 @@ export default function DomainsAdminPage() {
 
   const handleDeleteDomain = (id) => {
     setDomains((prev) => prev.filter((d) => d.id !== id));
-    showAlert("Domain deleted successfully", "info");
+    showAlert(t("domainsManagement.alerts.deleted"), "info");
   };
 
   return (
@@ -89,7 +89,7 @@ export default function DomainsAdminPage() {
         }}
       >
         <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-          Manage Domains
+          {t("domainsManagement.title")}
         </Typography>
 
         <Button
@@ -98,7 +98,7 @@ export default function DomainsAdminPage() {
           onClick={() => handleOpenDialog()}
           sx={{ borderRadius: 30, bgcolor: "#FF6400", "&:hover": { bgcolor: "#FFBE02" } }}
         >
-          Add Domain
+          {t("domainsManagement.addDomainButton")}
         </Button>
       </Box>
 
@@ -108,17 +108,17 @@ export default function DomainsAdminPage() {
           <TableHead>
             <TableRow sx={{ bgcolor: "#fff3e0" }}>
               <TableCell sx={{ width: "20%" }}><b>ID</b></TableCell>
-              <TableCell sx={{ width: "20%" }}><b>Name</b></TableCell>
-              <TableCell sx={{ width: "20%" }}><b>TLD</b></TableCell>
-              <TableCell sx={{ width: "20%" }}><b>Price (USD/year)</b></TableCell>
-              <TableCell sx={{ width: "20%" }} align="right"><b>Actions</b></TableCell>
+              <TableCell sx={{ width: "20%" }}><b>{t("domainsManagement.list.name")}</b></TableCell>
+              <TableCell sx={{ width: "20%" }}><b>{t("domainsManagement.list.tld")}</b></TableCell>
+              <TableCell sx={{ width: "20%" }}><b>{t("domainsManagement.list.price")}</b></TableCell>
+              <TableCell sx={{ width: "20%" }} align="right"><b>{t("domainsManagement.list.actions")}</b></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {domains.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} align="center" sx={{ py: 4, color: "text.secondary" }}>
-                  No domains available. Click "Add Domain" to create one.
+                  {t("domainsManagement.list.empty")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -145,25 +145,27 @@ export default function DomainsAdminPage() {
 
       {/* Dialog for Add/Edit */}
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>{editDomain?.id ? "Edit Domain" : "Add Domain"}</DialogTitle>
+        <DialogTitle>
+          {editDomain?.id ? t("domainsManagement.dialog.editTitle") : t("domainsManagement.dialog.addTitle")}
+        </DialogTitle>
         <DialogContent dividers>
           <TextField
             margin="normal"
-            label="Name"
+            label={t("domainsManagement.dialog.nameField")}
             fullWidth
             value={editDomain?.name || ""}
             onChange={(e) => setEditDomain((prev) => ({ ...prev, name: e.target.value }))}
           />
           <TextField
             margin="normal"
-            label="TLD (e.g., .com)"
+            label={t("domainsManagement.dialog.tldField")}
             fullWidth
             value={editDomain?.tld || ""}
             onChange={(e) => setEditDomain((prev) => ({ ...prev, tld: e.target.value }))}
           />
           <TextField
             margin="normal"
-            label="Price (USD/year)"
+            label={t("domainsManagement.dialog.priceField")}
             type="number"
             fullWidth
             value={editDomain?.price || ""}
@@ -172,14 +174,14 @@ export default function DomainsAdminPage() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} variant="outlined" sx={{ borderRadius: 30 }}>
-            Cancel
+            {t("domainsManagement.dialog.cancelButton")}
           </Button>
           <Button
             onClick={handleSaveDomain}
             variant="contained"
             sx={{ borderRadius: 30, bgcolor: "#FF6400", "&:hover": { bgcolor: "#FFBE02" } }}
           >
-            Save
+            {t("domainsManagement.dialog.saveButton")}
           </Button>
         </DialogActions>
       </Dialog>

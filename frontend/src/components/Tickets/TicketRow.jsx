@@ -1,4 +1,3 @@
-// components/Tickets/TicketRow.jsx
 import {
     TableRow,
     TableCell,
@@ -8,15 +7,14 @@ import {
     Chip,
     Typography
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import TicketHistory from "./TicketHistory";
 import TicketActions from "./TicketActions";
 import { getTicketWithHistory, updateTicket } from "../../api/ticketApi";
 import { createHistorialEntry } from "../../api/ticketHistoryApi";
-
-
+import { useTranslation } from "react-i18next";
 
 export default function TicketRow({
     ticket,
@@ -29,8 +27,8 @@ export default function TicketRow({
     showAlert,
     employeeRole,
     readOnly = false,
-
 }) {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const [tempStatus, setTempStatus] = useState(ticket.status);
     const [tempLevel, setTempLevel] = useState(ticket.level);
@@ -39,9 +37,7 @@ export default function TicketRow({
     const [history, setHistory] = useState([]);
     const isCoordinator = employeeRole?.toLowerCase().includes("coordinador");
 
-
-
-    const isClosed = ticket.status === "Cerrado" || ticket.status === "Closed";
+    const isClosed = ticket.status?.toLowerCase() === "cerrado" || ticket.status?.toLowerCase() === "closed";
 
     const toggleOpen = async () => {
         setOpen(!open);
@@ -89,7 +85,7 @@ export default function TicketRow({
                 !comment.trim();
 
             if (noChanges) {
-                showAlert("No se realizaron cambios", "info");
+                showAlert(t("tickets.alerts.noChanges"), "info");
                 return;
             }
 
@@ -105,14 +101,12 @@ export default function TicketRow({
                 cliente: ticket.client_id,
             };
 
-            console.log(ticket)
-
             await updateTicket(ticket.ticket_id, updatedTicket);
 
             const historialPayload = {
                 idHistorialTicket: 0,
                 accionTicket,
-                comentarios: comment || `Asignado a ${newAssigned ?? "N/A"}`,
+                comentarios: comment || t("tickets.history.assignedTo", { tech: newAssigned ?? "N/A" }),
                 fechaAccion: new Date().toISOString(),
                 ticket: ticket.ticket_id,
                 empleadoRealizador: parseInt(localStorage.getItem("idEmpleado")),
@@ -137,10 +131,10 @@ export default function TicketRow({
             }
 
             setComment("");
-            showAlert("Ticket actualizado con éxito", "success");
+            showAlert(t("tickets.alerts.updateSuccess"), "success");
         } catch (err) {
             console.error("Error al guardar cambios:", err);
-            showAlert("Hubo un error al guardar los cambios", "error");
+            showAlert(t("tickets.alerts.updateError"), "error");
         }
     };
 
@@ -164,9 +158,9 @@ export default function TicketRow({
                 return "default";
         }
     };
-    const getLevelColor = (level) => {
-        if (isClosed) return "default"; // ✅ gris si está cerrado
 
+    const getLevelColor = (level) => {
+        if (isClosed) return "default";
         switch (level) {
             case "nivel-1":
                 return "success";
@@ -178,8 +172,6 @@ export default function TicketRow({
                 return "default";
         }
     };
-
-
 
     return (
         <>
@@ -209,7 +201,7 @@ export default function TicketRow({
 
                 {isCoordinator && (
                     <TableCell>
-                        {employeeMap?.[ticket.assigned_to] || <i>No assigned</i>}
+                        {employeeMap?.[ticket.assigned_to] || <i>{t("tickets.table.noAssigned")}</i>}
                     </TableCell>
                 )}
             </TableRow>
@@ -218,15 +210,13 @@ export default function TicketRow({
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box sx={{ margin: 2 }}>
-                            {/* ✅ Siempre mostrar descripción */}
                             <Typography variant="subtitle2" gutterBottom>
-                                Description:
+                                {t("tickets.history.description")}
                             </Typography>
                             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                                 {ticket.description}
                             </Typography>
 
-                            {/* 🔒 Solo si no es readOnly se muestran las acciones */}
                             {!readOnly && (
                                 <TicketActions
                                     isClosed={isClosed}
@@ -247,7 +237,6 @@ export default function TicketRow({
                                 />
                             )}
 
-                            {/* 🔒 Solo si no es readOnly se muestra historial */}
                             {!readOnly && (
                                 <TicketHistory
                                     history={history}

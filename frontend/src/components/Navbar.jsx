@@ -35,8 +35,8 @@ export default function NavbarMUI() {
 
   const navItems = [
     { label: t('title'), to: '#Home' },
-    { label: t('navbar.domainTitle'), to: '#Domains' },
-    { label: t('navbar.hostingTitle'), to: '#Plans' },
+    { label: t('DomainsInfo.title'), to: '#Domains' },
+    { label: t('hosting.hostingTitle'), to: '#Plans' },
     { label: t('distributor.title'), to: '#Distributor' },
   ];
 

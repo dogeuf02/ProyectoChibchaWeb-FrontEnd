@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { verifyEmailToken } from "../api/authApi"; // Asegúrate que esta sea la función correcta
+import { verifyEmailToken } from "../api/authApi";
 import { useGlobalAlert } from "../context/AlertContext";
 
 const VerifyEmail = () => {
@@ -9,7 +9,7 @@ const VerifyEmail = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const token = searchParams.get("token");
-    const hasRun = useRef(false); // <-- evita ejecutar el efecto dos veces
+    const hasRun = useRef(false);
 
     useEffect(() => {
         const verify = async () => {

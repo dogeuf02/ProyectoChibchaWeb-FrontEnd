@@ -1,6 +1,8 @@
 import { Box, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 export default function TicketHistory({ history = [], availableTechnicians = [] }) {
+  const { t } = useTranslation();
   const sortedHistory = [...history].sort(
     (a, b) => new Date(b.fechaAccion) - new Date(a.fechaAccion)
   );
@@ -11,11 +13,11 @@ export default function TicketHistory({ history = [], availableTechnicians = [] 
 
   const formatActionLabel = (action) => {
     switch (action) {
-      case "asignado": return "Assigned";
-      case "reasignado": return "Reassigned";
-      case "solucionado": return "Resolved";
-      case "escalado": return "Escalated";
-      case "comentado": return "Comment";
+      case "asignado": return t("tickets.history.assigned");
+      case "reasignado": return t("tickets.history.reassigned");
+      case "solucionado": return t("tickets.history.resolved");
+      case "escalado": return t("tickets.history.escalated");
+      case "comentado": return t("tickets.history.comment");
       default: return action;
     }
   };
@@ -23,7 +25,7 @@ export default function TicketHistory({ history = [], availableTechnicians = [] 
   return (
     <Box sx={{ mt: 3 }}>
       <Typography variant="subtitle1" gutterBottom color="text.primary">
-        History
+        {t("tickets.history.title")}
       </Typography>
       {sortedHistory.map((entry) => (
         <Box key={entry.idHistorialTicket} sx={{ mb: 2, p: 1, bgcolor: "#f5f5f5", borderRadius: 2 }}>
@@ -35,7 +37,7 @@ export default function TicketHistory({ history = [], availableTechnicians = [] 
           </Typography>
           {entry.empleadoReceptor && (
             <Typography variant="body2" color="text.secondary">
-              Assigned to: {getReceptorEmail(entry.empleadoReceptor)}
+              {t("tickets.history.assignedTo", { tech: getReceptorEmail(entry.empleadoReceptor) })}
             </Typography>
           )}
         </Box>

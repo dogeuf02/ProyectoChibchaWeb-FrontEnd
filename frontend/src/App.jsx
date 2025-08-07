@@ -1,7 +1,7 @@
 import './App.css'
 import MainLayout from './layout/MainLayout.jsx'
 import RegisterAccount from './pages/RegisterAccount.jsx'
-import { Route, Routes } from 'react-router-dom'
+import { redirect, Route, Routes } from 'react-router-dom'
 import RegisterDistributor from './pages/RegisterDistributor.jsx'
 import Login from './pages/Login.jsx'
 import ManageProfile from './pages/ManageProfile.jsx'
@@ -33,12 +33,15 @@ import AdminManageDomains from './pages/AdminManageDomains.jsx'
 import FAQSection from './pages/FAQSection.jsx'
 import MyTickets from './pages/MyTickets.jsx'
 import TestimonialsSection from './pages/Testimonials.jsx'
-
+import RoleProtectedRoute from './components/routes/RoleProtectedRoute';
+import { ROLE } from './enum/roleEnum';
+import { Navigate } from 'react-router-dom';
 function App() {
   return (
     <>
       <LoadingProvider>
         <Routes>
+          {/* Rutas públicas */}
           <Route path="/" element={
             <MainLayout>
               <Home />
@@ -50,89 +53,76 @@ function App() {
             </MainLayout>
           } />
 
-          <Route path="/registerAccount" element={
-            <MainLayout>
-              <RegisterAccount />
-            </MainLayout>
-          } />
+          <Route path="/registerAccount" element={<MainLayout><RegisterAccount /></MainLayout>} />
+          <Route path="/registerDistributor" element={<MainLayout><RegisterDistributor /></MainLayout>} />
+          <Route path="/Login" element={<MainLayout><Login /></MainLayout>} />
+          <Route path="/Domains" element={<MainLayout><Domains /></MainLayout>} />
+          <Route path="/Plans" element={<MainLayout><Plans /></MainLayout>} />
+          <Route path="/activate" element={<VerifyEmail />} />
 
-          <Route path="/registerDistributor" element={
-            <MainLayout>
-              <RegisterDistributor />
-            </MainLayout>
-          } />
+          {/* Rutas protegidas por rol */}
 
-          <Route path="/Login" element={
-            <MainLayout>
-              <Login />
-            </MainLayout>
-          } />
-
-          <Route path="/Domains" element={
-            <MainLayout>
-              <Domains />
-            </MainLayout>
-          } />
-
-          <Route path="/Plans" element={
-            <MainLayout>
-              <Plans />
-            </MainLayout>
-          } />
-
-          <Route path="/activate" element={
-            <VerifyEmail />
-          } />
-
-
-          {/* Admin Dashboard */}
-          <Route path="/admin" element={<DashboardLayout />}>
-            <Route index element={<ManageProfile />} />
-            <Route path="ManageProfile" element={<ManageProfile />} />
-            <Route path="ManageDistributors" element={<AdminManageDistributors />} />
-            <Route path="ManageAdministrators" element={<AdminManageAdmins />} />
-            <Route path="ManageEmployees" element={<AdminManageEmployees />} />
-            <Route path="ManageDistributorRequests" element={<AdminManageDistributorRequests />} />
-            <Route path="ManageDomainRequests" element={<AdminManageDomainRequests />} />
-            <Route path="ManageClients" element={<AdminManageClients />} />
-            <Route path="ManagePlans" element={<AdminManagePlans />} />
-            <Route path="ManageDomains" element={<AdminManageDomains />} />
+          {/* ADMIN */}
+          <Route element={<RoleProtectedRoute requiredRole={ROLE.ADMIN} />}>
+            <Route path="/admin" element={<DashboardLayout />}>
+              <Route index element={<ManageProfile />} />
+              <Route path="ManageProfile" element={<ManageProfile />} />
+              <Route path="ManageDistributors" element={<AdminManageDistributors />} />
+              <Route path="ManageAdministrators" element={<AdminManageAdmins />} />
+              <Route path="ManageEmployees" element={<AdminManageEmployees />} />
+              <Route path="ManageDistributorRequests" element={<AdminManageDistributorRequests />} />
+              <Route path="ManageDomainRequests" element={<AdminManageDomainRequests />} />
+              <Route path="ManageClients" element={<AdminManageClients />} />
+              <Route path="ManagePlans" element={<AdminManagePlans />} />
+              <Route path="ManageDomains" element={<AdminManageDomains />} />
+            </Route>
           </Route>
 
-          {/* Client Dashboard */}
-          <Route path="/client" element={<DashboardLayout />}>
-            <Route index element={<ManageProfile />} />
-            <Route path="ManageProfile" element={<ManageProfile />} />
-            <Route path="PaymentManagement" element={<PaymentManagement />} />
-            <Route path="MyPlans" element={<MyPlans />} />
-            <Route path="MyDomains" element={<MyDomains />} />
-            <Route path="DomainRequest" element={<DomainRequest />} />
-            <Route path="MyTickets" element={<MyTickets />} />
-            <Route path="Checkout" element={<Checkout />} />
+          {/* CLIENT */}
+          <Route element={<RoleProtectedRoute requiredRole={ROLE.CLIENT} />}>
+            <Route path="/client" element={<DashboardLayout />}>
+              <Route index element={<ManageProfile />} />
+              <Route path="ManageProfile" element={<ManageProfile />} />
+              <Route path="PaymentManagement" element={<PaymentManagement />} />
+              <Route path="MyPlans" element={<MyPlans />} />
+              <Route path="MyDomains" element={<MyDomains />} />
+              <Route path="DomainRequest" element={<DomainRequest />} />
+              <Route path="MyTickets" element={<MyTickets />} />
+              <Route path="Checkout" element={<Checkout />} />
+            </Route>
           </Route>
 
-          {/* Distributor Dashboard */}
-          <Route path="/distributor" element={<DashboardLayout />}>
-            <Route index element={<ManageProfile />} />
-            <Route path="ManageProfile" element={<ManageProfile />} />
-            <Route path="PaymentManagement" element={<PaymentManagement />} />
-            <Route path="MyDomains" element={<MyDomains />} />
-            <Route path="DomainRequest" element={<DomainRequest />} />
-            <Route path="MyTickets" element={<MyTickets />} />
+          {/* DISTRIBUTOR */}
+          <Route element={<RoleProtectedRoute requiredRole={ROLE.DISTRIBUTOR} />}>
+            <Route path="/distributor" element={<DashboardLayout />}>
+              <Route index element={<ManageProfile />} />
+              <Route path="ManageProfile" element={<ManageProfile />} />
+              <Route path="PaymentManagement" element={<PaymentManagement />} />
+              <Route path="MyDomains" element={<MyDomains />} />
+              <Route path="DomainRequest" element={<DomainRequest />} />
+              <Route path="MyTickets" element={<MyTickets />} />
+            </Route>
           </Route>
 
-          {/* Employee Dashboard */}
-          <Route path="/employee" element={<DashboardLayout />}>
-            <Route index element={<ManageProfile />} />
-            <Route path="ManageProfile" element={<ManageProfile />} />
-            <Route path="ManageTickets" element={<EmployeeManageTickets />} />
+          {/* EMPLOYEE */}
+          <Route element={<RoleProtectedRoute requiredRole={ROLE.EMPLOYEE} />}>
+            <Route path="/employee" element={<DashboardLayout />}>
+              <Route index element={<ManageProfile />} />
+              <Route path="ManageProfile" element={<ManageProfile />} />
+              <Route path="ManageTickets" element={<EmployeeManageTickets />} />
+            </Route>
           </Route>
+
+          {/* Ruta de error para acceso no autorizado */}
+          <Route path="/unauthorized" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to="/" />} />
+
         </Routes>
 
         <GlobalLoader />
         <GlobalAlert />
       </LoadingProvider>
-      
+
     </>
   );
 }

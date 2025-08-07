@@ -12,7 +12,6 @@ import { createClient, getClients, deactivateUser } from "../api/clientApi";
 import { updateClientProfile } from "../api/userApi";
 import EditUserDialog from "../components/EditUserDialog";
 
-
 import { useTranslation } from "react-i18next";
 
 export default function AdminManageClients() {
@@ -27,11 +26,11 @@ export default function AdminManageClients() {
   const [openForm, setOpenForm] = useState(false);
 
   const clientFields = [
-  { name: "nombre", label: "First Name" },
-  { name: "apellido", label: "Last Name" },
-  { name: "telefono", label: "Phone" },
-  { name: "fechaNacimientoCliente", label: "Birth Date", type: "date" },
-];
+    { name: "nombre", label: t('clientManagement.addClientDialog.firstNameField') },
+    { name: "apellido", label: t('clientManagement.addClientDialog.lastnameField') },
+    { name: "telefono", label: t('clientManagement.addClientDialog.phoneNumberField') },
+    { name: "fechaNacimientoCliente", label: t('clientManagement.addClientDialog.birthDateField'), type: "date" },
+  ];
 
   const [newClient, setNewClient] = useState({
     nombre: "",
@@ -41,7 +40,7 @@ export default function AdminManageClients() {
     fechaNacimientoCliente: "",
   });
 
-  // Utilidad para ordenar: primero ACTIVO, luego INACTIVO
+  // Ordenar: primero ACTIVO, luego INACTIVO
   const ordenarClientesPorEstado = (clientes) => {
     return [...clientes].sort((a, b) => {
       if (a.estado === "ACTIVO" && b.estado !== "ACTIVO") return -1;
@@ -58,7 +57,7 @@ export default function AdminManageClients() {
         const ordenados = ordenarClientesPorEstado(response.clientes);
         setClients(ordenados);
       } else {
-        showAlert(response.mensaje || "Error loading clients", "error");
+        showAlert(response.mensaje || t('clientManagement.alerts.errorLoading'), "error");
       }
     };
 
@@ -74,7 +73,7 @@ export default function AdminManageClients() {
     const clientToDelete = clients.find(c => c.id_cliente === selectedId);
 
     if (!clientToDelete) {
-      showAlert("Client not found", "error");
+      showAlert(t('clientManagement.alerts.notFound'), "error");
       setOpenDialog(false);
       return;
     }
@@ -83,59 +82,54 @@ export default function AdminManageClients() {
       const result = await deactivateUser(clientToDelete.correo);
 
       if (result.exito) {
-        showAlert("Client account deactivated", "success");
+        showAlert(t('clientManagement.alerts.deactivated'), "success");
         const updated = await getClients();
         if (updated.exito) {
           const ordenados = ordenarClientesPorEstado(updated.clientes);
           setClients(ordenados);
         }
       } else {
-        showAlert(result.mensaje || "Failed to deactivate client", "error");
+        showAlert(result.mensaje || t('clientManagement.alerts.deactivateError'), "error");
       }
     } catch (error) {
       console.error("❌ Error al desactivar usuario:", error);
-      showAlert("Unexpected error deactivating client", "error");
+      showAlert(t('clientManagement.alerts.unexpectedDeactivate'), "error");
     } finally {
       setOpenDialog(false);
       setSelectedId(null);
     }
   };
 
-const handleRequestEdit = (user) => {
-  setEditClient({
-    id: user.id_cliente, // ✅ esto es lo que el backend necesita
-    nombre: user.nombre,
-    apellido: user.apellido,
-    telefono: user.telefono,
-    fechaNacimientoCliente: user.fechaNacimientoCliente
-  });
-};
+  const handleRequestEdit = (user) => {
+    setEditClient({
+      id: user.id_cliente,
+      nombre: user.nombre,
+      apellido: user.apellido,
+      telefono: user.telefono,
+      fechaNacimientoCliente: user.fechaNacimientoCliente
+    });
+  };
 
-
-const handleEditChange = (field, value) => {
-  setEditClient((prev) => ({ ...prev, [field]: value }));
-};
-
-
+  const handleEditChange = (field, value) => {
+    setEditClient((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleAddClient = async () => {
     const requiredFields = ["nombre", "apellido", "correo", "telefono", "fechaNacimientoCliente"];
     const friendlyNames = {
-      nombre: "First Name",
-      apellido: "Last Name",
-      correo: "Email",
-      telefono: "Phone",
-      fechaNacimientoCliente: "Birth Date",
+      nombre: t('clientManagement.addClientDialog.firstNameField'),
+      apellido: t('clientManagement.addClientDialog.lastnameField'),
+      correo: t('clientManagement.addClientDialog.emailField'),
+      telefono: t('clientManagement.addClientDialog.phoneNumberField'),
+      fechaNacimientoCliente: t('clientManagement.addClientDialog.birthDateField'),
     };
 
     for (let field of requiredFields) {
       if (!newClient[field] || newClient[field].trim() === "") {
-        showAlert(`The field "${friendlyNames[field]}" is required.`, "warning");
+        showAlert(`${t('clientManagement.alerts.requiredField')} "${friendlyNames[field]}"`, "warning");
         return;
       }
     }
-
-    const generatedPassword = `${newClient.nombre}${newClient.apellido}`.toLowerCase().replace(/\s+/g, "");
 
     const client = {
       correoCliente: newClient.correo,
@@ -150,7 +144,7 @@ const handleEditChange = (field, value) => {
       const response = await createClient(client);
 
       if (response.exito) {
-        showAlert("Client added successfully", "success");
+        showAlert(t('clientManagement.alerts.added'), "success");
         const updated = await getClients();
         if (updated.exito) {
           const ordenados = ordenarClientesPorEstado(updated.clientes);
@@ -166,11 +160,11 @@ const handleEditChange = (field, value) => {
           fechaNacimientoCliente: "",
         });
       } else {
-        showAlert(response.mensaje || "Error adding client", "error");
+        showAlert(response.mensaje || t('clientManagement.alerts.addError'), "error");
       }
     } catch (error) {
       console.error("❌ Error inesperado al crear cliente:", error);
-      showAlert("Unexpected error adding client", "error");
+      showAlert(t('clientManagement.alerts.unexpectedAdd'), "error");
     }
   };
 
@@ -189,7 +183,7 @@ const handleEditChange = (field, value) => {
     const res = await updateClientProfile(id, formatted);
 
     if (res?.status === 200) {
-      showAlert("Client profile updated successfully", "success");
+      showAlert(t('clientManagement.alerts.updated'), "success");
       const updated = await getClients();
       if (updated.exito) {
         const ordenados = ordenarClientesPorEstado(updated.clientes);
@@ -197,7 +191,7 @@ const handleEditChange = (field, value) => {
       }
       setEditClient(null);
     } else {
-      showAlert("Failed to update client", "error");
+      showAlert(t('clientManagement.alerts.updateError'), "error");
     }
   };
 
@@ -216,9 +210,7 @@ const handleEditChange = (field, value) => {
             backgroundColor: "#FF6300",
             color: "#FAFAFA",
             borderRadius: 30,
-            "&:hover": {
-              backgroundColor: "#e65c00",
-            },
+            "&:hover": { backgroundColor: "#e65c00" },
           }}
         >
           {t('clientManagement.addClientButton')}
@@ -228,9 +220,8 @@ const handleEditChange = (field, value) => {
       <ClientList
         clients={clients}
         onRequestDelete={handleRequestDelete}
-        onRequestEdit={handleRequestEdit} // ✅ Aquí
+        onRequestEdit={handleRequestEdit}
       />
-
 
       <ConfirmDialog
         open={openDialog}
@@ -276,15 +267,15 @@ const handleEditChange = (field, value) => {
           </Button>
         </DialogActions>
       </Dialog>
-<EditUserDialog
-  open={!!editClient}
-  onClose={() => setEditClient(null)}
-  onSave={handleSaveEdit}
-  userData={editClient || {}}
-  onChange={handleEditChange}
-  fields={clientFields}
-/>
 
+      <EditUserDialog
+        open={!!editClient}
+        onClose={() => setEditClient(null)}
+        onSave={handleSaveEdit}
+        userData={editClient || {}}
+        onChange={handleEditChange}
+        fields={clientFields}
+      />
     </Box>
   );
 }

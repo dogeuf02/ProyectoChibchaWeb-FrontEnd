@@ -93,3 +93,18 @@ export const updateDomainRequest = async (id, requestData) => {
     }
   }
 }
+
+
+export const sendNotificationEmail = async (aproved, id ) =>{
+  try {
+    const response = await api.put(`/solicitudDominio/gestionarSolicitud/${id}?aprobar=${aproved}`);
+    return { exito: true, data: response.data };
+  } catch (error) {
+    if (error.response && error.response.data) {
+      const { exito, mensaje } = error.response.data;
+      return { exito, mensaje };
+    } else {
+      return { exito: false, mensaje: 'Server error.' };
+    }
+  }
+}

@@ -19,8 +19,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { useTranslation } from "react-i18next";
 
 function Row({ admin, onRequestDelete }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   return (
@@ -38,7 +40,6 @@ function Row({ admin, onRequestDelete }) {
         </TableCell>
         <TableCell>{admin.correo}</TableCell>
         <TableCell>{admin.estado}</TableCell>
-  
       </TableRow>
 
       <TableRow>
@@ -46,13 +47,12 @@ function Row({ admin, onRequestDelete }) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ p: 2 }}>
               <Typography variant="subtitle1" gutterBottom color="text.primary">
-                Administrator Details
+                {t("administratorManagement.list.details")}
               </Typography>
-<Typography variant="body2">ID: {admin.id}</Typography>
-<Typography variant="body2">Email: {admin.correo}</Typography>
-<Typography variant="body2">Birthdate: {admin.fecha_nacimiento}</Typography>
-<Typography variant="body2">Status: {admin.estado}</Typography>
-
+              <Typography variant="body2">{t("administratorManagement.list.id")}: {admin.id}</Typography>
+              <Typography variant="body2">{t("administratorManagement.list.email")}: {admin.correo}</Typography>
+              <Typography variant="body2">{t("administratorManagement.list.birthdate")}: {admin.fecha_nacimiento}</Typography>
+              <Typography variant="body2">{t("administratorManagement.list.status")}: {admin.estado}</Typography>
 
               <Button
                 variant="contained"
@@ -68,7 +68,7 @@ function Row({ admin, onRequestDelete }) {
                 }}
                 onClick={() => onRequestDelete(admin)}
               >
-                Delete administrator
+                {t("administratorManagement.list.deleteButton")}
               </Button>
             </Box>
           </Collapse>
@@ -78,8 +78,8 @@ function Row({ admin, onRequestDelete }) {
   );
 }
 
-
 export default function AdministratorList({ admins, onRequestDelete }) {
+  const { t } = useTranslation();
   const [searchId, setSearchId] = useState('');
 
   return (
@@ -88,7 +88,7 @@ export default function AdministratorList({ admins, onRequestDelete }) {
         <TextField
           variant="outlined"
           size="small"
-          placeholder="Search by ID"
+          placeholder={t("administratorManagement.list.searchField")}
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
           InputProps={{
@@ -107,9 +107,9 @@ export default function AdministratorList({ admins, onRequestDelete }) {
           <TableHead>
             <TableRow sx={{ bgcolor: '#fff3e0' }}>
               <TableCell />
-              <TableCell sx={{ fontWeight: 'bold' }}>Full Name</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t("administratorManagement.list.fullName")}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t("administratorManagement.list.email")}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t("administratorManagement.list.status")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

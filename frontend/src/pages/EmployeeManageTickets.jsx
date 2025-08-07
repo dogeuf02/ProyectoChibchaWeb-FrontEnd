@@ -4,45 +4,41 @@ import TicketsList from "../components/Tickets/TicketsList";
 import ConfirmDialog from "../components/ConfirmDialog";
 import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
-import { getAllTickets } from "../api/ticketApi";
-import { getTechnicianOptions } from "../api/employeeApi";
+import { getAllTickets, getTicketWithHistory, updateTicket } from "../api/ticketApi";
+import { getTechnicianOptions, getEmployees } from "../api/employeeApi";
 import { statusOptions, levelOptions } from "../components/Tickets/ticketOptions";
-import { getEmployees } from "../api/employeeApi";
-import { getTicketWithHistory, updateTicket } from "../api/ticketApi"
 import { createHistorialEntry } from "../api/ticketHistoryApi";
 import { useAuth } from "../context/AuthContext";
 import { getUserProfile } from "../api/userApi";
-
-
-
+import { useTranslation } from "react-i18next";
 
 export default function EmployeeManageTickets() {
   useScrollToTop();
   const { showAlert } = useGlobalAlert();
+  const { t } = useTranslation();
 
   const [tickets, setTickets] = useState([]);
-
   const [technicians, setTechnicians] = useState([]);
   const [employeeMap, setEmployeeMap] = useState({});
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const { role, userId, specificId } = useAuth();
   const [employeeRole, setEmployeeRole] = useState(null);
+
   const isCoordinator = employeeRole?.toLowerCase().includes("coordinador");
   const isTechnician = employeeRole?.toLowerCase().includes("tecnico");
 
+  // Obtener rol del empleado
   useEffect(() => {
     const fetchRole = async () => {
       if (!role || !userId) return;
       const res = await getUserProfile(role, userId);
-      if (res.exito) {
-        setEmployeeRole(res.data.cargoEmpleado);
-      }
+      if (res.exito) setEmployeeRole(res.data.cargoEmpleado);
     };
     fetchRole();
   }, [role, userId]);
 
-
+  // Obtener tickets filtrados por rol
   useEffect(() => {
     if (!employeeRole) return;
     const fetchTicketsAndData = async () => {
@@ -51,18 +47,16 @@ export default function EmployeeManageTickets() {
         const ticketsWithHistory = await Promise.all(
           rawList.map(async (t) => {
             const full = await getTicketWithHistory(t.idTicket);
-
             const sorted = [...(full.historial || [])].sort(
               (a, b) => new Date(b.fechaAccion) - new Date(a.fechaAccion)
             );
-
-            const lastAssigned = sorted.find(h => h.empleadoReceptor !== null);
+            const lastAssigned = sorted.find((h) => h.empleadoReceptor !== null);
             const lastReceptor = lastAssigned ? parseInt(lastAssigned.empleadoReceptor) : null;
 
             return {
               ticket_id: full.idTicket,
               client_id: full.cliente?.toString(),
-              distributor_id:full.distribuidor?.toString(),
+              distributor_id: full.distribuidor?.toString(),
               subject: full.asunto,
               description: full.descripcion,
               status: full.estado,
@@ -73,11 +67,7 @@ export default function EmployeeManageTickets() {
           })
         );
 
-        const isTechnician = employeeRole?.toLowerCase().includes("tecnico");
-        const isCoordinator = employeeRole?.toLowerCase().includes("coordinador");
-
         let filtered = ticketsWithHistory;
-
         if (isTechnician) {
           filtered = ticketsWithHistory.filter(
             (t) => parseInt(t.assigned_to) === parseInt(specificId)
@@ -85,19 +75,18 @@ export default function EmployeeManageTickets() {
         } else if (isCoordinator) {
           switch (employeeRole) {
             case "Coordinador nv 1":
-              filtered = ticketsWithHistory.filter(t => t.level === "nivel-1");
+              filtered = ticketsWithHistory.filter((t) => t.level === "nivel-1");
               break;
             case "Coordinador nv 2":
-              filtered = ticketsWithHistory.filter(t => t.level === "nivel-2");
+              filtered = ticketsWithHistory.filter((t) => t.level === "nivel-2");
               break;
             case "Coordinador nv 3":
-              filtered = ticketsWithHistory.filter(t => t.level === "nivel-3");
+              filtered = ticketsWithHistory.filter((t) => t.level === "nivel-3");
               break;
             default:
               filtered = [];
           }
         }
-
 
         setTickets(filtered);
 
@@ -107,34 +96,27 @@ export default function EmployeeManageTickets() {
         const { exito, empleados } = await getEmployees();
         if (exito) {
           const map = {};
-          empleados.forEach(emp => {
+          empleados.forEach((emp) => {
             map[emp.id] = emp.email;
           });
           setEmployeeMap(map);
         }
-
       } catch (err) {
         console.error("Error loading tickets:", err);
       }
     };
 
-
-
     fetchTicketsAndData();
-  }, [employeeRole]);
+  }, [employeeRole, isCoordinator, isTechnician, specificId]);
 
-
-
-
-
-
+  // Handlers
   const handleStatusChange = (id, newStatus) => {
     setTickets((prev) =>
       prev.map((ticket) =>
         ticket.ticket_id === id ? { ...ticket, status: newStatus } : ticket
       )
     );
-    showAlert(`Status updated to ${newStatus}`, "success");
+    showAlert(t("tickets.alerts.statusUpdated", { status: newStatus }), "success");
   };
 
   const handleLevelChange = (id, newLevel) => {
@@ -143,7 +125,7 @@ export default function EmployeeManageTickets() {
         ticket.ticket_id === id ? { ...ticket, level: newLevel } : ticket
       )
     );
-    showAlert(`Level updated to ${newLevel}`, "info");
+    showAlert(t("tickets.alerts.levelUpdated", { level: newLevel }), "info");
   };
 
   const handleAssignTech = (id, techId) => {
@@ -152,7 +134,7 @@ export default function EmployeeManageTickets() {
         ticket.ticket_id === id ? { ...ticket, assigned_to: techId } : ticket
       )
     );
-    showAlert(`Ticket assigned to ${techName}`, "success");
+    showAlert(t("tickets.alerts.assignedSuccess"), "success");
   };
 
   const handleAddComment = (id, comment) => {
@@ -163,7 +145,7 @@ export default function EmployeeManageTickets() {
           : ticket
       )
     );
-    showAlert("Comment added", "info");
+    showAlert(t("tickets.alerts.commentAdded"), "info");
   };
 
   const handleCloseTicket = (id) => {
@@ -195,7 +177,7 @@ export default function EmployeeManageTickets() {
       const historialPayload = {
         idHistorialTicket: 0,
         accionTicket: "solucionado",
-        comentarios: "Ticket cerrado manualmente",
+        comentarios: t("tickets.history.closedManually"),
         fechaAccion: new Date().toISOString(),
         ticket: ticketToClose.ticket_id,
         empleadoRealizador: parseInt(coordinatorId),
@@ -204,19 +186,16 @@ export default function EmployeeManageTickets() {
 
       await createHistorialEntry(historialPayload);
 
-      // actualizar el estado en el frontend
       setTickets((prev) =>
         prev.map((ticket) =>
-          ticket.ticket_id === selectedId
-            ? { ...ticket, status: "Cerrado" }
-            : ticket
+          ticket.ticket_id === selectedId ? { ...ticket, status: "Cerrado" } : ticket
         )
       );
 
-      showAlert("Ticket cerrado con éxito", "success");
+      showAlert(t("tickets.alerts.closeSuccess"), "success");
     } catch (error) {
-      console.error("Error cerrando ticket:", error);
-      showAlert("Error al cerrar el ticket", "error");
+      console.error("Error closing ticket:", error);
+      showAlert(t("tickets.alerts.closeError"), "error");
     } finally {
       setOpenDialog(false);
       setSelectedId(null);
@@ -231,12 +210,15 @@ export default function EmployeeManageTickets() {
     );
   };
 
-
   return (
     <Box sx={{ maxWidth: 1200, mx: "auto", mt: 10 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 6 }}>
         <Typography variant="h4" sx={{ fontWeight: "bold", color: "#212121" }}>
-          Manage Tickets ({isCoordinator ? "Coordinator View" : "Technician View"})
+          {t("tickets.manageTitle", {
+            view: isCoordinator
+              ? t("tickets.views.coordinator")
+              : t("tickets.views.technician"),
+          })}
         </Typography>
       </Box>
 
@@ -256,14 +238,14 @@ export default function EmployeeManageTickets() {
         employeeRole={employeeRole}
       />
 
-
       <ConfirmDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
-        onConfirm={handleConfirmClose} // ✅ importante
-        title="Close Ticket"
-        message="Are you sure you want to close this ticket? This action cannot be undone."
-        confirmText="Close Ticket"
+        onConfirm={handleConfirmClose}
+        title={t("tickets.confirmDialog.title")}
+        message={t("tickets.confirmDialog.message")}
+        confirmText={t("tickets.confirmDialog.confirm")}
+        cancelText={t("tickets.confirmDialog.cancel")}
       />
     </Box>
   );
