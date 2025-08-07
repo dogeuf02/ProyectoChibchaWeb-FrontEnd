@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
 
   const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY));
   const [authenticated, setAuthenticated] = useState(() => localStorage.getItem("authenticated") === "true");
+  const [authLoading, setAuthLoading] = useState(true);
 
   const [userId, setUserId] = useState(null);
   const [specificId, setSpecificId] = useState(null);
@@ -17,7 +18,6 @@ export const AuthProvider = ({ children }) => {
   const [email, setEmail] = useState(null);
   const [userData, setUserData] = useState(null);
 
-  // Actualiza localStorage cada vez que el token cambie
   useEffect(() => {
     if (token) {
       saveToken(token);
@@ -28,9 +28,14 @@ export const AuthProvider = ({ children }) => {
         setSpecificId(decoded.idRelacionado);
         setRole(decoded.rol);
         setEmail(decoded.sub);
+        setAuthenticated(true);
+      } else {
+        setAuthenticated(false);
       }
     }
+    setAuthLoading(false);
   }, [token]);
+
 
   useEffect(() => {
     localStorage.setItem("authenticated", authenticated);
@@ -72,7 +77,7 @@ export const AuthProvider = ({ children }) => {
     setRole(null);
     setEmail(null);
     setUserData(null);
-
+    setAuthLoading(false);
     localStorage.clear();
   };
 
@@ -87,6 +92,7 @@ export const AuthProvider = ({ children }) => {
       role,
       email,
       userData,
+      authLoading
     }}>
       {children}
     </AuthContext.Provider>
