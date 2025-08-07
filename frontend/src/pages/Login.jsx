@@ -26,6 +26,8 @@ export default function Login() {
   const location = useLocation();
 
   const [captchaToken, setCaptchaToken] = useState(null);
+  const [loginError, setLoginError] = useState(false);
+
 
   useEffect(() => {
     if (location.state?.alert) {
@@ -61,12 +63,14 @@ export default function Login() {
 
     if (result.success) {
       showAlert(t('alert.success.login'), "success");
-
+      setLoginError(false);
       navigate("/");
     } else {
       showAlert(result.message || t("alert.error.login"), "error");
+      setLoginError(true);
       setCaptchaToken(null);
     }
+
     recaptchaRef.current?.reset();
 
   };
@@ -174,6 +178,24 @@ export default function Login() {
                 {t('loginPage.distributorLink')}
               </Link>
             </Typography>
+            
+            {loginError && (
+              <Typography variant="body2" sx={{ mt: 2 }}>
+                Forgot your password?{" "}
+                <Link
+                  href="/recover"
+                  underline="hover"
+                  sx={{
+                    color: '#ff6f00',
+                    '&:hover': { color: '#ffc107' }
+                  }}
+                >
+                  Click here to recover it
+                </Link>
+              </Typography>
+            )}
+
+
           </Box>
         </Paper>
       </Container>

@@ -37,7 +37,7 @@ import RoleProtectedRoute from './components/routes/RoleProtectedRoute';
 import { ROLE } from './enum/roleEnum';
 import { Navigate } from 'react-router-dom';
 import RecoveryPage from './pages/recoveryPassword/RecoveryPage.jsx';
-import ResetPassword from './pages/recoveryPassword/ResetPassword.jsx';
+
 
 function App() {
   return (
@@ -63,7 +63,7 @@ function App() {
           <Route path="/Plans" element={<MainLayout><Plans /></MainLayout>} />
           <Route path="/activate" element={<VerifyEmail />} />
           <Route path="/recover" element={<MainLayout><RecoveryPage /></MainLayout>} />
-          <Route path="/reset-password" element={<MainLayout><ResetPassword /></MainLayout>} />
+          
 
           {/* Rutas protegidas por rol */}
 

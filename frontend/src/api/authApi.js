@@ -21,6 +21,29 @@ export const auth = async (credentials) => {
 };
 
 
+export const recoverPassword = async (email) => {
+  try {
+    const { status, data } = await api.post('/auth/recuperarContrasena', { email });
+
+    // Backend devuelve { exito: boolean, mensaje: string }
+    const success = data?.exito === true || (status >= 200 && status < 300);
+    const message = data?.mensaje || data?.message || 'We sent you a temporary code. Please check your email.';
+
+    return { success, message };
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error?.response?.data?.mensaje ||
+        error?.response?.data?.message ||
+        error?.message ||
+        'Error sending recovery email.'
+    };
+  }
+};
+
+
+
 
 
 export const verifyEmailToken = async (token) => {
