@@ -213,10 +213,10 @@ export default function EmployeeManageTickets() {
     <Box sx={{ maxWidth: 1200, mx: "auto", mt: 10 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 6 }}>
         <Typography variant="h4" sx={{ fontWeight: "bold", color: "#212121" }}>
-          {t("tickets.manageTitle", {
+          {t("tickets.manage.title", {
             view: isCoordinator
-              ? t("tickets.views.coordinator")
-              : t("tickets.views.technician"),
+              ? t("tickets.manage.views.coordinator")
+              : t("tickets.manage.views.technician"),
           })}
         </Typography>
       </Box>
