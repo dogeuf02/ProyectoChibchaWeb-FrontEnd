@@ -1,11 +1,6 @@
-import {
-  Box,
-  TextField,
-  MenuItem,
-  Button,
-  IconButton
-} from '@mui/material';
+import { Box, TextField, MenuItem, Button, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useTranslation } from 'react-i18next';
 
 export default function PaymentCardForm({
   data,
@@ -16,6 +11,8 @@ export default function PaymentCardForm({
   disableSave = false,
   bankOptions = []
 }) {
+  const { t } = useTranslation();
+
   const handleChange = (e) => {
     onChange({ ...data, [e.target.name]: e.target.value });
   };
@@ -25,7 +22,7 @@ export default function PaymentCardForm({
       {/* tipo de tarjeta */}
       <TextField
         select
-        label="Card Type"
+        label={t('paymentManagement.cardType')}
         name="tipoMedioPago"
         value={data.tipoMedioPago}
         onChange={handleChange}
@@ -34,16 +31,15 @@ export default function PaymentCardForm({
       >
         {['Debito', 'Credito', 'PSE'].map((tipo) => (
           <MenuItem key={tipo} value={tipo}>
-            {tipo}
+            {t(`paymentManagement.cardTypes.${tipo.toLowerCase()}`)}
           </MenuItem>
         ))}
       </TextField>
 
-
       {/* banco */}
       <TextField
         select
-        label="Bank"
+        label={t('paymentManagement.bank')}
         name="banco"
         value={data.banco}
         onChange={handleChange}
@@ -59,7 +55,7 @@ export default function PaymentCardForm({
 
       {/* nombre del titular */}
       <TextField
-        label="Cardholder Name"
+        label={t('paymentManagement.cardholderLabel')}
         name="nombreTitular"
         value={data.nombreTitular}
         onChange={handleChange}
@@ -69,7 +65,7 @@ export default function PaymentCardForm({
 
       {/* número de tarjeta */}
       <TextField
-        label="Card Number"
+        label={t('paymentManagement.cardNumber')}
         name="numeroTarjetaCuenta"
         value={data.numeroTarjetaCuenta}
         onChange={handleChange}
@@ -80,7 +76,7 @@ export default function PaymentCardForm({
       {/* email PSE */}
       {data.tipoMedioPago === 'PSE' && (
         <TextField
-          label="PSE Email"
+          label={t('paymentManagement.pseEmailLabel')}
           name="correoPse"
           value={data.correoPse}
           onChange={handleChange}
@@ -88,17 +84,6 @@ export default function PaymentCardForm({
           margin="normal"
         />
       )}
-      {/* <TextField
-        label="Expiration Date"
-        name="fechaExpiracion"
-        type="month"
-        value={data.fechaExpiracion}
-        onChange={handleChange}
-        fullWidth
-        margin="normal"
-      /> */}
-
-
 
       <Box display="flex" justifyContent="space-between" mt={2}>
         <Button
@@ -111,7 +96,7 @@ export default function PaymentCardForm({
           onClick={onSave}
           disabled={disableSave}
         >
-          {isNew ? 'Add Method' : 'Save Changes'}
+          {isNew ? t('paymentManagement.addMethod') : t('paymentManagement.saveChanges')}
         </Button>
 
         {!isNew && (

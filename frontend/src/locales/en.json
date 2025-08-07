@@ -18,7 +18,7 @@
         "button": "Login"
     },
     "DomainsInfo": {
-        "title": "Explore Our Domains",
+        "title": "Domains",
         "carousel": {
             "title": "Explore Our Domains",
             "learnMore": "Learn More",
@@ -379,16 +379,43 @@
         "searchField": "Search by ID"
         }
     },
-    "payment": {
-        "title": "Payment Information",
-        "cardType": "Card Type",
-        "cardNumber": "Card Number",
-        "cvc": "CVC",
-        "expiryDate": "Exp. Date (MM/YY)",
-        "saveButton": "SAVE PAYMENT METHOD",
-        "addMethod": "Add payment method",
-        "expires": "Expires",
-        "deleteCard": "Delete card"
+    "paymentManagement": {
+        "title": "My Payment Methods",
+        "addButton": "Add Payment Method",
+        "newPaymentMethod": "New Payment Method",
+        "alerts": {
+        "addSuccess": "Payment method added successfully",
+        "addError": "Failed to add payment method",
+        "deleteSuccess": "Payment method deleted successfully",
+        "deleteError": "Failed to delete payment method",
+        "loadError": "Failed to load payment methods",
+        "bankLoadError": "Failed to load banks"
+        },
+        "deleteDialog": {
+        "title": "Delete Payment Method",
+        "message": "Are you sure you want to delete this payment method? This action cannot be undone.",
+        "confirmText": "Delete",
+        "cancelText": "Cancel"
+        }
+    },
+    "paymentManagement": {
+        "title": "Mis Métodos de Pago",
+        "addButton": "Agregar Método de Pago",
+        "newPaymentMethod": "Nuevo Método de Pago",
+        "alerts": {
+        "addSuccess": "Método de pago agregado exitosamente",
+        "addError": "No se pudo agregar el método de pago",
+        "deleteSuccess": "Método de pago eliminado exitosamente",
+        "deleteError": "No se pudo eliminar el método de pago",
+        "loadError": "Error al cargar métodos de pago",
+        "bankLoadError": "Error al cargar bancos"
+        },
+        "deleteDialog": {
+        "title": "Eliminar Método de Pago",
+        "message": "¿Está seguro de que desea eliminar este método de pago? Esta acción no se puede deshacer.",
+        "confirmText": "Eliminar",
+        "cancelText": "Cancelar"
+        }
     },
     "util": {
         "dolarCoin": "USD"

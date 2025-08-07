@@ -1,19 +1,15 @@
-import { useState } from 'react';
-import {
-  Box,
-  Typography,
-  Paper,
-  IconButton,
-} from '@mui/material';
-
+import { useTranslation } from 'react-i18next';
+import { Box, Typography, Paper, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function PaymentManagementTable({ payments, onDelete }) {
+  const { t } = useTranslation();
+
   return (
     <Paper sx={{ p: 3, bgcolor: '#FAFAFA', mb: 4 }} elevation={3}>
       {payments.length === 0 ? (
         <Typography variant="body1" color="text.secondary">
-          No saved payment methods.
+          {t('paymentManagement.noMethods')}
         </Typography>
       ) : (
         payments.map((payment) => (
@@ -37,24 +33,24 @@ export default function PaymentManagementTable({ payments, onDelete }) {
 
               {payment.numeroTarjetaCuenta && (
                 <Typography variant="body2" color="text.secondary">
-                  **** **** **** {payment.numeroTarjetaCuenta.slice(-4)}
+                  {t('paymentManagement.maskedCard', { last4: payment.numeroTarjetaCuenta.slice(-4) })}
                 </Typography>
               )}
 
               {payment.nombreTitular && (
                 <Typography variant="body2" color="text.secondary">
-                  Titular: {payment.nombreTitular}
+                  {t('paymentManagement.cardholder', { name: payment.nombreTitular })}
                 </Typography>
               )}
 
               {payment.correoPse && (
                 <Typography variant="body2" color="text.secondary">
-                  Correo PSE: {payment.correoPse}
+                  {t('paymentManagement.pseEmail', { email: payment.correoPse })}
                 </Typography>
               )}
 
               <Typography variant="body2" color="text.secondary">
-                Registrado: {new Date(payment.fechaRegistro).toLocaleDateString()}
+                {t('paymentManagement.registered', { date: new Date(payment.fechaRegistro).toLocaleDateString() })}
               </Typography>
             </Box>
 

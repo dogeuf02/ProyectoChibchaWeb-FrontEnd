@@ -379,16 +379,41 @@
       "searchField": "Buscar por ID"
     }
   },
-  "payment": {
-    "title": "Información de Pago",
+  "paymentManagement": {
+    "title": "Mis Métodos de Pago",
+    "addButton": "Agregar Método de Pago",
+    "newPaymentMethod": "Nuevo Método de Pago",
+    "addMethod": "Agregar Método",
+    "saveChanges": "Guardar Cambios",
+    "noMethods": "No hay métodos de pago guardados.",
     "cardType": "Tipo de Tarjeta",
     "cardNumber": "Número de Tarjeta",
-    "cvc": "CVC",
-    "expiryDate": "Fecha de Exp. (MM/AA)",
-    "saveButton": "GUARDAR MÉTODO DE PAGO",
-    "addMethod": "Agregar método de pago",
-    "expires": "Expira",
-    "deleteCard": "Eliminar tarjeta"
+    "cardholderLabel": "Nombre del Titular",
+    "pseEmailLabel": "Correo PSE",
+    "bank": "Banco",
+    "maskedCard": "**** **** **** {{last4}}",
+    "cardholder": "Titular: {{name}}",
+    "pseEmail": "Correo PSE: {{email}}",
+    "registered": "Registrado: {{date}}",
+    "cardTypes": {
+      "debito": "Débito",
+      "credito": "Crédito",
+      "pse": "PSE"
+    },
+    "alerts": {
+      "addSuccess": "Método de pago agregado exitosamente",
+      "addError": "No se pudo agregar el método de pago",
+      "deleteSuccess": "Método de pago eliminado exitosamente",
+      "deleteError": "No se pudo eliminar el método de pago",
+      "loadError": "Error al cargar métodos de pago",
+      "bankLoadError": "Error al cargar bancos"
+    },
+    "deleteDialog": {
+      "title": "Eliminar Método de Pago",
+      "message": "¿Está seguro de que desea eliminar este método de pago? Esta acción no se puede deshacer.",
+      "confirmText": "Eliminar",
+      "cancelText": "Cancelar"
+    }
   },
   "util": {
     "dolarCoin": "USD"
