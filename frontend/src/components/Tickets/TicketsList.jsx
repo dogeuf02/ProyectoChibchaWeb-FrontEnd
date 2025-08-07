@@ -9,12 +9,12 @@ import {
   TableRow,
   Paper,
   TextField,
-  InputAdornment
+  InputAdornment,
 } from "@mui/material";
-
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import TicketRow from "./TicketRow";
+import { useTranslation } from "react-i18next";
 
 export default function TicketsList({
   tickets,
@@ -32,11 +32,10 @@ export default function TicketsList({
   showAlert,
   employeeRole,
   readOnly,
-
 }) {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const isCoordinator = employeeRole?.toLowerCase().includes("coordinador");
-
 
   return (
     <>
@@ -44,7 +43,7 @@ export default function TicketsList({
         <TextField
           variant="outlined"
           size="small"
-          placeholder="Search by Ticket or Client ID"
+          placeholder={t("tickets.table.search")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
@@ -63,14 +62,14 @@ export default function TicketsList({
           <TableHead>
             <TableRow sx={{ bgcolor: "#fff3e0" }}>
               <TableCell />
-              <TableCell><b>ID Ticket</b></TableCell>
-              {!readOnly && <TableCell><b>Client ID</b></TableCell>}
-              {!readOnly && <TableCell><b>Distributor ID</b></TableCell>}
-              <TableCell><b>Subject</b></TableCell>
-              {readOnly && <TableCell><b>Description</b></TableCell>}
-              <TableCell><b>Status</b></TableCell>
-              <TableCell><b>Level</b></TableCell>
-              {isCoordinator && <TableCell><b>Assigned To</b></TableCell>}
+              <TableCell><b>{t("tickets.table.ticketId")}</b></TableCell>
+              {!readOnly && <TableCell><b>{t("tickets.table.clientId")}</b></TableCell>}
+              {!readOnly && <TableCell><b>{t("tickets.table.distributorId")}</b></TableCell>}
+              <TableCell><b>{t("tickets.table.subject")}</b></TableCell>
+              {readOnly && <TableCell><b>{t("tickets.table.description")}</b></TableCell>}
+              <TableCell><b>{t("tickets.table.status")}</b></TableCell>
+              <TableCell><b>{t("tickets.table.level")}</b></TableCell>
+              {isCoordinator && <TableCell><b>{t("tickets.table.assignedTo")}</b></TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -79,10 +78,8 @@ export default function TicketsList({
                 const ticketId = t.ticket_id?.toLowerCase() || "";
                 const clientId = t.client_id?.toString().toLowerCase() || "";
                 const search = searchTerm.toLowerCase();
-
                 return ticketId.includes(search) || clientId.includes(search);
               })
-
               .map((ticket, index) => (
                 <TicketRow
                   key={ticket.ticket_id || index}

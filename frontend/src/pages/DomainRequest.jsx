@@ -27,33 +27,11 @@ import getTodayDate from '../utils/dateUtils';
 import { getTlds } from '../api/tldApi';
 import { createDomain, getDomain } from '../api/domainApi';
 import { createDomainRequest, getDomainRequests } from '../api/domainRequestApi';
+import { useTranslation } from 'react-i18next';
 
 export default function DomainRequest() {
-  // Lista de solicitudes de dominio ejemplo
-  const [domainRequests, setDomainRequests] = useState([
-    {
-      id: 1,
-      name: "mybusiness",
-      tld: ".com",
-      status: "En Revision",
-      date: "2025-08-01"
-    },
-    {
-      id: 2,
-      name: "coolproject",
-      tld: ".dev",
-      status: "Aprobado",
-      date: "2025-07-28"
-    },
-    {
-      id: 3,
-      name: "storechibcha",
-      tld: ".store",
-      status: "Rechazado",
-      date: "2025-07-15"
-    }
-  ]);
-
+  const { t } = useTranslation();
+  const [domainRequests, setDomainRequests] = useState([]);
   const { showAlert } = useGlobalAlert();
   const { role, specificId } = useAuth();
 
@@ -61,7 +39,6 @@ export default function DomainRequest() {
   const [precioActual, setPrecioActual] = useState('');
   const [formData, setFormData] = useState({ domainName: '', domainTld: '' });
 
-  //const [domainRequests, setDomainRequests] = useState([]); // Lista de solicitudes
   const [openDialog, setOpenDialog] = useState(false);
 
   const getCurrentUserId = () => {
@@ -81,28 +58,18 @@ export default function DomainRequest() {
   const fetchDomainRequests = async () => {
     const result = await getDomainRequests();
     if (result.exito) {
-      console.log("specificId vs usuarioiD", specificId, result.data[0].idUsuario)
       const solicitudesFiltradas = result.data.filter(
         (solicitud) => solicitud.idUsuario === specificId
       );
-      console.log("res", solicitudesFiltradas);
-
       setDomainRequests(solicitudesFiltradas);
-    }
-    else {
+    } else {
       showAlert(result.mensaje, "error");
     }
-  }
+  };
+
   useEffect(() => {
-    if (specificId) {
-
-      fetchDomainRequests();
-      console.log("specificId vs usuarioiD", specificId, domainRequests[0].idUsuario)
-
-    }
+    if (specificId) fetchDomainRequests();
   }, [specificId]);
-
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -111,12 +78,11 @@ export default function DomainRequest() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const domainName = formData.domainName.trim().toLowerCase();
     const domainTld = formData.domainTld.trim();
 
     if (!domainName || !domainTld) {
-      showAlert("Please fill in all fields", "warning");
+      showAlert(t("domainRequest.alerts.fillFields"), "warning");
       return;
     }
 
@@ -150,27 +116,19 @@ export default function DomainRequest() {
         const response = await createDomainRequest(domainRequest);
 
         if (response.exito) {
-          showAlert("Domain request submitted successfully!", "success");
-          // setDomainRequests(prev => [...prev, {
-          //   id: Date.now(),
-          //   name: domainName,
-          //   tld: domainTld,
-          //   status: "En Revision",
-          //   date: todayDate
-          // }]);
+          showAlert(t("domainRequest.alerts.requestSuccess"), "success");
           await fetchDomainRequests();
           setFormData({ domainName: '', domainTld: '' });
           setOpenDialog(false);
-
         } else {
-          showAlert(response.message || "Failed to submit domain request", "error");
+          showAlert(response.message || t("domainRequest.alerts.requestFail"), "error");
         }
       } else {
-        showAlert("Domain is active and in use", "error");
+        showAlert(t("domainRequest.alerts.domainActive"), "error");
       }
     } catch (error) {
       console.error("Error submitting domain request:", error);
-      showAlert("Something went wrong", "error");
+      showAlert(t("domainRequest.alerts.generalError"), "error");
     }
   };
 
@@ -194,16 +152,9 @@ export default function DomainRequest() {
   return (
     <Zoom in timeout={600}>
       <Container maxWidth="md" sx={{ mt: 6 }}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 4,
-          }}
-        >
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
           <Typography variant="h4" sx={{ fontWeight: "bold", color: "#212121" }}>
-            Domain Requests
+            {t("domainRequest.title")}
           </Typography>
           <Button
             variant="contained"
@@ -214,17 +165,17 @@ export default function DomainRequest() {
             }}
             onClick={() => setOpenDialog(true)}
           >
-            Add Request
+            {t("domainRequest.addRequest")}
           </Button>
         </Box>
 
         {domainRequests.length === 0 ? (
           <Paper sx={{ p: 5, textAlign: "center", bgcolor: "#FAFAFA" }} elevation={2}>
             <Typography variant="h6" color="text.secondary">
-              You haven't created any domain requests yet.
+              {t("domainRequest.empty.title")}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-              Click the button above to submit your first request.
+              {t("domainRequest.empty.subtitle")}
             </Typography>
           </Paper>
         ) : (
@@ -232,10 +183,10 @@ export default function DomainRequest() {
             <Table>
               <TableHead>
                 <TableRow sx={{ bgcolor: "#fff3e0" }}>
-                  <TableCell sx={{ fontWeight: "bold" }}>Domain Name</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>TLD</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Request Date</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>{t("domainRequest.table.domainName")}</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>{t("domainRequest.table.tld")}</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>{t("domainRequest.table.status")}</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>{t("domainRequest.table.requestDate")}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -263,13 +214,13 @@ export default function DomainRequest() {
           </TableContainer>
         )}
 
-        {/* Dialog para crear request */}
+        {/* Dialog */}
         <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>New Domain Request</DialogTitle>
+          <DialogTitle>{t("domainRequest.dialog.title")}</DialogTitle>
           <DialogContent>
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
               <TextField
-                label="Domain Name"
+                label={t("domainRequest.dialog.domainName")}
                 name="domainName"
                 value={formData.domainName}
                 onChange={handleChange}
@@ -279,7 +230,7 @@ export default function DomainRequest() {
               />
               <TextField
                 select
-                label="TLD"
+                label={t("domainRequest.dialog.tld")}
                 name="domainTld"
                 value={formData.domainTld}
                 onChange={handleChange}
@@ -293,19 +244,15 @@ export default function DomainRequest() {
                 ))}
               </TextField>
               <Typography variant="body1" sx={{ mt: 2 }}>
-                {formData.domainName && formData.domainTld ? (
-                  <>
-                    Cost for <strong>{formData.domainName}{formData.domainTld}</strong>: ${precioActual}
-                  </>
-                ) : (
-                  <>Select a domain to see its cost</>
-                )}
+                {formData.domainName && formData.domainTld
+                  ? t("domainRequest.dialog.cost", { domain: `${formData.domainName}${formData.domainTld}`, price: precioActual })
+                  : t("domainRequest.dialog.selectDomain")}
               </Typography>
             </Box>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenDialog(false)} sx={{ borderRadius: 30 }}>
-              Cancel
+              {t("domainRequest.dialog.cancel")}
             </Button>
             <Button
               type="submit"
@@ -317,7 +264,7 @@ export default function DomainRequest() {
                 "&:hover": { bgcolor: "#ffc107", color: "#212121" }
               }}
             >
-              Submit Request
+              {t("domainRequest.dialog.submit")}
             </Button>
           </DialogActions>
         </Dialog>

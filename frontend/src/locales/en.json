@@ -383,6 +383,23 @@
         "title": "My Payment Methods",
         "addButton": "Add Payment Method",
         "newPaymentMethod": "New Payment Method",
+        "addMethod": "Add Method",
+        "saveChanges": "Save Changes",
+        "noMethods": "No saved payment methods.",
+        "cardType": "Card Type",
+        "cardNumber": "Card Number",
+        "cardholderLabel": "Cardholder Name",
+        "pseEmailLabel": "PSE Email",
+        "bank": "Bank",
+        "maskedCard": "**** **** **** {{last4}}",
+        "cardholder": "Cardholder: {{name}}",
+        "pseEmail": "PSE Email: {{email}}",
+        "registered": "Registered: {{date}}",
+        "cardTypes": {
+        "debito": "Debit",
+        "credito": "Credit",
+        "pse": "PSE"
+        },
         "alerts": {
         "addSuccess": "Payment method added successfully",
         "addError": "Failed to add payment method",
@@ -396,25 +413,6 @@
         "message": "Are you sure you want to delete this payment method? This action cannot be undone.",
         "confirmText": "Delete",
         "cancelText": "Cancel"
-        }
-    },
-    "paymentManagement": {
-        "title": "Mis Métodos de Pago",
-        "addButton": "Agregar Método de Pago",
-        "newPaymentMethod": "Nuevo Método de Pago",
-        "alerts": {
-        "addSuccess": "Método de pago agregado exitosamente",
-        "addError": "No se pudo agregar el método de pago",
-        "deleteSuccess": "Método de pago eliminado exitosamente",
-        "deleteError": "No se pudo eliminar el método de pago",
-        "loadError": "Error al cargar métodos de pago",
-        "bankLoadError": "Error al cargar bancos"
-        },
-        "deleteDialog": {
-        "title": "Eliminar Método de Pago",
-        "message": "¿Está seguro de que desea eliminar este método de pago? Esta acción no se puede deshacer.",
-        "confirmText": "Eliminar",
-        "cancelText": "Cancelar"
         }
     },
     "util": {
@@ -486,6 +484,131 @@
         "dialogTitle": "Delete Account",
         "dialogMessage": "Are you sure you want to delete your account? This action cannot be undone.",
         "dialogConfirm": "Confirm Delete"
+    },
+    "myPlans": {
+        "title": "My Plans",
+        "addButton": "Add Plan",
+        "dialog": {
+        "title": "Cancel Plan",
+        "message": "Are you sure you want to cancel this plan?",
+        "confirm": "Confirm Cancellation"
+        },
+        "table": {
+        "planType": "Plan Type",
+        "billing": "Billing",
+        "price": "Price"
+        },
+        "billing": {
+        "monthly": "Monthly",
+        "semiAnnual": "Semi-Annual",
+        "annual": "Annual"
+        },
+        "features": {
+        "title": "Plan Features",
+        "websites": "{{count}} websites",
+        "databases": "{{count}} databases",
+        "storage": "{{size}} GB NVMe SSD",
+        "emails": "{{count}} email accounts",
+        "builder": "Website builder",
+        "ssl": "{{count}} SSL certificates",
+        "marketing": "Email marketing",
+        "status": "Status: {{status}}",
+        "purchased": "Purchased: {{date}}",
+        "expires": "Expires: {{date}}"
+        },
+        "alerts": {
+        "loadWarning": "Could not load your plan details.",
+        "loadError": "There was a problem loading your plans",
+        "deleteSuccess": "Plan deleted successfully"
+        }
+    },
+    "myDomains": {
+        "title": "My Domains",
+        "table": {
+            "domainName": "Domain Name",
+            "tld": "TLD",
+            "status": "Status",
+            "transfer": "Domain Transfer"
+        },
+        "actions": {
+            "transfer": "Transfer",
+            "pendingTransfer": "Pending Transfer"
+        },
+        "status": {
+            "inUse": "In Use",
+            "expired": "Expired",
+            "pending": "Pending"
+        },
+        "dialog": {
+            "title": "Transfer Domain",
+            "instruction": "Enter the email of the user to transfer {{domain}} to:",
+            "emailField": "Recipient Email",
+            "emailError": "Please enter a valid email address",
+            "cancel": "Cancel",
+            "confirm": "Confirm Transfer"
+        },
+        "alerts": {
+            "sameEmail": "You cannot transfer to your own email.",
+            "transferSuccess": "Domain transfer request sent successfully.",
+            "emailNotRegistered": "Email isn't registered"
+        }
+    },
+    "domainRequest": {
+        "title": "Domain Requests",
+        "addRequest": "Add Request",
+        "empty": {
+            "title": "You haven't created any domain requests yet.",
+            "subtitle": "Click the button above to submit your first request."
+        },
+        "table": {
+            "domainName": "Domain Name",
+            "tld": "TLD",
+            "status": "Status",
+            "requestDate": "Request Date"
+        },
+        "dialog": {
+            "title": "New Domain Request",
+            "domainName": "Domain Name",
+            "tld": "TLD",
+            "cost": "Cost for {{domain}}: ${{price}}",
+            "selectDomain": "Select a domain to see its cost",
+            "cancel": "Cancel",
+            "submit": "Submit Request"
+        },
+        "alerts": {
+            "fillFields": "Please fill in all fields",
+            "requestSuccess": "Domain request submitted successfully!",
+            "requestFail": "Failed to submit domain request",
+            "domainActive": "Domain is active and in use",
+            "generalError": "Something went wrong"
+        }
+    },
+    "tickets": {
+        "table": {
+            "noAssigned": "No assigned"
+        },
+        "history": {
+            "title": "History",
+            "description": "Description:",
+            "assigned": "Assigned",
+            "reassigned": "Reassigned",
+            "resolved": "Resolved",
+            "escalated": "Escalated",
+            "comment": "Comment",
+            "assignedTo": "Assigned to {{tech}}"
+        },
+        "alerts": {
+            "noChanges": "No changes were made",
+            "updateSuccess": "Ticket updated successfully",
+            "updateError": "There was an error updating the ticket"
+        },
+        "actions": {
+            "changeStatus": "Change Status",
+            "changeLevel": "Change Level",
+            "addComment": "Add Comment",
+            "assignTechnician": "Assign Technician",
+            "saveChanges": "Save Changes",
+            "closeTicket": "Close Ticket"
+        }
     }
-
 }

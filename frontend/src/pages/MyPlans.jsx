@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -10,34 +10,32 @@ import PlanList from "../components/PlanList";
 import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getPlansByClientId } from "../api/purchasedPlanApi";
 import { getPlansInfo } from "../api/planApi";
-
-// Planes base disponibles
+import { useTranslation } from "react-i18next";
 
 export default function MyPlansPage() {
   useScrollToTop();
   const { showAlert } = useGlobalAlert();
   const { specificId } = useAuth();
+  const { t } = useTranslation();
   const [plans, setPlans] = useState([]);
-
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const resAdquiridos = await getPlansByClientId(specificId); // array
-        const resInfoPlanes = await getPlansInfo(); // { data: [...] }
+        const resAdquiridos = await getPlansByClientId(specificId);
+        const resInfoPlanes = await getPlansInfo();
 
         const acquiredPlans = Array.isArray(resAdquiridos) ? resAdquiridos : [];
         const infoPlans = Array.isArray(resInfoPlanes.data) ? resInfoPlanes.data : [];
 
         if (acquiredPlans.length === 0 || infoPlans.length === 0) {
-          console.warn("Some plan data was missing", { acquiredPlans, infoPlans });
-          showAlert("Could not load your plan details.", "warning");
+          showAlert(t("myPlans.alerts.loadWarning"), "warning");
           return;
         }
 
@@ -57,9 +55,7 @@ export default function MyPlansPage() {
             return "monthly";
           };
 
-
           const billing = normalizeBilling(planInfo?.planPago?.intervaloPago);
-
 
           return {
             id: p.idPlanAdquirido,
@@ -71,35 +67,29 @@ export default function MyPlansPage() {
               annual: planInfo?.precio || parseFloat(p.precioPlanAdquirido),
             },
             features: [
-              `${planInfo?.planCliente?.numeroWebs} websites`,
-              `${planInfo?.planCliente?.numeroBaseDatos} databases`,
-              `${planInfo?.planCliente?.almacenamientoNvme} GB NVMe SSD`,
-              `${planInfo?.planCliente?.numeroCuentasCorreo} email accounts`,
-              planInfo?.planCliente?.creadorWeb ? "Website builder" : null,
-              `${planInfo?.planCliente?.numeroCertificadoSslHttps} SSL certificates`,
-              planInfo?.planCliente?.emailMarketing ? "Email marketing" : null,
-              `Status: ${p.estadoPlan}`,
-              `Purchased: ${p.fechaCompra}`,
-              `Expires: ${p.fechaExpiracion}`,
+              t("myPlans.features.websites", { count: planInfo?.planCliente?.numeroWebs }),
+              t("myPlans.features.databases", { count: planInfo?.planCliente?.numeroBaseDatos }),
+              t("myPlans.features.storage", { size: planInfo?.planCliente?.almacenamientoNvme }),
+              t("myPlans.features.emails", { count: planInfo?.planCliente?.numeroCuentasCorreo }),
+              planInfo?.planCliente?.creadorWeb ? t("myPlans.features.builder") : null,
+              t("myPlans.features.ssl", { count: planInfo?.planCliente?.numeroCertificadoSslHttps }),
+              planInfo?.planCliente?.emailMarketing ? t("myPlans.features.marketing") : null,
+              t("myPlans.features.status", { status: p.estadoPlan }),
+              t("myPlans.features.purchased", { date: p.fechaCompra }),
+              t("myPlans.features.expires", { date: p.fechaExpiracion }),
             ].filter(Boolean)
-
           };
         });
 
         setPlans(adapted);
       } catch (err) {
         console.error("❌ Error loading plan data:", err);
-        showAlert("There was a problem loading your plans", "error");
+        showAlert(t("myPlans.alerts.loadError"), "error");
       }
     };
 
-
     if (specificId) fetchPlans();
   }, [specificId]);
-
-
-
-  const navigate = useNavigate(); // 👈 Hook para redirigir
 
   const handleRequestDelete = (id) => {
     setSelectedId(id);
@@ -110,7 +100,7 @@ export default function MyPlansPage() {
     setPlans((prev) => prev.filter((plan) => plan.id !== selectedId));
     setOpenDialog(false);
     setSelectedId(null);
-    showAlert("Plan deleted successfully", "success");
+    showAlert(t("myPlans.alerts.deleteSuccess"), "success");
   };
 
   return (
@@ -124,13 +114,13 @@ export default function MyPlansPage() {
         }}
       >
         <Typography variant="h4" sx={{ fontWeight: "bold", color: "#212121" }}>
-          My Plans
+          {t("myPlans.title")}
         </Typography>
 
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={() => navigate("/Plans")} // 👈 Redirige al hacer clic
+          onClick={() => navigate("/Plans")}
           sx={{
             backgroundColor: "#FF6300",
             color: "#FAFAFA",
@@ -140,7 +130,7 @@ export default function MyPlansPage() {
             },
           }}
         >
-          Add Plan
+          {t("myPlans.addButton")}
         </Button>
       </Box>
 
@@ -150,12 +140,10 @@ export default function MyPlansPage() {
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         onConfirm={handleConfirmDelete}
-        title="Cancel Plan"
-        message="Are you sure you want to cancel this plan?"
-        confirmText="Confirm Cancelation"
+        title={t("myPlans.dialog.title")}
+        message={t("myPlans.dialog.message")}
+        confirmText={t("myPlans.dialog.confirm")}
       />
     </Box>
-
-
   );
 }

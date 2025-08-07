@@ -1,3 +1,4 @@
+// pages/MyTickets.jsx
 import { useState, useEffect } from "react";
 import {
   Box,
@@ -13,12 +14,13 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import { useGlobalAlert } from "../context/AlertContext";
 import { getAllTickets, getTicketWithHistory, createTicket } from "../api/ticketApi";
-import TicketsList from "../components/Tickets/TicketsList"
+import TicketsList from "../components/Tickets/TicketsList";
 import { statusOptions, levelOptions } from "../components/Tickets/ticketOptions";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 export default function MyTickets() {
-
+  const { t } = useTranslation();
   const { role, specificId } = useAuth();
   const { showAlert } = useGlobalAlert();
   const [tickets, setTickets] = useState([]);
@@ -33,21 +35,16 @@ export default function MyTickets() {
     try {
       const allTickets = await getAllTickets();
 
-      // Filtrar por cliente o distribuidor
       const userTickets = allTickets.filter((ticket) => {
         if (role === "Cliente") return ticket.cliente == specificId;
         if (role === "Distribuidor") return ticket.distribuidor == specificId;
         return false;
       });
 
-      // Para cada ticket, traer historial (opcional: solo el último)
       const enrichedTickets = await Promise.all(
         userTickets.map(async (ticket) => {
           const result = await getTicketWithHistory(ticket.idTicket);
           const historial = result?.historial || [];
-
-
-          // Tomar el último historial si existe
           const lastAction = historial.sort(
             (a, b) => new Date(b.fechaAccion) - new Date(a.fechaAccion)
           )[0];
@@ -63,31 +60,25 @@ export default function MyTickets() {
             client_id: ticket.cliente,
             distributor_id: ticket.distribuidor,
             assigned_to: lastAction?.empleadoReceptor || null,
-            history: historial
+            history: historial,
           };
-
-
         })
-
       );
-
-
 
       setTickets(enrichedTickets);
     } catch (error) {
       console.error("Error loading user tickets:", error);
-      showAlert("Failed to load your tickets", "error");
+      showAlert(t("tickets.alerts.loadError"), "error");
     }
   };
 
   const handleAddTicket = async () => {
     if (!newTicket.subject || !newTicket.description) {
-      showAlert("Please fill in all fields", "warning");
+      showAlert(t("tickets.alerts.fillFields"), "warning");
       return;
     }
 
     const now = new Date().toISOString();
-
     const payload = {
       asunto: newTicket.subject,
       descripcion: newTicket.description,
@@ -102,22 +93,19 @@ export default function MyTickets() {
     try {
       await createTicket(payload);
       await fetchTickets();
-
       setNewTicket({ subject: "", description: "" });
       setOpenDialog(false);
-      showAlert("Your request has been submitted. We'll keep you informed.", "success");
+      showAlert(t("tickets.alerts.submitSuccess"), "success");
     } catch (error) {
       console.error("Error creating ticket:", error);
-      showAlert("There was an error submitting your ticket", "error");
+      showAlert(t("tickets.alerts.submitError"), "error");
     }
   };
-
 
   const disableSave = !newTicket.subject || !newTicket.description;
 
   return (
     <Box sx={{ p: 4 }}>
-      {/* Header */}
       <Box
         sx={{
           display: "flex",
@@ -126,11 +114,8 @@ export default function MyTickets() {
           m: 6,
         }}
       >
-        <Typography
-          variant="h4"
-          sx={{ fontWeight: "bold", color: "#212121" }}
-        >
-          My Support Tickets
+        <Typography variant="h4" sx={{ fontWeight: "bold", color: "#212121" }}>
+          {t("tickets.title")}
         </Typography>
 
         <Button
@@ -143,21 +128,20 @@ export default function MyTickets() {
           }}
           onClick={() => setOpenDialog(true)}
         >
-          Add Ticket
+          {t("tickets.addTicket")}
         </Button>
       </Box>
 
-      {/* Tabla o mensaje si no hay tickets */}
       {tickets.length === 0 ? (
         <Paper
           sx={{ p: 5, textAlign: "center", mt: 3, bgcolor: "#FAFAFA" }}
           elevation={2}
         >
           <Typography variant="h6" color="text.secondary">
-            You haven't created any tickets yet.
+            {t("tickets.empty.title")}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            Click the button above to create your first support ticket.
+            {t("tickets.empty.subtitle")}
           </Typography>
         </Paper>
       ) : (
@@ -167,19 +151,20 @@ export default function MyTickets() {
           showAlert={showAlert}
           statusOptions={statusOptions}
           levelOptions={levelOptions}
-          employeeMap={{}} // puedes conectar esto si tienes empleados disponibles
-          availableTechnicians={[]} // igual que arriba
+          employeeMap={{}}
+          availableTechnicians={[]}
           employeeRole={role}
           readOnly={true}
         />
       )}
 
-      {/* Dialog para agregar ticket */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth maxWidth="sm">
-        <DialogTitle sx={{ fontWeight: "bold" }}>New Ticket</DialogTitle>
+        <DialogTitle sx={{ fontWeight: "bold" }}>
+          {t("tickets.dialog.title")}
+        </DialogTitle>
         <DialogContent>
           <TextField
-            label="Subject"
+            label={t("tickets.dialog.subject")}
             fullWidth
             margin="normal"
             value={newTicket.subject}
@@ -188,7 +173,7 @@ export default function MyTickets() {
             }
           />
           <TextField
-            label="Description"
+            label={t("tickets.dialog.description")}
             fullWidth
             multiline
             rows={4}
@@ -205,7 +190,7 @@ export default function MyTickets() {
             sx={{ borderRadius: 30 }}
             onClick={() => setOpenDialog(false)}
           >
-            Cancel
+            {t("tickets.dialog.cancel")}
           </Button>
           <Button
             variant="contained"
@@ -217,7 +202,7 @@ export default function MyTickets() {
             onClick={handleAddTicket}
             disabled={disableSave}
           >
-            Submit Ticket
+            {t("tickets.dialog.submit")}
           </Button>
         </DialogActions>
       </Dialog>

@@ -484,5 +484,131 @@
     "dialogTitle": "Eliminar Cuenta",
     "dialogMessage": "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.",
     "dialogConfirm": "Confirmar Eliminación"
+  },
+  "myPlans": {
+    "title": "Mis Planes",
+    "addButton": "Agregar Plan",
+    "dialog": {
+      "title": "Cancelar Plan",
+      "message": "¿Estás seguro de que deseas cancelar este plan?",
+      "confirm": "Confirmar Cancelación"
+    },
+    "table": {
+      "planType": "Tipo de Plan",
+      "billing": "Facturación",
+      "price": "Precio"
+    },
+    "billing": {
+      "monthly": "Mensual",
+      "semiAnnual": "Semestral",
+      "annual": "Anual"
+    },
+    "features": {
+      "title": "Características del Plan",
+      "websites": "{{count}} sitios web",
+      "databases": "{{count}} bases de datos",
+      "storage": "{{size}} GB NVMe SSD",
+      "emails": "{{count}} cuentas de correo",
+      "builder": "Creador de sitios web",
+      "ssl": "{{count}} certificados SSL",
+      "marketing": "Email marketing",
+      "status": "Estado: {{status}}",
+      "purchased": "Comprado: {{date}}",
+      "expires": "Expira: {{date}}"
+    },
+    "alerts": {
+      "loadWarning": "No se pudieron cargar los detalles de tu plan.",
+      "loadError": "Hubo un problema al cargar tus planes",
+      "deleteSuccess": "Plan eliminado exitosamente"
+    }
+  },
+  "myDomains": {
+    "title": "Mis Dominios",
+    "table": {
+      "domainName": "Nombre de Dominio",
+      "tld": "TLD",
+      "status": "Estado",
+      "transfer": "Transferencia de Dominio"
+    },
+    "actions": {
+      "transfer": "Transferir",
+      "pendingTransfer": "Transferencia Pendiente"
+    },
+    "status": {
+      "inUse": "En Uso",
+      "expired": "Expirado",
+      "pending": "Pendiente"
+    },
+    "dialog": {
+      "title": "Transferir Dominio",
+      "instruction": "Ingresa el correo del usuario para transferir {{domain}} a:",
+      "emailField": "Correo del Destinatario",
+      "emailError": "Por favor ingresa un correo válido",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar Transferencia"
+    },
+    "alerts": {
+      "sameEmail": "No puedes transferir a tu mismo correo.",
+      "transferSuccess": "Solicitud de transferencia realizada con éxito.",
+      "emailNotRegistered": "El correo no está registrado"
+    }
+  },
+  "domainRequest": {
+    "title": "Solicitudes de Dominio",
+    "addRequest": "Agregar Solicitud",
+    "empty": {
+      "title": "Aún no has creado solicitudes de dominio.",
+      "subtitle": "Haz clic en el botón de arriba para enviar tu primera solicitud."
+    },
+    "table": {
+      "domainName": "Nombre de Dominio",
+      "tld": "TLD",
+      "status": "Estado",
+      "requestDate": "Fecha de Solicitud"
+    },
+    "dialog": {
+      "title": "Nueva Solicitud de Dominio",
+      "domainName": "Nombre de Dominio",
+      "tld": "TLD",
+      "cost": "Costo de {{domain}}: ${{price}}",
+      "selectDomain": "Selecciona un dominio para ver su costo",
+      "cancel": "Cancelar",
+      "submit": "Enviar Solicitud"
+    },
+    "alerts": {
+      "fillFields": "Por favor completa todos los campos",
+      "requestSuccess": "¡Solicitud de dominio enviada con éxito!",
+      "requestFail": "No se pudo enviar la solicitud de dominio",
+      "domainActive": "El dominio está activo y en uso",
+      "generalError": "Ocurrió un error inesperado"
+    }
+  },
+  "tickets": {
+    "table": {
+      "noAssigned": "Sin asignar"
+    },
+    "history": {
+      "title": "Historial",
+      "description": "Descripción:",
+      "assigned": "Asignado",
+      "reassigned": "Reasignado",
+      "resolved": "Resuelto",
+      "escalated": "Escalado",
+      "comment": "Comentario",
+      "assignedTo": "Asignado a {{tech}}"
+    },
+    "alerts": {
+      "noChanges": "No se realizaron cambios",
+      "updateSuccess": "Ticket actualizado con éxito",
+      "updateError": "Hubo un error al actualizar el ticket"
+    },
+    "actions": {
+      "changeStatus": "Cambiar estado",
+      "changeLevel": "Cambiar nivel",
+      "addComment": "Agregar comentario",
+      "assignTechnician": "Asignar técnico",
+      "saveChanges": "Guardar cambios",
+      "closeTicket": "Cerrar ticket"
+    }
   }
 }
