@@ -166,17 +166,28 @@
     "addClientDialog": {
       "firstNameField": "Nombre",
       "lastnameField": "Apellido",
-      "emailField": "Correo",
-      "phoneNumberField": "Teléfono",
-      "birthDateField": "Fecha de Nacimiento",
+      "emailField": "Correo electrónico",
+      "phoneNumberField": "Número de teléfono",
+      "birthDateField": "Fecha de nacimiento",
       "cancelButton": "Cancelar",
       "saveButton": "Guardar"
     },
     "deleteDialog": {
-      "title": "Confirmar Eliminación",
+      "title": "Confirmar eliminación",
       "message": "¿Estás seguro de que deseas desactivar este cliente?",
       "confirmText": "Desactivar"
-    }
+    },
+    "list": {
+      "details": "Detalles del cliente",
+      "id": "ID",
+      "phone": "Teléfono",
+      "birthdate": "Fecha de nacimiento",
+      "searchField": "Buscar por ID",
+      "fullName": "Nombre completo",
+      "email": "Correo electrónico",
+      "status": "Estado"
+    },
+    "editProfileButton": "Editar perfil"
   },
   "distributorManagement": {
     "title": "Gestión de Distribuidores",

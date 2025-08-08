@@ -150,32 +150,43 @@
         "title": "Manage Clients",
         "addClientButton": "Add Client",
         "alerts": {
-        "requiredField": "The field is required:",
-        "added": "Client added successfully.",
-        "addError": "Error adding client.",
-        "unexpectedAdd": "Unexpected error while adding client.",
-        "updated": "Client updated successfully.",
-        "updateError": "Error updating client.",
-        "deactivated": "Client deactivated successfully.",
-        "deactivateError": "Error deactivating client.",
-        "unexpectedDeactivate": "Unexpected error while deactivating client.",
-        "errorLoading": "Error loading clients.",
-        "notFound": "Client not found."
+            "requiredField": "The field is required:",
+            "added": "Client added successfully.",
+            "addError": "Error adding client.",
+            "unexpectedAdd": "Unexpected error while adding client.",
+            "updated": "Client updated successfully.",
+            "updateError": "Error updating client.",
+            "deactivated": "Client deactivated successfully.",
+            "deactivateError": "Error deactivating client.",
+            "unexpectedDeactivate": "Unexpected error while deactivating client.",
+            "errorLoading": "Error loading clients.",
+            "notFound": "Client not found."
         },
         "addClientDialog": {
-        "firstNameField": "First Name",
-        "lastnameField": "Last Name",
-        "emailField": "Email",
-        "phoneNumberField": "Phone Number",
-        "birthDateField": "Birth Date",
-        "cancelButton": "Cancel",
-        "saveButton": "Save"
+            "firstNameField": "First Name",
+            "lastnameField": "Last Name",
+            "emailField": "Email",
+            "phoneNumberField": "Phone Number",
+            "birthDateField": "Birth Date",
+            "cancelButton": "Cancel",
+            "saveButton": "Save"
         },
         "deleteDialog": {
-        "title": "Confirm Deletion",
-        "message": "Are you sure you want to deactivate this client?",
-        "confirmText": "Deactivate"
-        }
+            "title": "Confirm Deletion",
+            "message": "Are you sure you want to deactivate this client?",
+            "confirmText": "Deactivate"
+        },
+        "list": {
+            "details": "Client Details",
+            "id": "ID",
+            "phone": "Phone Number",
+            "birthdate": "Birth Date",
+            "searchField": "Search by ID",
+            "fullName": "Full Name",
+            "email": "Email",
+            "status": "Status"
+        },
+        "editProfileButton": "Edit Profile"
     },
     "distributorManagement": {
         "title": "Distributor Management",
