@@ -698,5 +698,23 @@
       "noMethods": "No tienes métodos de pago guardados.",
       "expires": "Vence"
     }
+  },
+  "adminPlans": {
+    "title": "Planes y Precios",
+    "plan": "Plan",
+    "interval": "Intervalo",
+    "price": "Precio",
+    "websites": "Sitios web",
+    "databases": "Bases de datos",
+    "storage": "Almacenamiento (GB NVMe)",
+    "emailAccounts": "Cuentas de correo",
+    "siteBuilder": "Creador de sitios",
+    "sslCerts": "Certificados SSL",
+    "emailMarketing": "Email Marketing",
+    "unlimited": "Ilimitado",
+    "yes": "Sí",
+    "no": "No",
+    "noData": "Aún no hay información de planes",
+    "loadError": "Error al cargar la información de planes"
   }
 }
