@@ -21,9 +21,13 @@ export const auth = async (credentials) => {
 };
 
 
-export const recoverPassword = async (email) => {
+export const recoverPassword = async (email, captchaToken) => {
   try {
-    const { status, data } = await api.post('/auth/recuperarContrasena', { email });
+    const payload = {
+      correo: email,
+      captchaToken: captchaToken
+    };
+    const { status, data } = await api.post('/auth/recuperarContrasena',payload);
 
     // Backend devuelve { exito: boolean, mensaje: string }
     const success = data?.exito === true || (status >= 200 && status < 300);

@@ -22,7 +22,7 @@ export default function MainLayout({ children }) {
 
 
   return (
-    <Box display="flex" flexDirection="column" minHeight="120vh" width={'100%'}>
+    <Box display="flex" flexDirection="column" minHeight="100vh" width={'100%'}>
       <Navbar />
 
       <Container
