@@ -209,8 +209,8 @@ export default function AdminManageDomains() {
               <TableCell><b>{t("domainsManagement.list.name")}</b></TableCell>
               <TableCell><b>{t("domainsManagement.list.tld")}</b></TableCell>
               <TableCell><b>{t("domainsManagement.list.price")}</b></TableCell>
-              <TableCell><b>TLD Price</b></TableCell>
-              <TableCell><b>Status</b></TableCell>
+              <TableCell><b>{t("domainsManagement.list.tldPrice")}</b></TableCell>
+              <TableCell><b>{t("domainsManagement.list.status")}</b></TableCell>
               <TableCell align="right"><b>{t("domainsManagement.list.actions")}</b></TableCell>
             </TableRow>
           </TableHead>
@@ -321,10 +321,10 @@ export default function AdminManageDomains() {
         open={confirmOpen}
         onClose={closeDeleteDialog}
         onConfirm={handleConfirmDelete}
-        title="Confirm Deletion"
-        message="Are you sure you want to delete this domain?"
-        confirmText="Delete"
-        cancelText="Cancel"
+        title={t("domainsManagement.dialog.confirmTitle")}
+        message={t("domainsManagement.dialog.confirmMessage")}
+        confirmText={t("domainsManagement.dialog.confirmButton")}
+        cancelText={t("domainsManagement.dialog.cancelButton")}
       />
     </Box>
 

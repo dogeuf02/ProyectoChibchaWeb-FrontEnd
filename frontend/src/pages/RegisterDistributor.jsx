@@ -167,7 +167,16 @@ export default function RegisterDistributor() {
                 <ReCAPTCHA sitekey="6LePn5krAAAAAAnj4Tz_1s9K7dZEYLVsdUeFqwqB" onChange={handleCaptchaChange} />
               </Box>
 
-              <Button type="submit" variant="contained" fullWidth sx={{ mt: 3 }}>
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={{
+                  mt: 3,
+                  bgcolor: '#ff6f00',
+                  borderRadius: 30,
+                  '&:hover': { bgcolor: '#ffc107', color: '#212121' }
+                }}>
                 {t("registerDistributor.send")}
               </Button>
 

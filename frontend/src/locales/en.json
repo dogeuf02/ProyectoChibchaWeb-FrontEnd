@@ -278,27 +278,30 @@
     "domainsManagement": {
         "title": "Manage Domains",
         "addDomainButton": "Add Domain",
+        "alerts": {
+        "requiredFields": "Name and TLD are required.",
+        "added": "Domain added successfully.",
+        "updated": "Domain updated successfully."
+        },
         "list": {
-            "name": "Name",
-            "tld": "TLD",
-            "price": "Price (USD/year)",
-            "actions": "Actions",
-            "empty": "No domains available. Click \"Add Domain\" to create one."
+        "id": "ID",
+        "name": "Domain Name",
+        "tld": "TLD",
+        "price": "Domain Price",
+        "tldPrice": "TLD Price",
+        "status": "Status",
+        "actions": "Actions",
+        "empty": "No domains available."
         },
         "dialog": {
-            "addTitle": "Add Domain",
-            "editTitle": "Edit Domain",
-            "nameField": "Name",
-            "tldField": "TLD (e.g., .com)",
-            "priceField": "Price (USD/year)",
-            "cancelButton": "Cancel",
-            "saveButton": "Save"
-        },
-        "alerts": {
-            "requiredFields": "All fields are required",
-            "added": "Domain added successfully",
-            "updated": "Domain updated successfully",
-            "deleted": "Domain deleted successfully"
+        "editTitle": "Edit Domain",
+        "addTitle": "Add New Domain",
+        "nameField": "Domain Name",
+        "cancelButton": "Cancel",
+        "saveButton": "Save",
+        "confirmTitle": "Confirm Deletion",
+        "confirmMessage": "Are you sure you want to delete this domain?",
+        "confirmButton": "Delete"
         }
     },
     "plansManagement": {

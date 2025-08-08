@@ -276,29 +276,32 @@
     }
   },
   "domainsManagement": {
-    "title": "Gestionar Dominios",
+    "title": "Administrar Dominios",
     "addDomainButton": "Agregar Dominio",
+    "alerts": {
+      "requiredFields": "El nombre y TLD son obligatorios.",
+      "added": "Dominio agregado exitosamente.",
+      "updated": "Dominio actualizado exitosamente."
+    },
     "list": {
-      "name": "Nombre",
+      "id": "ID",
+      "name": "Nombre de Dominio",
       "tld": "TLD",
-      "price": "Precio (USD/año)",
+      "price": "Precio del Dominio",
+      "tldPrice": "Precio del TLD",
+      "status": "Estado",
       "actions": "Acciones",
-      "empty": "No hay dominios disponibles. Haz clic en \"Agregar Dominio\" para crear uno."
+      "empty": "No hay dominios disponibles."
     },
     "dialog": {
-      "addTitle": "Agregar Dominio",
       "editTitle": "Editar Dominio",
-      "nameField": "Nombre",
-      "tldField": "TLD (ej., .com)",
-      "priceField": "Precio (USD/año)",
+      "addTitle": "Agregar Nuevo Dominio",
+      "nameField": "Nombre del Dominio",
       "cancelButton": "Cancelar",
-      "saveButton": "Guardar"
-    },
-    "alerts": {
-      "requiredFields": "Todos los campos son obligatorios",
-      "added": "Dominio agregado correctamente",
-      "updated": "Dominio actualizado correctamente",
-      "deleted": "Dominio eliminado correctamente"
+      "saveButton": "Guardar",
+      "confirmTitle": "Confirmar Eliminación",
+      "confirmMessage": "¿Estás seguro de que deseas eliminar este dominio?",
+      "confirmButton": "Eliminar"
     }
   },
   "plansManagement": {
