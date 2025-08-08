@@ -8,16 +8,19 @@ import ClientList from "../components/ClientList";
 import ConfirmDialog from "../components/ConfirmDialog";
 import useScrollToTop from "../hooks/useScrollToTop";
 import { useGlobalAlert } from "../context/AlertContext";
-import { createClient, getClients, deactivateUser } from "../api/clientApi";
+import { createClientAdmin, getClients } from "../api/clientApi";
+import { deactivateUser } from "../api/clientApi"; // if you keep it here; adjust if needed
 import { updateClientProfile } from "../api/userApi";
 import EditUserDialog from "../components/EditUserDialog";
-
+import { useGlobalLoading } from "../context/LoadingContext"; // ✅ loader
 import { useTranslation } from "react-i18next";
 
 export default function AdminManageClients() {
   const { t } = useTranslation();
   useScrollToTop();
+
   const { showAlert } = useGlobalAlert();
+  const { showLoader, hideLoader } = useGlobalLoading(); // ✅ loader
 
   const [clients, setClients] = useState([]);
   const [editClient, setEditClient] = useState(null);
@@ -26,10 +29,10 @@ export default function AdminManageClients() {
   const [openForm, setOpenForm] = useState(false);
 
   const clientFields = [
-    { name: "nombre", label: t('clientManagement.addClientDialog.firstNameField') },
-    { name: "apellido", label: t('clientManagement.addClientDialog.lastnameField') },
-    { name: "telefono", label: t('clientManagement.addClientDialog.phoneNumberField') },
-    { name: "fechaNacimientoCliente", label: t('clientManagement.addClientDialog.birthDateField'), type: "date" },
+    { name: "nombre", label: t("clientManagement.addClientDialog.firstNameField") },
+    { name: "apellido", label: t("clientManagement.addClientDialog.lastnameField") },
+    { name: "telefono", label: t("clientManagement.addClientDialog.phoneNumberField") },
+    { name: "fechaNacimientoCliente", label: t("clientManagement.addClientDialog.birthDateField"), type: "date" },
   ];
 
   const [newClient, setNewClient] = useState({
@@ -40,27 +43,30 @@ export default function AdminManageClients() {
     fechaNacimientoCliente: "",
   });
 
-  // Ordenar: primero ACTIVO, luego INACTIVO
-  const ordenarClientesPorEstado = (clientes) => {
-    return [...clientes].sort((a, b) => {
+  // Keep ACTIVE first
+  const sortByStatus = (list) =>
+    [...list].sort((a, b) => {
       if (a.estado === "ACTIVO" && b.estado !== "ACTIVO") return -1;
       if (a.estado !== "ACTIVO" && b.estado === "ACTIVO") return 1;
       return 0;
     });
-  };
 
   useEffect(() => {
     const fetchClients = async () => {
-      const response = await getClients();
-
-      if (response.exito) {
-        const ordenados = ordenarClientesPorEstado(response.clientes);
-        setClients(ordenados);
-      } else {
-        showAlert(response.mensaje || t('clientManagement.alerts.errorLoading'), "error");
+      showLoader();
+      try {
+        const response = await getClients();
+        if (response.exito) {
+          setClients(sortByStatus(response.clientes));
+        } else {
+          showAlert(response.mensaje || t("clientManagement.alerts.errorLoading"), "error");
+        }
+      } catch {
+        showAlert(t("clientManagement.alerts.errorLoading"), "error");
+      } finally {
+        hideLoader();
       }
     };
-
     fetchClients();
   }, []);
 
@@ -70,30 +76,28 @@ export default function AdminManageClients() {
   };
 
   const handleConfirmDelete = async () => {
-    const clientToDelete = clients.find(c => c.id_cliente === selectedId);
+    const clientToDelete = clients.find((c) => c.id_cliente === selectedId);
 
     if (!clientToDelete) {
-      showAlert(t('clientManagement.alerts.notFound'), "error");
+      showAlert(t("clientManagement.alerts.notFound"), "error");
       setOpenDialog(false);
       return;
     }
 
+    showLoader();
     try {
       const result = await deactivateUser(clientToDelete.correo);
-
       if (result.exito) {
-        showAlert(t('clientManagement.alerts.deactivated'), "success");
+        showAlert(t("clientManagement.alerts.deactivated"), "success");
         const updated = await getClients();
-        if (updated.exito) {
-          const ordenados = ordenarClientesPorEstado(updated.clientes);
-          setClients(ordenados);
-        }
+        if (updated.exito) setClients(sortByStatus(updated.clientes));
       } else {
-        showAlert(result.mensaje || t('clientManagement.alerts.deactivateError'), "error");
+        showAlert(result.mensaje || t("clientManagement.alerts.deactivateError"), "error");
       }
-    } catch (error) {
-      showAlert(t('clientManagement.alerts.unexpectedDeactivate'), "error");
+    } catch {
+      showAlert(t("clientManagement.alerts.unexpectedDeactivate"), "error");
     } finally {
+      hideLoader();
       setOpenDialog(false);
       setSelectedId(null);
     }
@@ -105,7 +109,7 @@ export default function AdminManageClients() {
       nombre: user.nombre,
       apellido: user.apellido,
       telefono: user.telefono,
-      fechaNacimientoCliente: user.fechaNacimientoCliente
+      fechaNacimientoCliente: user.fechaNacimientoCliente,
     });
   };
 
@@ -116,39 +120,37 @@ export default function AdminManageClients() {
   const handleAddClient = async () => {
     const requiredFields = ["nombre", "apellido", "correo", "telefono", "fechaNacimientoCliente"];
     const friendlyNames = {
-      nombre: t('clientManagement.addClientDialog.firstNameField'),
-      apellido: t('clientManagement.addClientDialog.lastnameField'),
-      correo: t('clientManagement.addClientDialog.emailField'),
-      telefono: t('clientManagement.addClientDialog.phoneNumberField'),
-      fechaNacimientoCliente: t('clientManagement.addClientDialog.birthDateField'),
+      nombre: t("clientManagement.addClientDialog.firstNameField"),
+      apellido: t("clientManagement.addClientDialog.lastnameField"),
+      correo: t("clientManagement.addClientDialog.emailField"),
+      telefono: t("clientManagement.addClientDialog.phoneNumberField"),
+      fechaNacimientoCliente: t("clientManagement.addClientDialog.birthDateField"),
     };
 
     for (let field of requiredFields) {
       if (!newClient[field] || newClient[field].trim() === "") {
-        showAlert(`${t('clientManagement.alerts.requiredField')} "${friendlyNames[field]}"`, "warning");
+        showAlert(`${t("clientManagement.alerts.requiredField")} "${friendlyNames[field]}"`, "warning");
         return;
       }
     }
 
-    const client = {
+    const payload = {
       correoCliente: newClient.correo,
       contrasenaCliente: "cliente@123",
       nombreCliente: newClient.nombre,
       apellidoCliente: newClient.apellido,
       telefono: newClient.telefono,
-      fechaNacimientoCliente: newClient.fechaNacimientoCliente
+      fechaNacimientoCliente: newClient.fechaNacimientoCliente,
     };
 
+    showLoader();
     try {
-      const response = await createClient(client);
+      const response = await createClientAdmin(payload);
 
       if (response.exito) {
-        showAlert(t('clientManagement.alerts.added'), "success");
+        showAlert(t("clientManagement.alerts.added"), "success");
         const updated = await getClients();
-        if (updated.exito) {
-          const ordenados = ordenarClientesPorEstado(updated.clientes);
-          setClients(ordenados);
-        }
+        if (updated.exito) setClients(sortByStatus(updated.clientes));
 
         setOpenForm(false);
         setNewClient({
@@ -159,10 +161,12 @@ export default function AdminManageClients() {
           fechaNacimientoCliente: "",
         });
       } else {
-        showAlert(response.mensaje || t('clientManagement.alerts.addError'), "error");
+        showAlert(response.mensaje || t("clientManagement.alerts.addError"), "error");
       }
-    } catch (error) {
-      showAlert(t('clientManagement.alerts.unexpectedAdd'), "error");
+    } catch {
+      showAlert(t("clientManagement.alerts.unexpectedAdd"), "error");
+    } finally {
+      hideLoader();
     }
   };
 
@@ -170,7 +174,6 @@ export default function AdminManageClients() {
     if (!editClient) return;
 
     const { id, nombre, apellido, telefono, fechaNacimientoCliente } = editClient;
-
     const formatted = {
       nombreCliente: nombre,
       apellidoCliente: apellido,
@@ -178,18 +181,21 @@ export default function AdminManageClients() {
       fechaNacimientoCliente,
     };
 
-    const res = await updateClientProfile(id, formatted);
-
-    if (res?.status === 200) {
-      showAlert(t('clientManagement.alerts.updated'), "success");
-      const updated = await getClients();
-      if (updated.exito) {
-        const ordenados = ordenarClientesPorEstado(updated.clientes);
-        setClients(ordenados);
+    showLoader();
+    try {
+      const res = await updateClientProfile(id, formatted);
+      if (res?.status === 200 || res?.exito) {
+        showAlert(t("clientManagement.alerts.updated"), "success");
+        const updated = await getClients();
+        if (updated.exito) setClients(sortByStatus(updated.clientes));
+        setEditClient(null);
+      } else {
+        showAlert(t("clientManagement.alerts.updateError"), "error");
       }
-      setEditClient(null);
-    } else {
-      showAlert(t('clientManagement.alerts.updateError'), "error");
+    } catch {
+      showAlert(t("clientManagement.alerts.updateError"), "error");
+    } finally {
+      hideLoader();
     }
   };
 
@@ -197,7 +203,7 @@ export default function AdminManageClients() {
     <Box sx={{ maxWidth: 1000, mx: "auto", mt: 10 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 6 }}>
         <Typography variant="h4" sx={{ fontWeight: "bold", color: "#212121" }}>
-          {t('clientManagement.title')}
+          {t("clientManagement.title")}
         </Typography>
 
         <Button
@@ -205,13 +211,13 @@ export default function AdminManageClients() {
           startIcon={<AddIcon />}
           onClick={() => setOpenForm(true)}
           sx={{
-            backgroundColor: "#FF6300",
+            backgroundColor: "#FF6400",
             color: "#FAFAFA",
             borderRadius: 30,
             "&:hover": { backgroundColor: "#e65c00" },
           }}
         >
-          {t('clientManagement.addClientButton')}
+          {t("clientManagement.addClientButton")}
         </Button>
       </Box>
 
@@ -225,43 +231,64 @@ export default function AdminManageClients() {
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         onConfirm={handleConfirmDelete}
-        title={t('clientManagement.deleteDialog.title')}
-        message={t('clientManagement.deleteDialog.message')}
-        confirmText={t('clientManagement.deleteDialog.confirmText')}
+        title={t("clientManagement.deleteDialog.title")}
+        message={t("clientManagement.deleteDialog.message")}
+        confirmText={t("clientManagement.deleteDialog.confirmText")}
       />
 
       <Dialog open={openForm} onClose={() => setOpenForm(false)} fullWidth>
-        <DialogTitle>{t('clientManagement.addClientButton')}</DialogTitle>
+        <DialogTitle>{t("clientManagement.addClientButton")}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} mt={1}>
-            <TextField label={t('clientManagement.addClientDialog.firstNameField')}
+            <TextField
+              label={t("clientManagement.addClientDialog.firstNameField")}
               value={newClient.nombre}
-              onChange={(e) => setNewClient({ ...newClient, nombre: e.target.value })} fullWidth />
-            <TextField label={t('clientManagement.addClientDialog.lastnameField')}
+              onChange={(e) => setNewClient({ ...newClient, nombre: e.target.value })}
+              fullWidth
+            />
+            <TextField
+              label={t("clientManagement.addClientDialog.lastnameField")}
               value={newClient.apellido}
-              onChange={(e) => setNewClient({ ...newClient, apellido: e.target.value })} fullWidth />
-            <TextField label={t('clientManagement.addClientDialog.emailField')}
+              onChange={(e) => setNewClient({ ...newClient, apellido: e.target.value })}
+              fullWidth
+            />
+            <TextField
+              label={t("clientManagement.addClientDialog.emailField")}
               value={newClient.correo}
-              onChange={(e) => setNewClient({ ...newClient, correo: e.target.value })} fullWidth />
-            <TextField label={t('clientManagement.addClientDialog.phoneNumberField')}
+              onChange={(e) => setNewClient({ ...newClient, correo: e.target.value })}
+              fullWidth
+            />
+            <TextField
+              label={t("clientManagement.addClientDialog.phoneNumberField")}
               value={newClient.telefono}
-              onChange={(e) => setNewClient({ ...newClient, telefono: e.target.value })} fullWidth />
-            <TextField label={t('clientManagement.addClientDialog.birthDateField')}
-              type="date" InputLabelProps={{ shrink: true }}
+              onChange={(e) => setNewClient({ ...newClient, telefono: e.target.value })}
+              fullWidth
+            />
+            <TextField
+              label={t("clientManagement.addClientDialog.birthDateField")}
+              type="date"
+              InputLabelProps={{ shrink: true }}
               value={newClient.fechaNacimientoCliente}
-              onChange={(e) => setNewClient({ ...newClient, fechaNacimientoCliente: e.target.value })} fullWidth />
+              onChange={(e) => setNewClient({ ...newClient, fechaNacimientoCliente: e.target.value })}
+              fullWidth
+            />
           </Stack>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenForm(false)} sx={{ color: "#212121" }}>
-            {t('clientManagement.addClientDialog.cancelButton')}
+            {t("clientManagement.addClientDialog.cancelButton")}
           </Button>
           <Button
             onClick={handleAddClient}
             variant="contained"
-            sx={{ backgroundColor: "#FF6300", color: "#FAFAFA", borderRadius: 30, "&:hover": { backgroundColor: "#e65c00" } }}
+            sx={{
+              backgroundColor: "#FFBE02",
+              color: "#212121",
+              borderRadius: 30,
+              "&:hover": { backgroundColor: "#e0aa00" },
+            }}
           >
-            {t('clientManagement.addClientDialog.saveButton')}
+            {t("clientManagement.addClientDialog.saveButton")}
           </Button>
         </DialogActions>
       </Dialog>

@@ -17,11 +17,13 @@ import ConfirmDialog from "../components/ConfirmDialog";
 import AdministratorList from "../components/AdministratorList";
 import { getAllAdmins, registerAdmin, deactivateUser } from "../api/userApi";
 import { useTranslation } from "react-i18next";
+import { useGlobalLoading } from "../context/LoadingContext";
 
 export default function AdminManageAdminis() {
   useScrollToTop();
   const { t } = useTranslation();
   const { showAlert } = useGlobalAlert();
+  const { showLoader, hideLoader } = useGlobalLoading();
 
   const [administrators, setAdministrators] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -41,23 +43,27 @@ export default function AdminManageAdminis() {
 
   useEffect(() => {
     const fetchAdmins = async () => {
-      const res = await getAllAdmins();
-      if (res.exito) {
-        const adapted = res.administradores.map((admin) => ({
-          id: admin.idAdmin,
-          nombre: admin.nombreAdmin,
-          apellido: admin.apellidoAdmin,
-          fecha_nacimiento: admin.fechaNacimientoAdmin,
-          correo: admin.correo,
-          estado: admin.estado
-        }));
+      showLoader();
+      try {
+        const res = await getAllAdmins();
+        if (res.exito) {
+          const adapted = res.administradores.map((admin) => ({
+            id: admin.idAdmin,
+            nombre: admin.nombreAdmin,
+            apellido: admin.apellidoAdmin,
+            fecha_nacimiento: admin.fechaNacimientoAdmin,
+            correo: admin.correo,
+            estado: admin.estado
+          }));
+          setAdministrators(adapted);
+        } else {
+          showAlert(res.mensaje, "error");
+        }
 
-        setAdministrators(adapted);
-      } else {
-        showAlert(res.mensaje, "error");
       }
+      finally { hideLoader(); }
+      hideLoader();
     };
-
     fetchAdmins();
   }, []);
 
@@ -68,9 +74,8 @@ export default function AdminManageAdminis() {
 
   const handleConfirmDelete = async () => {
     if (!selectedCorreo) return;
-
+    showLoader();
     const res = await deactivateUser(selectedCorreo);
-
     if (res.exito) {
       setAdministrators((prev) =>
         prev.map((a) =>
@@ -83,6 +88,7 @@ export default function AdminManageAdminis() {
     } else {
       showAlert(res.mensaje || t("administratorManagement.alerts.deactivateError"), "error");
     }
+    hideLoader();
   };
 
   const handleAddAdministrator = async () => {

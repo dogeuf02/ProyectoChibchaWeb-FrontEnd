@@ -80,3 +80,17 @@ export const getClientById = async (id) => {
     }
   }
 }
+
+export const createClientAdmin = async (cliente) => {
+  try {
+    const response = await api.post('/clienteDirecto', cliente);
+    return { exito: true, data: response.data };
+  } catch (error) {
+    if (error.response && error.response.data) {
+      const { exito, mensaje } = error.response.data;
+      return { exito, mensaje }; // devuelve el mensaje del backend
+    } else {
+      return { exito: false, mensaje: 'Error desconocido al crear el cliente' };
+    }
+  }
+};

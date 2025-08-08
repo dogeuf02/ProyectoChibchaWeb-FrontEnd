@@ -7,9 +7,10 @@ import { useGlobalAlert } from "../context/AlertContext";
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Stack, MenuItem } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { updateClientProfile, updateEmployeeProfile, updateDistributorProfile, updateAdminProfile } from "../api/userApi";
-import { getDistributors, createDistributor, updateState } from "../api/distributorApi";
+import { getDistributors, createDistributorAdmin, updateState } from "../api/distributorApi";
 import EditUserDialog from "../components/EditUserDialog";
 import { getDocumentTypes } from '../api/documentTypeApi';
+import { useGlobalLoading } from "../context/LoadingContext";
 
 
 
@@ -19,6 +20,7 @@ export default function AdminManageDistributors() {
   useScrollToTop();
 
   const [editDistributor, setEditDistributor] = useState(null);
+  const { showLoader, hideLoader } = useGlobalLoading();
   const { t } = useTranslation();
   const { showAlert } = useGlobalAlert();
   const [distributors, setDistributors] = useState([]);
@@ -48,19 +50,27 @@ export default function AdminManageDistributors() {
 
   useEffect(() => {
     const fetchInitialData = async () => {
-      const tipos = await getDocumentTypes();
-      setDocumentTypes(tipos || []);
+      showLoader();
+      try {
+        const tipos = await getDocumentTypes();
+        setDocumentTypes(tipos || []);
 
-      const result = await getDistributors();
-      if (result.exito) {
-        setDistributors(result.distribuidores);
-      } else {
-        showAlert(result.mensaje || "Error loading distributors", "error");
+        const result = await getDistributors();
+        if (result.exito) {
+          setDistributors(result.distribuidores);
+        } else {
+          showAlert(result.mensaje || "Error loading distributors", "error");
+        }
+      } catch (err) {
+        showAlert("Server error while loading distributors", "error");
+      } finally {
+        hideLoader();
       }
     };
 
     fetchInitialData();
   }, []);
+
 
 
 
@@ -100,25 +110,12 @@ export default function AdminManageDistributors() {
 
 
   const handleAddDistributor = async () => {
-    const requiredFields = [
-      "email",
-      "company_document_type",
-      "company_document_number",
-      "company_name",
-      "company_address"
-    ];
+    const required = ["email", "company_document_type", "company_document_number", "company_name", "company_address"];
+    const labels = { email: "Email", company_document_type: "Document Type", company_document_number: "Document Number", company_name: "Company Name", company_address: "Company Address" };
 
-    const friendlyNames = {
-      email: "Email",
-      company_document_type: "Document Type",
-      company_document_number: "Document Number",
-      company_name: "Company Name",
-      company_address: "Company Address"
-    };
-
-    for (const field of requiredFields) {
-      if (!newDistributor[field] || newDistributor[field].trim() === "") {
-        showAlert(`The field "${friendlyNames[field]}" is required.`, "warning");
+    for (const f of required) {
+      if (!newDistributor[f]?.trim()) {
+        showAlert(`The field "${labels[f]}" is required.`, "warning");
         return;
       }
     }
@@ -132,16 +129,12 @@ export default function AdminManageDistributors() {
       direccionEmpresa: newDistributor.company_address
     };
 
-
     try {
-      const response = await createDistributor(payload);
-
-      if (response.exito) {
-        showAlert("Distributor created seccessfully", "success");
+      const res = await createDistributorAdmin(payload);
+      if (res.exito) {
+        showAlert("Distributor created successfully", "success");
         const updated = await getDistributors();
-        if (updated.exito) {
-          setDistributors(updated.distribuidores);
-        }
+        if (updated.exito) setDistributors(updated.distribuidores);
         setOpenForm(false);
         setNewDistributor({
           email: "",
@@ -151,16 +144,13 @@ export default function AdminManageDistributors() {
           company_document_type: "",
         });
       } else {
-        showAlert(response.mensaje || "Error. Can't create distributor", "error");
+        showAlert(res.mensaje || "Error. Can't create distributor", "error");
       }
-    } catch (error) {
-      if (error.response) {
-        showAlert(error.response.data?.mensaje || "Server error.", "error");
-      } else {
-        showAlert("Uncaught error", "error");
-      }
+    } catch (e) {
+      showAlert("Server error", "error");
     }
   };
+
 
   const handleRequestEdit = (distributor) => {
     setEditDistributor({

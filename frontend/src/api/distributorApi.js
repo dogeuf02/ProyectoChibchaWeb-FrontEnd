@@ -119,4 +119,19 @@ export const getDistributorById = async (id) => {
     }
 }
 
+export const createDistributorAdmin = async (distributor) => {
+  try {
+    // antes: /distribuidor/registroDistribuidor
+    const response = await api.post('/distribuidor', distributor);
+    return { exito: true, data: response.data };
+  } catch (error) {
+    if (error.response && error.response.data) {
+      const { exito, mensaje } = error.response.data;
+      return { exito, mensaje };
+    } else {
+      return { exito: false, mensaje: 'Unknown error creating distributor' };
+    }
+  }
+};
+
 

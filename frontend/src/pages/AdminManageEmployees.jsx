@@ -9,6 +9,7 @@ import { createEmployee, getEmployees, deactivateUser } from '../api/employeeApi
 import { updateEmployeeProfile } from "../api/userApi";
 import EditUserDialog from "../components/EditUserDialog";
 import { useTranslation } from "react-i18next";
+import { useGlobalLoading } from "../context/LoadingContext";
 
 export default function AdminManageEmployees() {
   useScrollToTop();
@@ -19,6 +20,7 @@ export default function AdminManageEmployees() {
   const [employees, setEmployees] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const { showLoader, hideLoader } = useGlobalLoading();
 
   const employeeFields = [
     { name: "firstName", label: "First Name" },
@@ -34,19 +36,26 @@ export default function AdminManageEmployees() {
     "Coordinador nv 2",
     "Coordinador nv 3"
   ];
-  
+
   useEffect(() => {
     const fetchEmployees = async () => {
-      const response = await getEmployees();
-      if (response.exito) {
-        setEmployees(response.empleados);
-      } else {
-        showAlert(response.mensaje || "Error loading employees", "error");
+      showLoader();
+      try {
+        const response = await getEmployees();
+        if (response.exito) {
+          setEmployees(response.empleados);
+        } else {
+          showAlert(response.mensaje || "Error loading employees", "error");
+        }
+      } catch {
+        showAlert("Server error while loading employees", "error");
+      } finally {
+        hideLoader();
       }
     };
-
     fetchEmployees();
   }, []);
+
 
 
   const handleRequestDelete = async (id) => {
