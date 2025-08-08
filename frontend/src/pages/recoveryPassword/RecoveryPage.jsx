@@ -1,3 +1,4 @@
+// src/pages/auth/RecoveryPage.jsx
 import { useState, useRef } from 'react';
 import {
   Container, TextField, Button, Typography, Paper, Box
@@ -7,8 +8,10 @@ import { useNavigate } from "react-router-dom";
 import { useGlobalLoading } from "../../context/LoadingContext";
 import { recoverPassword } from "../../api/authApi";
 import ReCAPTCHA from 'react-google-recaptcha';
+import { useTranslation } from "react-i18next";
 
 export default function RecoveryPage() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const { showAlert } = useGlobalAlert();
   const { showLoader, hideLoader } = useGlobalLoading();
@@ -24,21 +27,18 @@ export default function RecoveryPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!captchaToken) {
-      showAlert('Please complete the captcha', 'warning');
+      showAlert(t('recovery.alerts.completeCaptcha'), 'warning');
       recaptchaRef.current?.reset();
-
       return;
     }
 
     if (!email.trim()) {
-      showAlert("Please enter your email.", "warning");
+      showAlert(t('recovery.alerts.emptyEmail'), "warning");
       return;
     }
 
     showLoader();
-
     const result = await recoverPassword(email, captchaToken);
-
     hideLoader();
 
     if (result.success) {
@@ -53,12 +53,12 @@ export default function RecoveryPage() {
     <Container maxWidth="sm" sx={{ mt: 10 }}>
       <Paper elevation={3} sx={{ p: 4, bgcolor: "#FAFAFA" }}>
         <Typography variant="h5" gutterBottom sx={{ color: "#212121" }}>
-          Password Recovery
+          {t('recovery.title')}
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <TextField
-            label="Email"
+            label={t('recovery.fields.email')}
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -87,7 +87,7 @@ export default function RecoveryPage() {
               '&:hover': { bgcolor: "#FFBE02", color: "#212121" }
             }}
           >
-            Send Recovery Email
+            {t('recovery.buttons.send')}
           </Button>
           <Box mt={3} display="flex" justifyContent="center">
             <ReCAPTCHA

@@ -128,7 +128,9 @@
     "accountLabel": "¿No tienes una cuenta?",
     "createAccountLink": "Crear cuenta",
     "distributorLabel": "¿Quieres trabajar con nosotros como distribuidor?",
-    "distributorLink": "Haz clic aquí"
+    "distributorLink": "Haz clic aquí",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "passwordRecover": "Haz clic aquí para recuperarla"
   },
   "registerAccount": {
     "title": "Registrar cuenta",
@@ -146,32 +148,34 @@
     "distributorLink": "Haz clic aquí"
   },
   "clientManagement": {
-    "title": "Gestión de Clientes ",
-    "addClientButton": "Agregar cliente",
+    "title": "Gestionar Clientes",
+    "addClientButton": "Agregar Cliente",
+    "alerts": {
+      "requiredField": "El campo es obligatorio:",
+      "added": "Cliente agregado exitosamente.",
+      "addError": "Error al agregar el cliente.",
+      "unexpectedAdd": "Error inesperado al agregar el cliente.",
+      "updated": "Cliente actualizado exitosamente.",
+      "updateError": "Error al actualizar el cliente.",
+      "deactivated": "Cliente desactivado exitosamente.",
+      "deactivateError": "Error al desactivar el cliente.",
+      "unexpectedDeactivate": "Error inesperado al desactivar el cliente.",
+      "errorLoading": "Error al cargar los clientes.",
+      "notFound": "Cliente no encontrado."
+    },
     "addClientDialog": {
-      "title": "Agregar nuevo cliente",
       "firstNameField": "Nombre",
       "lastnameField": "Apellido",
-      "emailField": "Correo electrónico",
-      "phoneNumberField": "Número de teléfono",
-      "birthDateField": "Fecha de nacimiento",
-      "cancelButton": "CANCELAR",
-      "saveButton": "GUARDAR"
+      "emailField": "Correo",
+      "phoneNumberField": "Teléfono",
+      "birthDateField": "Fecha de Nacimiento",
+      "cancelButton": "Cancelar",
+      "saveButton": "Guardar"
     },
     "deleteDialog": {
-      "title": "Eliminar cliente",
-      "message": "¿Estás seguro de que deseas eliminar este cliente? Esta acción no se puede deshacer.",
-      "confirmText": "Confirmar eliminación"
-    },
-    "list": {
-      "fullName": "Nombre completo",
-      "email": "Correo electrónico",
-      "status": "Estado",
-      "details": "Detalles del cliente",
-      "id": "ID del cliente",
-      "phone": "Teléfono",
-      "birthdate": "Fecha de nacimiento",
-      "searchField": "Buscar por ID"
+      "title": "Confirmar Eliminación",
+      "message": "¿Estás seguro de que deseas desactivar este cliente?",
+      "confirmText": "Desactivar"
     }
   },
   "distributorManagement": {
@@ -761,6 +765,19 @@
       "companyNumber": "Número de empresa",
       "companyName": "Nombre de la empresa",
       "companyAddress": "Dirección de la empresa"
+    }
+  },
+  "recovery": {
+    "title": "Recuperación de Contraseña",
+    "fields": {
+      "email": "Correo electrónico"
+    },
+    "buttons": {
+      "send": "Enviar correo de recuperación"
+    },
+    "alerts": {
+      "completeCaptcha": "Por favor completa el captcha",
+      "emptyEmail": "Por favor ingresa tu correo electrónico."
     }
   }
 }

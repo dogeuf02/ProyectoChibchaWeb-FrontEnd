@@ -181,7 +181,7 @@ export default function Login() {
             
             {loginError && (
               <Typography variant="body2" sx={{ mt: 2 }}>
-                Forgot your password?{" "}
+                {t('loginPage.forgotPassword')}{" "}
                 <Link
                   href="/recover"
                   underline="hover"
@@ -190,7 +190,7 @@ export default function Login() {
                     '&:hover': { color: '#ffc107' }
                   }}
                 >
-                  Click here to recover it
+                  {t('loginPage.passwordRecover')}
                 </Link>
               </Typography>
             )}
