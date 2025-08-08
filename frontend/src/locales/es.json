@@ -128,7 +128,9 @@
     "accountLabel": "¿No tienes una cuenta?",
     "createAccountLink": "Crear cuenta",
     "distributorLabel": "¿Quieres trabajar con nosotros como distribuidor?",
-    "distributorLink": "Haz clic aquí"
+    "distributorLink": "Haz clic aquí",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "passwordRecover": "Haz clic aquí para recuperarla"
   },
   "registerAccount": {
     "title": "Registrar cuenta",
@@ -763,6 +765,19 @@
       "companyNumber": "Número de empresa",
       "companyName": "Nombre de la empresa",
       "companyAddress": "Dirección de la empresa"
+    }
+  },
+  "recovery": {
+    "title": "Recuperación de Contraseña",
+    "fields": {
+      "email": "Correo electrónico"
+    },
+    "buttons": {
+      "send": "Enviar correo de recuperación"
+    },
+    "alerts": {
+      "completeCaptcha": "Por favor completa el captcha",
+      "emptyEmail": "Por favor ingresa tu correo electrónico."
     }
   }
 }

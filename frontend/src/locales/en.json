@@ -128,7 +128,8 @@
         "accountLabel": "Don't have an account?",
         "createAccountLink": "Create account",
         "distributorLabel": "Do you want to work with us a distributor?",
-        "distributorLink": "Click here"
+        "forgotPassword": "Forgot your password?",
+        "passwordRecover": "Click here to recover it"
     },
     "registerAccount": {
         "title": "Register account",
@@ -763,6 +764,19 @@
         "companyNumber": "Company Number",
         "companyName": "Company Name",
         "companyAddress": "Company Address"
+        }
+    },
+    "recovery": {
+        "title": "Password Recovery",
+        "fields": {
+        "email": "Email"
+        },
+        "buttons": {
+        "send": "Send Recovery Email"
+        },
+        "alerts": {
+        "completeCaptcha": "Please complete the captcha",
+        "emptyEmail": "Please enter your email."
         }
     }
 }
