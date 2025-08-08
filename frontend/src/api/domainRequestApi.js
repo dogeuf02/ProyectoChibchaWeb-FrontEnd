@@ -19,7 +19,7 @@ export const createDomainRequest = async (domain) => {
   }
 }
 
-export const getDomainRequestsById = async (role,id) => {
+export const getDomainRequestsById = async (role, id) => {
   try {
     const response = await api.get(`/solicitudDominio/${role.toLowerCase()}/${id}`);
     return { exito: true, data: response.data };
@@ -34,53 +34,67 @@ export const getDomainRequestsById = async (role,id) => {
 };
 
 export const getDomainRequests = async () => {
+  console.log("getDomRe");
   try {
     const response = await api.get('/solicitudDominio');
-
+    console.log("getDomRe", response.data);
     const enrichedRequests = await Promise.all(
       response.data.map(async (request) => {
-        let nombreUsuario = '-';
-        let adminName = '-';
-        if (request.cliente) {
-          const clienteResult = await getClientById(request.cliente);
-          if (clienteResult.exito) {
-            nombreUsuario = clienteResult.data.nombreCliente + ' ' + clienteResult.data.apellidoCliente || 'Cliente';
-          }
-        } else if (request.distribuidor) {
-          const distribuidorResult = await getDistributorById(request.distribuidor);
-          if (distribuidorResult.exito && distribuidorResult.data.usuario) {
-            nombreUsuario = distribuidorResult.data.usuario.nombreEmpresa || ROLE.DISTRIBUTOR;
-          }
-        }
+        try {
+          let nombreUsuario = '-';
+          let adminName = '-';
 
-        if (request.admin) {
-          const adminResult = await getAdminProfile(request.admin);
-          if (adminResult.exito && adminResult.data) {
-            adminName = adminResult.data.nombreAdmin;
+          if (request.cliente) {
+            const clienteResult = await getClientById(request.cliente);
+            if (clienteResult.exito && clienteResult.data) {
+              const { nombreCliente = '', apellidoCliente = '' } = clienteResult.data;
+              nombreUsuario = (nombreCliente + ' ' + apellidoCliente).trim() || 'Cliente';
+            }
+          } else if (request.distribuidor) {
+            const distribuidorResult = await getDistributorById(request.distribuidor);
+            if (distribuidorResult.exito && distribuidorResult.data?.usuario) {
+              nombreUsuario = distribuidorResult.data.usuario.nombreEmpresa || ROLE.DISTRIBUTOR;
+            }
           }
-        }
 
-        const domain = await getDomainById(request.dominio, request.tld);
-        if (!domain) {
+          if (request.admin) {
+            const adminResult = await getAdminProfile(request.admin);
+            if (adminResult.exito && adminResult.data) {
+              adminName = adminResult.data.nombreAdmin || '-';
+            }
+          }
+
+          if (!request.dominio) {
+            return null; // Evitar llamada inválida
+          }
+
+          const domain = await getDomainById(request.dominio);
+          if (!domain) {
+            return null;
+          }
+
+          return {
+            idSolicitud: request.idSolicitud,
+            dominio: domain,
+            estado: request.estadoSolicitud,
+            fechaCreacion: request.fechaSolicitud,
+            idUsuario: request.cliente || request.distribuidor,
+            rolUsuario: request.cliente ? ROLE.CLIENT : ROLE.DISTRIBUTOR,
+            nombreUsuario,
+            idAdmin: request.admin,
+            nombreAdmin: adminName,
+          };
+
+        } catch (err) {
+          console.error("Error procesando solicitud:", err);
           return null;
         }
-
-        const response = {
-          idSolicitud: request.idSolicitud,
-          dominio: domain,
-          estado: request.estadoSolicitud,
-          fechaCreacion: request.fechaSolicitud,
-          idUsuario: request.cliente || request.distribuidor,
-          rolUsuario: request.cliente ? ROLE.CLIENT : ROLE.DISTRIBUTOR,
-          nombreUsuario,
-          idAdmin: request.admin,
-          nombreAdmin: adminName,
-        };
-        return response;
       })
     );
 
-    return { exito: true, data: enrichedRequests };
+    // Filtrar nulos antes de devolver
+    return { exito: true, data: enrichedRequests.filter(Boolean) };
+
   } catch (error) {
     if (error.response && error.response.data) {
       const { exito, mensaje } = error.response.data;

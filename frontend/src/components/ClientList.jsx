@@ -69,7 +69,7 @@ function Row({ client, onRequestDelete, onRequestEdit }) {
                     }}
                     onClick={() => onRequestEdit(client)}
                   >
-                    Edit Profile
+                    {t('clientManagement.editProfileButton')}
                   </Button>
                   <Button
                     variant="contained"

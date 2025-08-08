@@ -1,3 +1,4 @@
+// src/pages/RegisterDistributor.jsx
 import { useState, useEffect } from 'react';
 import Zoom from '@mui/material/Zoom';
 import {
@@ -16,11 +17,12 @@ import { createDistributor } from '../api/distributorApi';
 import { getDocumentTypes } from '../api/documentTypeApi';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useGlobalLoading } from '../context/LoadingContext';
+import { useTranslation } from 'react-i18next';
 
 export default function RegisterDistributor() {
   useScrollToTop();
 
-
+  const { t } = useTranslation();
   const { showLoader, hideLoader } = useGlobalLoading();
   const [documentTypes, setDocumentTypes] = useState([]);
   const { showAlert } = useGlobalAlert();
@@ -58,12 +60,12 @@ export default function RegisterDistributor() {
     e.preventDefault();
 
     if (!captchaToken) {
-      showAlert('Please complete the captcha', 'warning');
+      showAlert(t("registerDistributor.alerts.captchaRequired"), 'warning');
       return;
     }
 
     if (form.password !== form.confirmPassword) {
-      showAlert('Passwords do not match', 'warning');
+      showAlert(t("registerDistributor.alerts.passwordMismatch"), 'warning');
       return;
     }
 
@@ -77,18 +79,18 @@ export default function RegisterDistributor() {
       'companyAddress',
     ];
     const friendlyNames = {
-      email: 'Email',
-      password: 'Password',
-      confirmPassword: 'Confirm Password',
-      documentType: 'Document Type',
-      companyNumber: 'Company Number',
-      companyName: 'Company Name',
-      companyAddress: 'Company Address',
+      email: t("registerDistributor.fields.email"),
+      password: t("registerDistributor.fields.password"),
+      confirmPassword: t("registerDistributor.fields.confirmPassword"),
+      documentType: t("registerDistributor.fields.documentType"),
+      companyNumber: t("registerDistributor.fields.companyNumber"),
+      companyName: t("registerDistributor.fields.companyName"),
+      companyAddress: t("registerDistributor.fields.companyAddress"),
     };
 
     for (const field of requiredFields) {
       if (!form[field]) {
-        showAlert(`The field "${friendlyNames[field]}" is required.`, 'warning');
+        showAlert(t("registerDistributor.alerts.requiredField", { field: friendlyNames[field] }), 'warning');
         return;
       }
     }
@@ -104,11 +106,10 @@ export default function RegisterDistributor() {
     };
 
     try {
-
       showLoader();
       const result = await createDistributor(distributor);
       if (result.exito) {
-        showAlert('Register Success', 'success');
+        showAlert(t("registerDistributor.alerts.success"), 'success');
         setForm({
           email: '',
           password: '',
@@ -118,12 +119,11 @@ export default function RegisterDistributor() {
           documentType: documentTypes[0]?.nombreTipoDoc || '',
           companyName: '',
         });
-
       } else {
-        showAlert(result.mensaje || 'Error al registrar el distribuidor', 'error');
+        showAlert(result.mensaje || t("registerDistributor.alerts.error"), 'error');
       }
     } catch (err) {
-      showAlert('Error inesperado al registrar el distribuidor', 'error');
+      showAlert(t("registerDistributor.alerts.unexpectedError"), 'error');
     } finally {
       hideLoader();
     }
@@ -132,67 +132,16 @@ export default function RegisterDistributor() {
 
   return (
     <Container maxWidth="xl" sx={{ mt: 6 }}>
-      <Box
-        display="flex"
-        flexDirection={{ xs: 'column', md: 'row' }}
-        justifyContent="center"
-        gap={6}
-        px={4}
-      >
+      <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} justifyContent="center" gap={6} px={4}>
         <Zoom in={true} timeout={800}>
           <Paper elevation={3} sx={{ p: 4, bgcolor: '#fafafa', flex: 1 }}>
-            <Typography variant="h5" gutterBottom sx={{ color: '#212121', fontFamily: 'Poppins, sans-serif' }}>
-              Create request for Distributor
+            <Typography variant="h5" gutterBottom sx={{ color: '#212121' }}>
+              {t("registerDistributor.title")}
             </Typography>
             <Box component="form" noValidate>
-              <TextField
-                label="Email"
-                name="email"
-                type="email"
-                value={form.email}
-                onChange={handleChange}
-                fullWidth margin="normal" required
-                sx={{
-                  '& label': { color: '#a5a5a5ff' },
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': { borderColor: '#bdbdbd' },
-                    '&:hover fieldset': { borderColor: '#ff6f00' },
-                    '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-                  }
-                }}
-              />
-              <TextField
-                label="Password"
-                name="password"
-                type="password"
-                value={form.password}
-                onChange={handleChange}
-                fullWidth margin="normal" required
-                sx={{
-                  '& label': { color: '#a5a5a5ff' },
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': { borderColor: '#bdbdbd' },
-                    '&:hover fieldset': { borderColor: '#ff6f00' },
-                    '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-                  }
-                }}
-              />
-              <TextField
-                label="Confirm Password"
-                name="confirmPassword"
-                type="password"
-                value={form.confirmPassword}
-                onChange={handleChange}
-                fullWidth margin="normal" required
-                sx={{
-                  '& label': { color: '#a5a5a5ff' },
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': { borderColor: '#bdbdbd' },
-                    '&:hover fieldset': { borderColor: '#ff6f00' },
-                    '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-                  }
-                }}
-              />
+              <TextField label={t("registerDistributor.fields.email")} name="email" type="email" value={form.email} onChange={handleChange} fullWidth margin="normal" required />
+              <TextField label={t("registerDistributor.fields.password")} name="password" type="password" value={form.password} onChange={handleChange} fullWidth margin="normal" required />
+              <TextField label={t("registerDistributor.fields.confirmPassword")} name="confirmPassword" type="password" value={form.confirmPassword} onChange={handleChange} fullWidth margin="normal" required />
             </Box>
           </Paper>
         </Zoom>
@@ -200,80 +149,22 @@ export default function RegisterDistributor() {
         <Zoom in={true} timeout={1500}>
           <Paper elevation={3} sx={{ p: 4, bgcolor: '#f5f5f5', flex: 1 }}>
             <Typography variant="h5" gutterBottom sx={{ color: '#212121' }}>
-              Company information
+              {t("registerDistributor.companyInfo")}
             </Typography>
             <Box component="form" onSubmit={handleSubmit} noValidate>
-              <TextField
-                select label="Document type" name="documentType"
-                value={form.documentType || ''}
-                onChange={handleChange}
-                fullWidth margin="normal"
-                sx={{
-                  '& label': { color: '#a5a5a5ff' },
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': { borderColor: '#bdbdbd' },
-                    '&:hover fieldset': { borderColor: '#ff6f00' },
-                    '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-                  }
-                }}
-              >
+              <TextField select label={t("registerDistributor.fields.documentType")} name="documentType" value={form.documentType || ''} onChange={handleChange} fullWidth margin="normal">
                 {documentTypes.map((type) => (
                   <MenuItem key={type.nombreTipoDoc} value={type.nombreTipoDoc}>
                     {type.nombreTipoDoc}
                   </MenuItem>
                 ))}
               </TextField>
+              <TextField label={t("registerDistributor.fields.companyNumber")} name="companyNumber" value={form.companyNumber} onChange={handleChange} fullWidth margin="normal" />
+              <TextField label={t("registerDistributor.fields.companyName")} name="companyName" value={form.companyName} onChange={handleChange} fullWidth margin="normal" />
+              <TextField label={t("registerDistributor.fields.companyAddress")} name="companyAddress" value={form.companyAddress} onChange={handleChange} fullWidth margin="normal" />
 
-              <TextField
-                label="Company number"
-                name="companyNumber"
-                value={form.companyNumber}
-                onChange={handleChange}
-                fullWidth margin="normal"
-                sx={{
-                  '& label': { color: '#a5a5a5ff' },
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': { borderColor: '#bdbdbd' },
-                    '&:hover fieldset': { borderColor: '#ff6f00' },
-                    '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-                  }
-                }}
-              />
-              <TextField
-                label="Company name"
-                name="companyName"
-                value={form.companyName}
-                onChange={handleChange}
-                fullWidth margin="normal"
-                sx={{
-                  '& label': { color: '#a5a5a5ff' },
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': { borderColor: '#bdbdbd' },
-                    '&:hover fieldset': { borderColor: '#ff6f00' },
-                    '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-                  }
-                }}
-              />
-              <TextField
-                label="Company address"
-                name="companyAddress"
-                value={form.companyAddress}
-                onChange={handleChange}
-                fullWidth margin="normal"
-                sx={{
-                  '& label': { color: '#a5a5a5ff' },
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': { borderColor: '#bdbdbd' },
-                    '&:hover fieldset': { borderColor: '#ff6f00' },
-                    '&.Mui-focused fieldset': { borderColor: '#ffc107' },
-                  }
-                }}
-              />
               <Box mt={3} display="flex" justifyContent="center">
-                <ReCAPTCHA
-                  sitekey="6LePn5krAAAAAAnj4Tz_1s9K7dZEYLVsdUeFqwqB"
-                  onChange={handleCaptchaChange}
-                />
+                <ReCAPTCHA sitekey="6LePn5krAAAAAAnj4Tz_1s9K7dZEYLVsdUeFqwqB" onChange={handleCaptchaChange} />
               </Box>
 
               <Button
@@ -285,15 +176,14 @@ export default function RegisterDistributor() {
                   bgcolor: '#ff6f00',
                   borderRadius: 30,
                   '&:hover': { bgcolor: '#ffc107', color: '#212121' }
-                }}
-              >
-                Send request
+                }}>
+                {t("registerDistributor.send")}
               </Button>
 
               <Typography variant="body2" sx={{ mt: 2 }}>
-                Have an account?{' '}
-                <Link href="/login" underline="hover" sx={{ color: '#ff6f00', '&:hover': { color: '#ffc107' } }}>
-                  Sign in
+                {t("registerDistributor.loginPrompt")}{" "}
+                <Link href="/login" underline="hover" color='#ff6f00'>
+                  {t("registerDistributor.signIn")}
                 </Link>
               </Typography>
             </Box>

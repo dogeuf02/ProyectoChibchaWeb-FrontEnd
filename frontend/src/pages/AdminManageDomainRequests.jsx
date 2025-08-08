@@ -43,8 +43,6 @@ export default function AdminManageDomainRequests() {
       } else {
         idDistribudor = requestData.idUsuario;
       }
-
-      showAlert("Estado de la solicitud actualizado a 'Aprobada'", "success");
       // Aquí seguirás con los siguientes pasos (actualizar dominio, registrar en pertenece_dominio)
       const domain = {
         idDominio: requestData.dominio.idDominio,
@@ -68,7 +66,7 @@ export default function AdminManageDomainRequests() {
       const emailResponse = await sendNotificationEmail(true, requestData.idSolicitud, specificId);
       if (emailResponse.exito) {
         await fetchDomainRequests();
-        showAlert(emailResponse.mensaje, "success");
+        showAlert("Estado de la solicitud actualizado a 'Aprobada'", "success");
       } else {
         showAlert(emailResponse.mensaje, "error");
 
@@ -85,7 +83,7 @@ export default function AdminManageDomainRequests() {
       const emailResponse = await sendNotificationEmail(false, requestData.idSolicitud, specificId);
       if (emailResponse.exito) {
         await fetchDomainRequests();
-        showAlert(emailResponse.mensaje, "success");
+        showAlert("Solicitud rechazada exitosamente", "success");
       } else {
         showAlert(emailResponse.mensaje, "error");
       }
@@ -94,28 +92,28 @@ export default function AdminManageDomainRequests() {
     }
   };
 
- const handleGenerateXML = async (requestId) => {
-  const result = await generateRequestXML(requestId);
+  const handleGenerateXML = async (requestId) => {
+    const result = await generateRequestXML(requestId);
 
-  if (result.exito) {
-    const blob = new Blob([result.data], { type: 'application/xml' });
+    if (result.exito) {
+      const blob = new Blob([result.data], { type: 'application/xml' });
 
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `solicitud_${requestId}.xml`; // Nombre del archivo
-    a.style.display = 'none';
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `solicitud_${requestId}.xml`; // Nombre del archivo
+      a.style.display = 'none';
 
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-    showAlert("XML generado con éxito.", "success");
-  } else {
-    alert(`Error: ${result.mensaje}`);
-    showAlert("Error generando el archivo XML", "error");
-  }
-};
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      showAlert("XML generado con éxito.", "success");
+    } else {
+      alert(`Error: ${result.mensaje}`);
+      showAlert("Error generando el archivo XML", "error");
+    }
+  };
 
 
   return (
