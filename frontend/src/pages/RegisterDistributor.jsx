@@ -182,7 +182,7 @@ export default function RegisterDistributor() {
 
               <Typography variant="body2" sx={{ mt: 2 }}>
                 {t("registerDistributor.loginPrompt")}{" "}
-                <Link href="/login" underline="hover">
+                <Link href="/login" underline="hover" color='#ff6f00'>
                   {t("registerDistributor.signIn")}
                 </Link>
               </Typography>
