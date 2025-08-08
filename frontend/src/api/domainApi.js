@@ -2,7 +2,7 @@ import api from './axiosInstance';
 
 export const createDomain = async (domain) => {
     try {
-        const response = await api.post('/dominio', domain);
+        const response = await api.post('/dominio/crearConPrecio', domain);
         return response.data;
     } catch (error) {
         throw error;
@@ -55,3 +55,11 @@ export const updateDomain = async (id, domain) => {
     }
 }
 
+export const deleteDomain = async (id) => {
+  try {
+    const response = await api.delete(`/dominio/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
