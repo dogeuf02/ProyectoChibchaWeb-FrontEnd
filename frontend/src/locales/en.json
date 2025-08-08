@@ -725,7 +725,7 @@
     "searchButton": "Search",
     "loadingMessage": "Calculating domain price...",
     "priceLabel": "Price: ${{price}} USD",
-    "getDomainButton": "Get domain",
+    "getDomainButton": "Request this domain",
     "alert": {
       "emptyDomain": "The domain field cannot be empty",
       "emptyTld": "Please select a TLD before calculating.",
