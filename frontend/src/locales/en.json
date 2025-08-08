@@ -716,5 +716,24 @@
         "no": "No",
         "noData": "No plan info yet",
         "loadError": "Error loading plans info"
+    },
+    "domainFinder": {
+    "title": "Find the domain that fits your needs",
+    "input": {
+      "placeholder": "Type the domain name"
+    },
+    "searchButton": "Search",
+    "loadingMessage": "Calculating domain price...",
+    "priceLabel": "Price: ${{price}} USD",
+    "getDomainButton": "Get domain",
+    "alert": {
+      "emptyDomain": "The domain field cannot be empty",
+      "emptyTld": "Please select a TLD before calculating.",
+      "loginAsClientOrDistributor": "You must log in as a client or distributor",
+      "loginToGetDomain": "You must log in to get a domain."
+    },
+    "error": {
+      "priceFetch": "Could not retrieve the price"
     }
+  }
 }

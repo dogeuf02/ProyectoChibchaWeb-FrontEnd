@@ -32,7 +32,6 @@ export default function DomainFinder() {
     const [domainName, setDomainName] = useState('');
     const [loading, setLoading] = useState(false);
     const [priceResult, setPriceResult] = useState(null);
-    // const [domainError, setDomainError] = useState(false); // NUEVO estado para error
     const MIN_LOADING_MS = 1000;
     const requestIdRef = useRef(0);
 
@@ -49,9 +48,12 @@ export default function DomainFinder() {
     }, []);
 
     const handleSearch = async () => {
-        // validar campo vacío
         if (!domainName.trim()) {
-            showAlert("El campo de dominio no puede estar vacío", "warning");
+            showAlert(t("domainFinder.alert.emptyDomain"), "warning");
+            return;
+        }
+        if (!selectedTld || selectedTld.trim() === "") {
+            showAlert(t("domainFinder.alert.emptyTld"), "warning");
             return;
         }
 
@@ -78,8 +80,8 @@ export default function DomainFinder() {
             setPriceResult(result);
         } catch (error) {
             if (requestIdRef.current !== thisRequestId) return;
-            console.error("Error al calcular precio:", error);
-            setPriceResult({ error: "No se pudo obtener el precio" });
+            console.error("Error calculating price:", error);
+            setPriceResult({ error: t("domainFinder.error.priceFetch") });
         } finally {
             if (requestIdRef.current === thisRequestId) {
                 setLoading(false);
@@ -97,11 +99,11 @@ export default function DomainFinder() {
                     navigate(`/distributor/DomainRequest`);
                     break;
                 default:
-                    showAlert("Debes iniciar sesión como cliente o distribuidor");
+                    showAlert(t("domainFinder.alert.loginAsClientOrDistributor"));
                     navigate(`/`);
             }
         } else {
-            showAlert("Debes iniciar sesión para obtener un dominio.");
+            showAlert(t("domainFinder.alert.loginToGetDomain"));
         }
     };
 
@@ -118,7 +120,7 @@ export default function DomainFinder() {
                         fontFamily: "'Roboto', sans-serif"
                     }}
                 >
-                    Encuentra el dominio que se ajusta a tus necesidades
+                    {t("domainFinder.title")}
                 </Typography>
 
                 <Card
@@ -131,7 +133,7 @@ export default function DomainFinder() {
                         transition: 'all 0.3s ease',
                     }}
                 >
-                    {/* Buscador */}
+                    {/* Search */}
                     <Box
                         sx={{
                             display: 'flex',
@@ -142,10 +144,9 @@ export default function DomainFinder() {
                         }}
                     >
                         <TextField
-                            placeholder="Escribe el nombre del dominio"
+                            placeholder={t("domainFinder.input.placeholder")}
                             value={domainName}
                             onChange={(e) => setDomainName(e.target.value)}
-
                             sx={{
                                 minWidth: 300,
                                 '& label': { color: '#a5a5a5ff' },
@@ -192,11 +193,11 @@ export default function DomainFinder() {
                             }}
                             onClick={handleSearch}
                         >
-                            Buscar
+                            {t("domainFinder.searchButton")}
                         </Button>
                     </Box>
 
-                    {/* Sección de resultado */}
+                    {/* Result section */}
                     {(loading || priceResult) && (
                         <Box
                             sx={{
@@ -210,7 +211,7 @@ export default function DomainFinder() {
                                 <Box>
                                     <CircularProgress size={28} sx={{ color: '#ff6f00', mb: 1 }} />
                                     <Typography variant="body1" color="text.secondary">
-                                        Calculando precio del dominio...
+                                        {t("domainFinder.loadingMessage")}
                                     </Typography>
                                 </Box>
                             ) : priceResult?.error ? (
@@ -226,7 +227,7 @@ export default function DomainFinder() {
                                         variant="h6"
                                         sx={{ fontWeight: 'bold', color: '#212121', mb: 1 }}
                                     >
-                                        Precio: ${priceResult} USD
+                                        {t("domainFinder.priceLabel", { price: priceResult })}
                                     </Typography>
                                     <Button
                                         variant="contained"
@@ -242,10 +243,9 @@ export default function DomainFinder() {
                                             },
                                         }}
                                     >
-                                        Obtener dominio
+                                        {t("domainFinder.getDomainButton")}
                                     </Button>
                                 </Box>
-
                             )}
                         </Box>
                     )}
