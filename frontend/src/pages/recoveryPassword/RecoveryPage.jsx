@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   Container, TextField, Button, Typography, Paper, Box
 } from '@mui/material';
@@ -6,26 +6,40 @@ import { useGlobalAlert } from "../../context/AlertContext";
 import { useNavigate } from "react-router-dom";
 import { useGlobalLoading } from "../../context/LoadingContext";
 import { recoverPassword } from "../../api/authApi";
+import ReCAPTCHA from 'react-google-recaptcha';
 
 export default function RecoveryPage() {
   const [email, setEmail] = useState("");
   const { showAlert } = useGlobalAlert();
   const { showLoader, hideLoader } = useGlobalLoading();
+  const recaptchaRef = useRef();
+  const [captchaToken, setCaptchaToken] = useState(null);
+
   const navigate = useNavigate();
+
+  const handleCaptchaChange = (value) => {
+    setCaptchaToken(value);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!captchaToken) {
+      showAlert('Please complete the captcha', 'warning');
+      recaptchaRef.current?.reset();
+
+      return;
+    }
 
     if (!email.trim()) {
       showAlert("Please enter your email.", "warning");
       return;
     }
 
-    showLoader(); 
+    showLoader();
 
-    const result = await recoverPassword(email);
+    const result = await recoverPassword(email, captchaToken);
 
-    hideLoader(); 
+    hideLoader();
 
     if (result.success) {
       showAlert(result.message, "success");
@@ -75,6 +89,13 @@ export default function RecoveryPage() {
           >
             Send Recovery Email
           </Button>
+          <Box mt={3} display="flex" justifyContent="center">
+            <ReCAPTCHA
+              sitekey="6LePn5krAAAAAAnj4Tz_1s9K7dZEYLVsdUeFqwqB"
+              onChange={handleCaptchaChange}
+              ref={recaptchaRef}
+            />
+          </Box>
         </Box>
       </Paper>
     </Container>
