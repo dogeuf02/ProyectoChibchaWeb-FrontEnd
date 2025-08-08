@@ -37,7 +37,7 @@ import RoleProtectedRoute from './components/routes/RoleProtectedRoute';
 import { ROLE } from './enum/roleEnum';
 import { Navigate } from 'react-router-dom';
 import RecoveryPage from './pages/recoveryPassword/RecoveryPage.jsx';
-
+import DomainFinder from './pages/DomainFinder.jsx'
 
 function App() {
   return (
@@ -48,7 +48,9 @@ function App() {
           <Route path="/" element={
             <MainLayout>
               <Home />
+              <DomainFinder></DomainFinder>
               <DomainsInfo />
+
               <PlansInfo />
               <DistributorInfo />
               <FAQSection />

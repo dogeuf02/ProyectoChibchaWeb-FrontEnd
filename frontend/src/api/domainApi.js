@@ -55,6 +55,15 @@ export const updateDomain = async (id, domain) => {
     }
 }
 
+export const getCalculatedPrice = async (domainRequest) => {
+    try {
+        const response = await api.get(`/dominio/calcularPrecio?dominio=${domainRequest.domain}&tld=${domainRequest.tld}`, );
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const deleteDomain = async (id) => {
   try {
     const response = await api.delete(`/dominio/${id}`);

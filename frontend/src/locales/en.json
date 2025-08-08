@@ -698,5 +698,42 @@
             "noMethods": "You don’t have any saved payment methods.",
             "expires": "Expires"
         }
+    },
+    "adminPlans": {
+        "title": "Plans & Prices",
+        "plan": "Plan",
+        "interval": "Interval",
+        "price": "Price",
+        "websites": "Websites",
+        "databases": "Databases",
+        "storage": "Storage (GB NVMe)",
+        "emailAccounts": "Email Accounts",
+        "siteBuilder": "Site Builder",
+        "sslCerts": "SSL Certs",
+        "emailMarketing": "Email Marketing",
+        "unlimited": "Unlimited",
+        "yes": "Yes",
+        "no": "No",
+        "noData": "No plan info yet",
+        "loadError": "Error loading plans info"
+    },
+    "domainFinder": {
+    "title": "Find the domain that fits your needs",
+    "input": {
+      "placeholder": "Type the domain name"
+    },
+    "searchButton": "Search",
+    "loadingMessage": "Calculating domain price...",
+    "priceLabel": "Price: ${{price}} USD",
+    "getDomainButton": "Request this domain",
+    "alert": {
+      "emptyDomain": "The domain field cannot be empty",
+      "emptyTld": "Please select a TLD before calculating.",
+      "loginAsClientOrDistributor": "You must log in as a client or distributor",
+      "loginToGetDomain": "You must log in to get a domain."
+    },
+    "error": {
+      "priceFetch": "Could not retrieve the price"
     }
+  }
 }
