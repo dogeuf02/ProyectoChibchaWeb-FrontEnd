@@ -146,32 +146,34 @@
         "distributorLink": "Click here"
     },
     "clientManagement": {
-        "title": "Client Management",
-        "addClientButton": "Add client",
+        "title": "Manage Clients",
+        "addClientButton": "Add Client",
+        "alerts": {
+        "requiredField": "The field is required:",
+        "added": "Client added successfully.",
+        "addError": "Error adding client.",
+        "unexpectedAdd": "Unexpected error while adding client.",
+        "updated": "Client updated successfully.",
+        "updateError": "Error updating client.",
+        "deactivated": "Client deactivated successfully.",
+        "deactivateError": "Error deactivating client.",
+        "unexpectedDeactivate": "Unexpected error while deactivating client.",
+        "errorLoading": "Error loading clients.",
+        "notFound": "Client not found."
+        },
         "addClientDialog": {
-            "title": "Add New Client",
-            "firstNameField": "First Name",
-            "lastnameField": "Last Name",
-            "emailField": "Email",
-            "phoneNumberField": "Phone number",
-            "birthDateField": "Birth date",
-            "cancelButton": "CANCEL",
-            "saveButton": "SAVE"
+        "firstNameField": "First Name",
+        "lastnameField": "Last Name",
+        "emailField": "Email",
+        "phoneNumberField": "Phone Number",
+        "birthDateField": "Birth Date",
+        "cancelButton": "Cancel",
+        "saveButton": "Save"
         },
         "deleteDialog": {
-            "title": "Delete Client",
-            "message": "Are you sure you want to delete this client? This action cannot be undone.",
-            "confirmText": "Confirm Delete"
-        },
-        "list": {
-            "fullName": "Full Name",
-            "email": "Email",
-            "status": "Status",
-            "details": "Client Details",
-            "id": "Client ID",
-            "phone": "Phone",
-            "birthdate": "Birth Date",
-            "searchField": "Search by ID"
+        "title": "Confirm Deletion",
+        "message": "Are you sure you want to deactivate this client?",
+        "confirmText": "Deactivate"
         }
     },
     "distributorManagement": {
