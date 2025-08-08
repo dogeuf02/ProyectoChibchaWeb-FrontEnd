@@ -503,7 +503,11 @@
     "deleteWarning": "Eliminar tu cuenta es irreversible.",
     "dialogTitle": "Eliminar Cuenta",
     "dialogMessage": "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.",
-    "dialogConfirm": "Confirmar Eliminación"
+    "dialogConfirm": "Confirmar Eliminación",
+    "updateSuccess" : "Actualización Exitosa",
+    "updateError": "Error al actualizar el cliente.",
+    "deleteSuccess": "Perfil eliminado correctamente",
+    "deleteError":"Error al eliminar perfil"
   },
   "myPlans": {
     "title": "Mis Planes",

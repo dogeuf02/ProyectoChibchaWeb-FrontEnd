@@ -502,7 +502,11 @@
         "deleteWarning": "Deleting your account is irreversible.",
         "dialogTitle": "Delete Account",
         "dialogMessage": "Are you sure you want to delete your account? This action cannot be undone.",
-        "dialogConfirm": "Confirm Delete"
+        "dialogConfirm": "Confirm Delete",
+        "updateSuccess" : "Update Success",
+        "updateError": "Error updating client.",
+        "deleteSuccess":"Profile deleted successfully",
+        "deleteError":"Failed to delete Profile"
     },
     "myPlans": {
         "title": "My Plans",
