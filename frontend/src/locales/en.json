@@ -718,22 +718,46 @@
         "loadError": "Error loading plans info"
     },
     "domainFinder": {
-    "title": "Find the domain that fits your needs",
-    "input": {
-      "placeholder": "Type the domain name"
+        "title": "Find the domain that fits your needs",
+        "input": {
+        "placeholder": "Type the domain name"
+        },
+        "searchButton": "Search",
+        "loadingMessage": "Calculating domain price...",
+        "priceLabel": "Price: ${{price}} USD",
+        "getDomainButton": "Request this domain",
+        "alert": {
+        "emptyDomain": "The domain field cannot be empty",
+        "emptyTld": "Please select a TLD before calculating.",
+        "loginAsClientOrDistributor": "You must log in as a client or distributor",
+        "loginToGetDomain": "You must log in to get a domain."
+        },
+        "error": {
+        "priceFetch": "Could not retrieve the price"
+        }
     },
-    "searchButton": "Search",
-    "loadingMessage": "Calculating domain price...",
-    "priceLabel": "Price: ${{price}} USD",
-    "getDomainButton": "Request this domain",
-    "alert": {
-      "emptyDomain": "The domain field cannot be empty",
-      "emptyTld": "Please select a TLD before calculating.",
-      "loginAsClientOrDistributor": "You must log in as a client or distributor",
-      "loginToGetDomain": "You must log in to get a domain."
-    },
-    "error": {
-      "priceFetch": "Could not retrieve the price"
+    "registerDistributor": {
+        "title": "Create request for Distributor",
+        "companyInfo": "Company information",
+        "send": "Send request",
+        "loginPrompt": "Have an account?",
+        "signIn": "Sign in",
+        "alerts": {
+        "captchaRequired": "Please complete the captcha",
+        "passwordMismatch": "Passwords do not match",
+        "requiredField": "The field \"{{field}}\" is required.",
+        "success": "Register Success",
+        "error": "Error registering distributor",
+        "unexpectedError": "Unexpected error registering distributor"
+        },
+        "fields": {
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "documentType": "Document Type",
+        "companyNumber": "Company Number",
+        "companyName": "Company Name",
+        "companyAddress": "Company Address"
+        }
     }
-  }
 }

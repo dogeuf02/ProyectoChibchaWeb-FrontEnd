@@ -141,8 +141,8 @@
     "confirmPasswordfield": "Confirmar contraseña",
     "registerButton": "REGISTRARSE",
     "accountLabel": "¿Ya tienes una cuenta?",
-    "accountLink": "Sign in",
-    "distributorLabel": "Do you want to work with us as a distributor?",
+    "accountLink": "Iniciar Sesión",
+    "distributorLabel": "¿Quieres trabajar con nosotros como distribuidor?",
     "distributorLink": "Haz clic aquí"
   },
   "clientManagement": {
@@ -734,6 +734,30 @@
     },
     "error": {
       "priceFetch": "No se pudo obtener el precio"
+    }
+  },
+  "registerDistributor": {
+    "title": "Crear solicitud para Distribuidor",
+    "companyInfo": "Información de la empresa",
+    "send": "Enviar solicitud",
+    "loginPrompt": "¿Ya tienes una cuenta?",
+    "signIn": "Iniciar sesión",
+    "alerts": {
+      "captchaRequired": "Por favor completa el captcha",
+      "passwordMismatch": "Las contraseñas no coinciden",
+      "requiredField": "El campo \"{{field}}\" es obligatorio.",
+      "success": "Registro exitoso",
+      "error": "Error al registrar el distribuidor",
+      "unexpectedError": "Error inesperado al registrar el distribuidor"
+    },
+    "fields": {
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "documentType": "Tipo de documento",
+      "companyNumber": "Número de empresa",
+      "companyName": "Nombre de la empresa",
+      "companyAddress": "Dirección de la empresa"
     }
   }
 }
